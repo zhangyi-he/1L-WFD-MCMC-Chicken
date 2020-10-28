@@ -571,6 +571,7 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
       sel_gen_chn(i) = sel_gen_chn(i - 1);
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
+      log_lik(1) = log_lik(0);
     } else {
       apt_rto = 1;
     }
@@ -581,6 +582,7 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
       sel_gen_chn(i) = sel_gen_chn(i - 1);
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
+      log_lik(1) = log_lik(0);
     } else {
       apt_rto = 1;
     }
@@ -591,6 +593,7 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
       sel_gen_chn(i) = sel_gen_chn(i - 1);
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
+      log_lik(1) = log_lik(0);
     } else {
       apt_rto = 1;
     }
@@ -601,6 +604,7 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
       sel_gen_chn(i) = sel_gen_chn(i - 1);
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
+      log_lik(1) = log_lik(0);
     } else {
       apt_rto = 1;
     }
@@ -621,6 +625,7 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
         sel_gen_chn(i) = sel_gen_chn(i - 1);
         mig_rat_chn(i) = mig_rat_chn(i - 1);
         mig_gen_chn(i) = mig_gen_chn(i - 1);
+        log_lik(1) = log_lik(0);
       } else {
         log_lik(0) = log_lik(1);
       }
@@ -679,6 +684,7 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
     if (sel_cof_chn(i) > 1) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
       sel_gen_chn(i) = sel_gen_chn(i - 1);
+      log_lik(1) = log_lik(0);
     } else {
       apt_rto = 1;
     }
@@ -687,6 +693,7 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
     if (sel_gen_chn(i) < smp_gen.min() || sel_gen_chn(i) > smp_gen.max()) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
       sel_gen_chn(i) = sel_gen_chn(i - 1);
+      log_lik(1) = log_lik(0);
     } else {
       apt_rto = 1;
     }
@@ -705,7 +712,6 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
       if (arma::randu() > apt_rto) {
         sel_cof_chn(i) = sel_cof_chn(i - 1);
         sel_gen_chn(i) = sel_gen_chn(i - 1);
-
         log_lik(1) = log_lik(0);
       }
     }
@@ -717,6 +723,7 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
     if (mig_rat_chn(i) > 1) {
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
+      log_lik(0) = log_lik(1);
     } else {
       apt_rto = 1;
     }
@@ -725,6 +732,7 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
     if (mig_gen_chn(i) < smp_gen.min() || mig_gen_chn(i) > smp_gen(arma::find(smp_gen > 0)).min()) {
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
+      log_lik(0) = log_lik(1);
     } else {
       apt_rto = 1;
     }
@@ -743,7 +751,6 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
       if (arma::randu() > apt_rto) {
         mig_rat_chn(i) = mig_rat_chn(i - 1);
         mig_gen_chn(i) = mig_gen_chn(i - 1);
-
         log_lik(0) = log_lik(1);
       }
     }
