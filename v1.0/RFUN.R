@@ -1,7 +1,7 @@
 #' @title Inferring natural selection and gene migration in the evolution of chickens from ancient DNA data
 #' @author Zhangyi He, Wenyang Lyu, Xiaoyang Dai, Mark Beaumont and Feng Yu
 
-#' version 2.0
+#' version 1.0
 
 #' R functions
 
@@ -23,27 +23,27 @@ library("compiler")
 #enableJIT(1)
 
 # call C++ functions
-sourceCpp("./Output/Output v2.1/Test v2.1/Code v2-2.0chicken/CFUN.cpp")
+sourceCpp("./Code/Code v1.0/Code v1.0/CFUN.cpp")
 
 ################################################################################
 
-#' Simulate the mutant allele frequency trajectory according to the one-locus Wright-Fisher model with selection and migration
+#' Simulate the allele frequency trajectories according to the one-locus Wright-Fisher model with selection and migration
 #' Parameter setting
 #' @param sel_cof the selection coefficient
 #' @param dom_par the dominance parameter
 #' @param mig_rat the migration rate
-#' @param pop_siz the number of the diploid individuals in the population
-#' @param ext_frq the external frequency of the mutant allele of the continent population
-#' @param int_frq the initial frequency of the mutant allele of the island population
+#' @param pop_siz the number of the diploid individuals in the island population
+#' @param ext_frq the mutant allele frequency (of the continent population)
+#' @param int_frq the initial allele frequencies (of the island population)
 #' @param int_gen the first generation of the simulated mutant allele frequency trajectory
 #' @param lst_gen the last generation of the simulated mutant allele frequency trajectory
 
 #' Standard version
 simulateWFM <- function(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, int_frq, int_gen, lst_gen) {
-  fts_mat <- calculateFitnessMat_2L_arma(sel_cof, dom_par)
-  frq_pth <- simulateWFM_2L_arma(fts_mat, sel_cof, dom_par, mig_rat, pop_siz, ext_frq, int_frq, int_gen, lst_gen)
+  fts_mat <- calculateFitnessMat_arma(sel_cof, dom_par)
+  frq_pth <- simulateWFM_arma(fts_mat, sel_cof, dom_par, mig_rat, pop_siz, ext_frq, int_frq, int_gen, lst_gen)
   frq_pth <- as.matrix(frq_pth)
-  
+
   return(frq_pth)
 }
 #' Compiled version
@@ -51,25 +51,25 @@ cmpsimulateWFM <- cmpfun(simulateWFM)
 
 ########################################
 
-#' Simulate the mutant allele frequency trajectory under the one-locus Wright-Fisher diffusion with selection migration using the Euler-Maruyama method
+#' Simulate the allele frequency trajectories under the one-locus Wright-Fisher diffusion with selection migration using the Euler-Maruyama method
 #' Parameter settings
 #' @param sel_cof the selection coefficient
 #' @param dom_par the dominance parameter
 #' @param mig_rat the migration rate
-#' @param pop_siz the number of the diploid individuals in the population
-#' @param ext_frq the external frequency of the mutant allele of the continent population
-#' @param int_frq the initial frequency of the mutant allele of the island population
+#' @param pop_siz the number of the diploid individuals in the island population
+#' @param ext_frq the mutant allele frequency (of the continent population)
+#' @param int_frq the initial allele frequencies (of the island population)
 #' @param int_gen the first generation of the simulated mutant allele frequency trajectory
 #' @param lst_gen the last generation of the simulated mutant allele frequency trajectory
-#' @param ptn_num the number of the subintervals divided per generation in the Euler-Maruyama method
-#' @param data_augmentation = TRUE/FALSE (return the simulated sample trajectory with data augmentation or not)
+#' @param ptn_num the number of subintervals divided per generation in the Euler-Maruyama method
+#' @param dat_aug = TRUE/FALSE (return the simulated sample trajectory with data augmentation or not)
 
 #' Standard version
-simulateWFD <- function(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, int_frq, int_gen, lst_gen, ptn_num, data_augmentation = TRUE) {
-  frq_pth <- simulateWFD_2L_arma(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, int_frq, int_gen, lst_gen, ptn_num)
+simulateWFD <- function(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, int_frq, int_gen, lst_gen, ptn_num, dat_aug = TRUE) {
+  frq_pth <- simulateWFD_arma(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, int_frq, int_gen, lst_gen, ptn_num)
   frq_pth <- as.matrix(frq_pth)
-  
-  if (data_augmentation == FALSE) {
+
+  if (dat_aug == FALSE) {
     return(frq_pth[, (0:(lst_gen - int_gen)) * ptn_num + 1])
   } else {
     return(frq_pth)
@@ -89,8 +89,8 @@ cmpsimulateWFD <- cmpfun(simulateWFD)
 #' @param pop_siz the number of the diploid individuals in the population
 #' @param sel_gen the starting time of natural selection
 #' @param mig_gen the starting time of gene migration
-#' @param ext_frq the external frequency of the mutant allele of the continent population
-#' @param int_frq the initial haplotype frequencies of the population
+#' @param ext_frq the mutant allele frequency (of the continent population)
+#' @param int_frq the initial allele frequencies (of the island population)
 #' @param smp_gen the sampling time points measured in one generation
 #' @param smp_siz the count of the chromosomes drawn from the population at all sampling time points
 #' @param ptn_num the number of the subintervals divided per generation in the Euler-Maruyama method for the WFD
@@ -99,160 +99,166 @@ cmpsimulateWFD <- cmpfun(simulateWFD)
 simulateHMM <- function(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz, ...) {
   int_gen <- min(smp_gen)
   lst_gen <- max(smp_gen)
-  
-  # generate the population haplotype frequency trajectories and the population allele frequency trajectories
+
+  sel_gen <- ifelse(sel_gen < int_gen, int_gen, sel_gen)
+  sel_gen <- ifelse(sel_gen > lst_gen, lst_gen, sel_gen)
+  mig_gen <- ifelse(mig_gen < int_gen, int_gen, mig_gen)
+  mig_gen <- ifelse(mig_gen > lst_gen, lst_gen, mig_gen)
+
+  # generate the population allele frequency trajectories
   if (model == "WFM") {
     if (sel_gen < mig_gen) {
       if (sel_gen > int_gen && mig_gen < lst_gen) {
         pop_frq_stg_1 <- cmpsimulateWFM(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, sel_gen)
         pop_frq_stg_2 <- cmpsimulateWFM(sel_cof, dom_par, 0, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], sel_gen, mig_gen)
         pop_frq_stg_3 <- cmpsimulateWFM(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_2[, ncol(pop_frq_stg_2)], mig_gen, lst_gen)
-        
-        pop_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(sel_gen - int_gen + 1)], pop_frq_stg_2[, 2:(mig_gen - sel_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - mig_gen + 1)])
+
+        pop_ale_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(sel_gen - int_gen + 1)], pop_frq_stg_2[, 2:(mig_gen - sel_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - mig_gen + 1)])
       }
       if (sel_gen == int_gen && mig_gen < lst_gen) {
         pop_frq_stg_2 <- cmpsimulateWFM(sel_cof, dom_par, 0, pop_siz, ext_frq, int_frq, sel_gen, mig_gen)
         pop_frq_stg_3 <- cmpsimulateWFM(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_2[, ncol(pop_frq_stg_2)], mig_gen, lst_gen)
-        
-        pop_frq <- cbind(int_frq, pop_frq_stg_2[, 2:(mig_gen - sel_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - mig_gen + 1)])
+
+        pop_ale_frq <- cbind(int_frq, pop_frq_stg_2[, 2:(mig_gen - sel_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - mig_gen + 1)])
       }
       if (sel_gen > int_gen && mig_gen == lst_gen) {
         pop_frq_stg_1 <- cmpsimulateWFM(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, sel_gen)
         pop_frq_stg_2 <- cmpsimulateWFM(sel_cof, dom_par, 0, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], sel_gen, mig_gen)
-        
-        pop_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(sel_gen - int_gen + 1)], pop_frq_stg_2[, 2:(mig_gen - sel_gen + 1)])
+
+        pop_ale_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(sel_gen - int_gen + 1)], pop_frq_stg_2[, 2:(mig_gen - sel_gen + 1)])
       }
       if (sel_gen == int_gen && mig_gen == lst_gen) {
-        pop_frq <- cmpsimulateWFM(sel_cof, dom_par, 0, pop_siz, ext_frq, int_frq, sel_gen, mig_gen)
+        pop_ale_frq <- cmpsimulateWFM(sel_cof, dom_par, 0, pop_siz, ext_frq, int_frq, sel_gen, mig_gen)
       }
-    }
-    if (mig_gen < sel_gen) {
+    } else if (sel_gen > mig_gen) {
       if (mig_gen > int_gen && sel_gen < lst_gen) {
         pop_frq_stg_1 <- cmpsimulateWFM(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, mig_gen)
         pop_frq_stg_2 <- cmpsimulateWFM(0, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], mig_gen, sel_gen)
         pop_frq_stg_3 <- cmpsimulateWFM(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_2[, ncol(pop_frq_stg_2)], sel_gen, lst_gen)
-        
-        pop_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(mig_gen - int_gen + 1)], pop_frq_stg_2[, 2:(sel_gen - mig_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - sel_gen + 1)])
+
+        pop_ale_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(mig_gen - int_gen + 1)], pop_frq_stg_2[, 2:(sel_gen - mig_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - sel_gen + 1)])
       }
       if (mig_gen == int_gen && sel_gen < lst_gen) {
         pop_frq_stg_2 <- cmpsimulateWFM(0, dom_par, mig_rat, pop_siz, ext_frq, int_frq, mig_gen, sel_gen)
         pop_frq_stg_3 <- cmpsimulateWFM(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_2[, ncol(pop_frq_stg_2)], sel_gen, lst_gen)
-        
-        pop_frq <- cbind(int_frq, pop_frq_stg_2[, 2:(sel_gen - mig_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - sel_gen + 1)])
+
+        pop_ale_frq <- cbind(int_frq, pop_frq_stg_2[, 2:(sel_gen - mig_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - sel_gen + 1)])
       }
       if (mig_gen > int_gen && sel_gen == lst_gen) {
         pop_frq_stg_1 <- cmpsimulateWFM(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, mig_gen)
         pop_frq_stg_2 <- cmpsimulateWFM(0, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], mig_gen, sel_gen)
-        
-        pop_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(mig_gen - int_gen + 1)], pop_frq_stg_2[, 2:(sel_gen - mig_gen + 1)])
+
+        pop_ale_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(mig_gen - int_gen + 1)], pop_frq_stg_2[, 2:(sel_gen - mig_gen + 1)])
       }
       if (mig_gen == int_gen && sel_gen == lst_gen) {
-        pop_frq <- cmpsimulateWFM(0, dom_par, mig_rat, pop_siz, ext_frq, int_frq, mig_gen, sel_gen)
+        pop_ale_frq <- cmpsimulateWFM(0, dom_par, mig_rat, pop_siz, ext_frq, int_frq, mig_gen, sel_gen)
       }
-    }
-    if (sel_gen == mig_gen) {
+    } else {
       if (sel_gen > int_gen && mig_gen < lst_gen) {
         pop_frq_stg_1 <- cmpsimulateWFM(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, sel_gen)
         pop_frq_stg_2 <- cmpsimulateWFM(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], mig_gen, lst_gen)
-        
-        pop_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(sel_gen - int_gen + 1)], pop_frq_stg_2[, 2:(lst_gen - mig_gen + 1)])
+
+        pop_ale_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(sel_gen - int_gen + 1)], pop_frq_stg_2[, 2:(lst_gen - mig_gen + 1)])
       }
       if (sel_gen == int_gen) {
-        pop_frq <- cmpsimulateWFM(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, int_frq, sel_gen, lst_gen)
+        pop_ale_frq <- cmpsimulateWFM(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, int_frq, sel_gen, lst_gen)
       }
       if (mig_gen == lst_gen) {
-        pop_frq <- cmpsimulateWFM(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, mig_gen)
+        pop_ale_frq <- cmpsimulateWFM(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, mig_gen)
       }
     }
+
+    pop_frq <- matrix(NA, nrow = 2, ncol = (lst_gen - int_gen) + 1)
+    pop_frq[1, ] <- pop_ale_frq[1, ] + pop_ale_frq[3, ]
+    pop_frq[2, ] <- pop_ale_frq[3, ] + pop_ale_frq[4, ]
   }
   if (model == "WFD") {
     if (sel_gen < mig_gen) {
       if (sel_gen > int_gen && mig_gen < lst_gen) {
-        pop_frq_stg_1 <- cmpsimulateWFD(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, sel_gen, ptn_num, data_augmentation = FALSE)
-        pop_frq_stg_2 <- cmpsimulateWFD(sel_cof, dom_par, 0, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], sel_gen, mig_gen, ptn_num, data_augmentation = FALSE)
-        pop_frq_stg_3 <- cmpsimulateWFD(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_2[, ncol(pop_frq_stg_2)], mig_gen, lst_gen, ptn_num, data_augmentation = FALSE)
-        
-        pop_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(sel_gen - int_gen + 1)], pop_frq_stg_2[, 2:(mig_gen - sel_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - mig_gen + 1)])
+        pop_frq_stg_1 <- cmpsimulateWFD(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, sel_gen, ptn_num, dat_aug = FALSE)
+        pop_frq_stg_2 <- cmpsimulateWFD(sel_cof, dom_par, 0, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], sel_gen, mig_gen, ptn_num, dat_aug = FALSE)
+        pop_frq_stg_3 <- cmpsimulateWFD(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_2[, ncol(pop_frq_stg_2)], mig_gen, lst_gen, ptn_num, dat_aug = FALSE)
+
+        pop_ale_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(sel_gen - int_gen + 1)], pop_frq_stg_2[, 2:(mig_gen - sel_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - mig_gen + 1)])
       }
       if (sel_gen == int_gen && mig_gen < lst_gen) {
-        pop_frq_stg_2 <- cmpsimulateWFD(sel_cof, dom_par, 0, pop_siz, ext_frq, int_frq, sel_gen, mig_gen, ptn_num, data_augmentation = FALSE)
-        pop_frq_stg_3 <- cmpsimulateWFD(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_2[, ncol(pop_frq_stg_2)], mig_gen, lst_gen, ptn_num, data_augmentation = FALSE)
-        
-        pop_frq <- cbind(int_frq, pop_frq_stg_2[, 2:(mig_gen - sel_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - mig_gen + 1)])
+        pop_frq_stg_2 <- cmpsimulateWFD(sel_cof, dom_par, 0, pop_siz, ext_frq, int_frq, sel_gen, mig_gen, ptn_num, dat_aug = FALSE)
+        pop_frq_stg_3 <- cmpsimulateWFD(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_2[, ncol(pop_frq_stg_2)], mig_gen, lst_gen, ptn_num, dat_aug = FALSE)
+
+        pop_ale_frq <- cbind(int_frq, pop_frq_stg_2[, 2:(mig_gen - sel_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - mig_gen + 1)])
       }
       if (sel_gen > int_gen && mig_gen == lst_gen) {
-        pop_frq_stg_1 <- cmpsimulateWFD(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, sel_gen, ptn_num, data_augmentation = FALSE)
-        pop_frq_stg_2 <- cmpsimulateWFD(sel_cof, dom_par, 0, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], sel_gen, mig_gen, ptn_num, data_augmentation = FALSE)
-        
-        pop_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(sel_gen - int_gen + 1)], pop_frq_stg_2[, 2:(mig_gen - sel_gen + 1)])
+        pop_frq_stg_1 <- cmpsimulateWFD(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, sel_gen, ptn_num, dat_aug = FALSE)
+        pop_frq_stg_2 <- cmpsimulateWFD(sel_cof, dom_par, 0, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], sel_gen, mig_gen, ptn_num, dat_aug = FALSE)
+
+        pop_ale_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(sel_gen - int_gen + 1)], pop_frq_stg_2[, 2:(mig_gen - sel_gen + 1)])
       }
       if (sel_gen == int_gen && mig_gen == lst_gen) {
-        pop_frq <- cmpsimulateWFD(sel_cof, dom_par, 0, pop_siz, ext_frq, int_frq, sel_gen, mig_gen, ptn_num, data_augmentation = FALSE)
+        pop_ale_frq <- cmpsimulateWFD(sel_cof, dom_par, 0, pop_siz, ext_frq, int_frq, sel_gen, mig_gen, ptn_num, dat_aug = FALSE)
       }
-    }
-    if (mig_gen < sel_gen) {
+    } else if (sel_gen > mig_gen) {
       if (mig_gen > int_gen && sel_gen < lst_gen) {
-        pop_frq_stg_1 <- cmpsimulateWFD(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, mig_gen, ptn_num, data_augmentation = FALSE)
-        pop_frq_stg_2 <- cmpsimulateWFD(0, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], mig_gen, sel_gen, ptn_num, data_augmentation = FALSE)
-        pop_frq_stg_3 <- cmpsimulateWFD(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_2[, ncol(pop_frq_stg_2)], sel_gen, lst_gen, ptn_num, data_augmentation = FALSE)
-        
-        pop_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(mig_gen - int_gen + 1)], pop_frq_stg_2[, 2:(sel_gen - mig_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - sel_gen + 1)])
+        pop_frq_stg_1 <- cmpsimulateWFD(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, mig_gen, ptn_num, dat_aug = FALSE)
+        pop_frq_stg_2 <- cmpsimulateWFD(0, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], mig_gen, sel_gen, ptn_num, dat_aug = FALSE)
+        pop_frq_stg_3 <- cmpsimulateWFD(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_2[, ncol(pop_frq_stg_2)], sel_gen, lst_gen, ptn_num, dat_aug = FALSE)
+
+        pop_ale_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(mig_gen - int_gen + 1)], pop_frq_stg_2[, 2:(sel_gen - mig_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - sel_gen + 1)])
       }
       if (mig_gen == int_gen && sel_gen < lst_gen) {
-        pop_frq_stg_2 <- cmpsimulateWFD(0, dom_par, mig_rat, pop_siz, ext_frq, int_frq, mig_gen, sel_gen, ptn_num, data_augmentation = FALSE)
-        pop_frq_stg_3 <- cmpsimulateWFD(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_2[, ncol(pop_frq_stg_2)], sel_gen, lst_gen, ptn_num, data_augmentation = FALSE)
-        
-        pop_frq <- cbind(int_frq, pop_frq_stg_2[, 2:(sel_gen - mig_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - sel_gen + 1)])
+        pop_frq_stg_2 <- cmpsimulateWFD(0, dom_par, mig_rat, pop_siz, ext_frq, int_frq, mig_gen, sel_gen, ptn_num, dat_aug = FALSE)
+        pop_frq_stg_3 <- cmpsimulateWFD(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_2[, ncol(pop_frq_stg_2)], sel_gen, lst_gen, ptn_num, dat_aug = FALSE)
+
+        pop_ale_frq <- cbind(int_frq, pop_frq_stg_2[, 2:(sel_gen - mig_gen + 1)], pop_frq_stg_3[, 2:(lst_gen - sel_gen + 1)])
       }
       if (mig_gen > int_gen && sel_gen == lst_gen) {
-        pop_frq_stg_1 <- cmpsimulateWFD(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, mig_gen, ptn_num, data_augmentation = FALSE)
-        pop_frq_stg_2 <- cmpsimulateWFD(0, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], mig_gen, sel_gen, ptn_num, data_augmentation = FALSE)
-        
-        pop_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(mig_gen - int_gen + 1)], pop_frq_stg_2[, 2:(sel_gen - mig_gen + 1)])
+        pop_frq_stg_1 <- cmpsimulateWFD(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, mig_gen, ptn_num, dat_aug = FALSE)
+        pop_frq_stg_2 <- cmpsimulateWFD(0, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], mig_gen, sel_gen, ptn_num, dat_aug = FALSE)
+
+        pop_ale_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(mig_gen - int_gen + 1)], pop_frq_stg_2[, 2:(sel_gen - mig_gen + 1)])
       }
       if (mig_gen == int_gen && sel_gen == lst_gen) {
-        pop_frq <- cmpsimulateWFD(0, dom_par, mig_rat, pop_siz, ext_frq, int_frq, mig_gen, sel_gen, ptn_num, data_augmentation = FALSE)
+        pop_ale_frq <- cmpsimulateWFD(0, dom_par, mig_rat, pop_siz, ext_frq, int_frq, mig_gen, sel_gen, ptn_num, dat_aug = FALSE)
       }
-    }
-    if (sel_gen == mig_gen) {
+    } else {
       if (sel_gen > int_gen && mig_gen < lst_gen) {
-        pop_frq_stg_1 <- cmpsimulateWFD(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, sel_gen, ptn_num, data_augmentation = FALSE)
-        pop_frq_stg_2 <- cmpsimulateWFD(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], mig_gen, lst_gen, ptn_num, data_augmentation = FALSE)
-        
-        pop_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(sel_gen - int_gen + 1)], pop_frq_stg_2[, 2:(lst_gen - mig_gen + 1)])
+        pop_frq_stg_1 <- cmpsimulateWFD(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, sel_gen, ptn_num, dat_aug = FALSE)
+        pop_frq_stg_2 <- cmpsimulateWFD(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, pop_frq_stg_1[, ncol(pop_frq_stg_1)], mig_gen, lst_gen, ptn_num, dat_aug = FALSE)
+
+        pop_ale_frq <- cbind(int_frq, pop_frq_stg_1[, 2:(sel_gen - int_gen + 1)], pop_frq_stg_2[, 2:(lst_gen - mig_gen + 1)])
       }
       if (sel_gen == int_gen) {
-        pop_frq <- cmpsimulateWFD(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, int_frq, sel_gen, lst_gen, ptn_num, data_augmentation = FALSE)
+        pop_ale_frq <- cmpsimulateWFD(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, int_frq, sel_gen, lst_gen, ptn_num, dat_aug = FALSE)
       }
       if (mig_gen == lst_gen) {
-        pop_frq <- cmpsimulateWFD(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, mig_gen, ptn_num, data_augmentation = FALSE)
+        pop_ale_frq <- cmpsimulateWFD(0, dom_par, 0, pop_siz, ext_frq, int_frq, int_gen, mig_gen, ptn_num, dat_aug = FALSE)
       }
     }
+
+    pop_frq <- matrix(NA, nrow = 2, ncol = (lst_gen - int_gen) + 1)
+    pop_frq[1, ] <- pop_ale_frq[1, ] + pop_ale_frq[3, ]
+    pop_frq[2, ] <- pop_ale_frq[3, ] + pop_ale_frq[4, ]
   }
-  #if (model == "WFM") {
-  #  pop_hap_frq <- cmpsimulateWFM(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, int_frq, int_gen, lst_gen)
-  #}
-  #if (model == "WFD") {
-  #  pop_hap_frq <- cmpsimulateWFD(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, int_frq, int_gen, lst_gen, ptn_num, data_augmentation = FALSE)
-  #}
-  pop_ale_frq <- matrix(NA, nrow = 2, ncol = (lst_gen - int_gen) + 1)
-  pop_ale_frq[1, ] <- pop_frq[1, ] + pop_frq[3, ]
-  pop_ale_frq[2, ] <- pop_frq[3, ] + pop_frq[4, ]
-  
-  # generate the sample haplotype counts and the sample allele counts at all sampling time points
-  smp_hap_cnt <- matrix(NA, nrow = 4, ncol = length(smp_gen))
-  smp_ale_cnt <- matrix(NA, nrow = 2, ncol = length(smp_gen))
+
+  # generate the sample allele counts at all sampling time points
+  smp_ale_cnt <- matrix(NA, nrow = 4, ncol = length(smp_gen))
+  smp_ale_frq <- matrix(NA, nrow = 4, ncol = length(smp_gen))
+  smp_cnt <- matrix(NA, nrow = 2, ncol = length(smp_gen))
+  smp_frq <- matrix(NA, nrow = 2, ncol = length(smp_gen))
   for (k in 1:length(smp_gen)) {
-    smp_hap_cnt[, k] <- rmultinom(1, size = smp_siz[k], prob = pop_frq[, smp_gen[k] - int_gen + 1])
-    smp_ale_cnt[1, k] <- smp_hap_cnt[1, k] + smp_hap_cnt[3, k]
-    smp_ale_cnt[2, k] <- smp_hap_cnt[3, k] + smp_hap_cnt[4, k]
+    smp_ale_cnt[, k] <- rmultinom(1, size = smp_siz[k], prob = pop_ale_frq[, smp_gen[k] - int_gen + 1])
+    smp_ale_frq[, k] <- smp_ale_cnt[, k] / smp_siz[k]
+    smp_cnt[1, k] <- smp_ale_cnt[1, k] + smp_ale_cnt[3, k]
+    smp_cnt[2, k] <- smp_ale_cnt[3, k] + smp_ale_cnt[4, k]
+    smp_frq[, k] <- smp_cnt[, k] / smp_siz[k]
   }
-  
-  return(list(smp_gen = smp_gen, 
-              smp_siz = smp_siz, 
-              smp_hap_cnt = smp_hap_cnt, 
-              smp_ale_cnt = smp_ale_cnt, 
-              pop_hap_frq = pop_frq, 
+
+  return(list(smp_gen = smp_gen,
+              smp_siz = smp_siz,
+              smp_cnt = smp_cnt,
+              smp_frq = smp_frq,
+              pop_frq = pop_frq,
+              smp_ale_cnt = smp_ale_cnt,
+              smp_ale_frq = smp_ale_frq,
               pop_ale_frq = pop_ale_frq))
 }
 #' Compiled version
@@ -268,22 +274,26 @@ cmpsimulateHMM <- cmpfun(simulateHMM)
 #' @param pop_siz the number of the diploid individuals in the population
 #' @param sel_gen the starting time of natural selection
 #' @param mig_gen the starting time of gene migration
-#' @param ext_frq the external frequency of the mutant allele of the continent population
+#' @param ext_frq the mutant allele frequency (of the continent population)
 #' @param smp_gen the sampling time points measured in one generation
 #' @param smp_siz the count of the chromosomes drawn from the population at all sampling time points
-#' @param smp_cnt the count of the mutant alleles observed in the sample at all sampling time points
+#' @param smp_cnt the count of the mutant alleles and continent alleles observed in the sample at all sampling time points
 #' @param ptn_num the number of subintervals divided per generation in the Euler-Maruyama method
 #' @param pcl_num the number of particles generated in the bootstrap particle filter
 
 #' Standard version
 runBPF <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num) {
-  
+  sel_gen <- ifelse(sel_gen < min(smp_gen), min(smp_gen), sel_gen)
+  sel_gen <- ifelse(sel_gen > max(smp_gen), max(smp_gen), sel_gen)
+  mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
+  mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
+
   # run the BPF
   BPF <- runBPF_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num)
-  
-  return(list(lik = BPF$lik, 
-              wght = BPF$wght, 
-              pop_frq_pre_resmp = BPF$part_pre_resmp, 
+
+  return(list(lik = BPF$lik,
+              wght = BPF$wght,
+              pop_frq_pre_resmp = BPF$part_pre_resmp,
               pop_frq_pst_resmp = BPF$part_pst_resmp))
 }
 #' Compiled version
@@ -299,20 +309,25 @@ cmprunBPF <- cmpfun(runBPF)
 #' @param pop_siz the number of the diploid individuals in the population
 #' @param sel_gen the starting time of natural selection
 #' @param mig_gen the starting time of gene migration
-#' @param ext_frq the external frequency of the mutant allele of the continent population
+#' @param ext_frq the mutant allele frequency (of the continent population)
 #' @param smp_gen the sampling time points measured in one generation
 #' @param smp_siz the count of the chromosomes drawn from the population at all sampling time points
-#' @param smp_cnt the count of the mutant alleles observed in the sample at all sampling time points
+#' @param smp_cnt the count of the mutant alleles and continent alleles observed in the sample at all sampling time points
 #' @param ptn_num the number of subintervals divided per generation in the Euler-Maruyama method
 #' @param pcl_num the number of particles generated in the bootstrap particle filter
 #' @param gap_num the number of particles increased or decreased in the optimal particle number search
 
 #' Standard version
 calculateOptimalParticleNum <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, gap_num) {
+  sel_gen <- ifelse(sel_gen < min(smp_gen), min(smp_gen), sel_gen)
+  sel_gen <- ifelse(sel_gen > max(smp_gen), max(smp_gen), sel_gen)
+  mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
+  mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
 
+  # calculate the optimal particle number
   OptNum <- calculateOptimalParticleNum_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, gap_num)
-  
-  return(list(opt_pcl_num = as.vector(OptNum$opt_pcl_num), 
+
+  return(list(opt_pcl_num = as.vector(OptNum$opt_pcl_num),
               log_lik_sdv = as.vector(OptNum$log_lik_sdv)))
 }
 #' Compiled version
@@ -326,32 +341,37 @@ cmpcalculateOptimalParticleNum <- cmpfun(calculateOptimalParticleNum)
 #' @param dom_par the dominance parameter
 #' @param mig_rat the migration rate
 #' @param pop_siz the number of the diploid individuals in the population
+#' @param sel_gen the starting time of natural selection
+#' @param mig_gen the starting time of gene migration
+#' @param ext_frq the mutant allele frequency (of the continent population)
 #' @param smp_gen the sampling time points measured in one generation
 #' @param smp_siz the count of the chromosomes drawn from the population at all sampling time points
-#' @param smp_cnt the count of the mutant alleles observed in the sample at all sampling time points
+#' @param smp_cnt the count of the mutant alleles and continent alleles observed in the sample at all sampling time points
 #' @param ptn_num the number of subintervals divided per generation in the Euler-Maruyama method
 #' @param pcl_num the number of particles generated in the bootstrap particle filter
 #' @param itn_num the number of the iterations carried out in the particle marginal Metropolis-Hastings
 
 #' Standard version
 runPMMH <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num) {
-  
+  sel_gen <- ifelse(sel_gen < min(smp_gen), min(smp_gen), sel_gen)
+  sel_gen <- ifelse(sel_gen > max(smp_gen), max(smp_gen), sel_gen)
+  mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
+  mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
+
   # run the PMMH
   PMMH <- runPMMH_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
-  
+
   return(list(sel_cof_chn = as.vector(PMMH$sel_cof_chn),
               sel_gen_chn = as.vector(PMMH$sel_gen_chn),
               mig_rat_chn = as.vector(PMMH$mig_rat_chn),
-              mig_gen_chn = as.vector(PMMH$mig_gen_chn),
-              log_lik_chn = as.vector(PMMH$log_lik_chn),
-              frq_pth_chn = as.array(PMMH$frq_pth_chn)))
+              mig_gen_chn = as.vector(PMMH$mig_gen_chn)))
 }
 #' Compiled version
 cmprunPMMH <- cmpfun(runPMMH)
 
 ########################################
 
-#' Run the Bayesian procedure for the inference of natural selection
+#' Run the particle marginal Metropolis-Hastings within Gibbs (PMMHwGibbs)
 #' Parameter settings
 #' @param sel_cof the selection coefficient
 #' @param dom_par the dominance parameter
@@ -359,61 +379,102 @@ cmprunPMMH <- cmpfun(runPMMH)
 #' @param pop_siz the number of the diploid individuals in the population
 #' @param sel_gen the starting time of natural selection
 #' @param mig_gen the starting time of gene migration
-#' @param ext_frq the external frequency of the mutant allele of the continent population
+#' @param ext_frq the mutant allele frequency (of the continent population)
 #' @param smp_gen the sampling time points measured in one generation
 #' @param smp_siz the count of the chromosomes drawn from the population at all sampling time points
-#' @param smp_cnt the count of the mutant alleles observed in the sample at all sampling time points
+#' @param smp_cnt the count of the mutant alleles and continent alleles observed in the sample at all sampling time points
 #' @param ptn_num the number of subintervals divided per generation in the Euler-Maruyama method
 #' @param pcl_num the number of particles generated in the bootstrap particle filter
-#' @param itn_num the number of the iterations carried out in the particle marginal Metropolis-Hastings
-#' @param brn_num the number of the iterations for burn-in
-#' @param thn_num the number of the iterations for thinning
-#' @param grd_num the number of the grids in the kernel density estimation
+#' @param itn_num the number of the iterations carried out in the particle marginal Metropolis-Hastings within Gibbs
 
 #' Standard version
-runBayesianProcedure <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, grd_num) {
+runPMMHwGibbs <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num) {
+  sel_gen <- ifelse(sel_gen < min(smp_gen), min(smp_gen), sel_gen)
+  sel_gen <- ifelse(sel_gen > max(smp_gen), max(smp_gen), sel_gen)
+  mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
+  mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
+
+  # run the PMMHwGibbs
+  PMMH <- runPMMHwGibbs_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
+
+  return(list(sel_cof_chn = as.vector(PMMH$sel_cof_chn),
+              sel_gen_chn = as.vector(PMMH$sel_gen_chn),
+              mig_rat_chn = as.vector(PMMH$mig_rat_chn),
+              mig_gen_chn = as.vector(PMMH$mig_gen_chn)))
+}
+#' Compiled version
+cmprunPMMHwGibbs <- cmpfun(runPMMHwGibbs)
+
+########################################
+
+#' Run the Bayesian procedure for the inference of natural selection and gene migration
+#' Parameter settings
+#' @param sel_cof the selection coefficient
+#' @param dom_par the dominance parameter
+#' @param mig_rat the migration rate
+#' @param pop_siz the number of the diploid individuals in the population
+#' @param sel_gen the starting time of natural selection
+#' @param mig_gen the starting time of gene migration
+#' @param ext_frq the mutant allele frequency (of the continent population)
+#' @param smp_gen the sampling time points measured in one generation
+#' @param smp_siz the count of the chromosomes drawn from the population at all sampling time points
+#' @param smp_cnt the count of the mutant alleles and continent alleles observed in the sample at all sampling time points
+#' @param ptn_num the number of subintervals divided per generation in the Euler-Maruyama method
+#' @param pcl_num the number of particles generated in the bootstrap particle filter
+#' @param itn_num the number of the iterations carried out in the particle marginal Metropolis-Hastings within Gibbs
+#' @param brn_num the number of the iterations for burn-in
+#' @param thn_num the number of the iterations for thinning
+
+#' Standard version
+runBayesianProcedure <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num) {
+  sel_gen <- ifelse(sel_gen < min(smp_gen), min(smp_gen), sel_gen)
+  sel_gen <- ifelse(sel_gen > max(smp_gen), max(smp_gen), sel_gen)
+  mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
+  mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
 
   # run the PMMH
-  PMMH <- runPMMH_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
-  
+  # PMMH <- runPMMH_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
+  # run the PMMHwGibbs
+  PMMH <- runPMMHwGibbs_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
+
   # burn-in and thinning
   sel_cof_chn <- as.vector(PMMH$sel_cof_chn)
   sel_cof_chn <- sel_cof_chn[brn_num:length(sel_cof_chn)]
   sel_cof_chn <- sel_cof_chn[(1:round(length(sel_cof_chn) / thn_num)) * thn_num]
+  sel_gen_chn <- as.vector(PMMH$sel_gen_chn)
+  sel_gen_chn <- sel_gen_chn[brn_num:length(sel_gen_chn)]
+  sel_gen_chn <- sel_gen_chn[(1:round(length(sel_gen_chn) / thn_num)) * thn_num]
   mig_rat_chn <- as.vector(PMMH$mig_rat_chn)
   mig_rat_chn <- mig_rat_chn[brn_num:length(mig_rat_chn)]
   mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
-  
-  # MAP estimates for the selection coefficients
-  if (length(sel_cof_chn) < 1e+05) {
-    sel_cof_mig_rat_pdf <- kde2d(sel_cof_chn, mig_rat_chn, n = grd_num)
-    sel_cof_grd <- sel_cof_mig_rat_pdf$x
-    mig_rat_grd <- sel_cof_mig_rat_pdf$y
-  } else {
-    sel_cof_mig_rat_pdf <- kde2d(tail(sel_cof_grd, 1e+05), tail(mig_rat_grd, 1e+05), n = grd_num)
-    sel_cof_grd <- sel_cof_mig_rat_pdf$x
-    mig_rat_grd <- sel_cof_mig_rat_pdf$y
-  }
-  sel_cof_map <- sel_cof_grd[which(sel_cof_mig_rat_pdf$z == max(sel_cof_mig_rat_pdf$z), arr.ind = TRUE)[1]]
-  mig_rat_map <- mig_rat_grd[which(sel_cof_mig_rat_pdf$z == max(sel_cof_mig_rat_pdf$z), arr.ind = TRUE)[2]]
-  
-  # MMSE estimates for the selection coefficients
-  sel_cof_mmse <- mean(sel_cof_chn)
-  mig_rat_mmse <- mean(mig_rat_chn)
-  
-  # 95% HPD intervals for the selection coefficients
+  mig_gen_chn <- as.vector(PMMH$mig_gen_chn)
+  mig_gen_chn <- mig_gen_chn[brn_num:length(mig_gen_chn)]
+  mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
+
+  # MMSE estimates for the population genetic parameters
+  sel_cof_est <- mean(sel_cof_chn)
+  sel_gen_est <- mean(sel_gen_chn)
+  mig_rat_est <- mean(mig_rat_chn)
+  mig_gen_est <- mean(mig_gen_chn)
+
+  # 95% HPD intervals for the population genetic parameters
   sel_cof_hpd <- HPDinterval(as.mcmc(sel_cof_chn), prob = 0.95)
+  sel_gen_hpd <- HPDinterval(as.mcmc(sel_gen_chn), prob = 0.95)
   mig_rat_hpd <- HPDinterval(as.mcmc(mig_rat_chn), prob = 0.95)
-  
-  return(list(sel_cof_mig_rat_pdf = sel_cof_mig_rat_pdf, 
-              sel_cof_map = sel_cof_map, 
-              mig_rat_map = mig_rat_map, 
-              sel_cof_mmse = sel_cof_mmse, 
-              mig_rat_mmse = mig_rat_mmse, 
-              sel_cof_hpd = sel_cof_hpd, 
-              mig_rat_hpd = mig_rat_hpd, 
-              sel_cof_chn = sel_cof_chn, 
-              mig_rat_chn = mig_rat_chn))
+  mig_gen_hpd <- HPDinterval(as.mcmc(mig_gen_chn), prob = 0.95)
+
+  return(list(sel_cof_est = sel_cof_est,
+              sel_cof_hpd = sel_cof_hpd,
+              sel_cof_chn = sel_cof_chn,
+              sel_gen_est = sel_gen_est,
+              sel_gen_hpd = sel_gen_hpd,
+              sel_gen_chn = sel_gen_chn,
+              mig_rat_est = mig_rat_est,
+              mig_rat_hpd = mig_rat_hpd,
+              mig_rat_chn = mig_rat_chn,
+              mig_gen_est = mig_gen_est,
+              mig_gen_hpd = mig_gen_hpd,
+              mig_gen_chn = mig_gen_chn))
 }
 #' Compiled version
 cmprunBayesianProcedure <- cmpfun(runBayesianProcedure)
