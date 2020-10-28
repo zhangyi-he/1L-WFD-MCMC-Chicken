@@ -261,23 +261,23 @@ pop_ale_frq <- sim_HMM_WFM$pop_ale_frq
 save(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz, smp_cnt, smp_frq, pop_frq, smp_ale_cnt, smp_ale_frq, pop_ale_frq,
      file = "./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
-# load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
-#
-# pdf(file = "./Output/Output v1.0/Test v1.0/TEST_SimData.pdf", width = 16, height = 6)
-# par(mfrow = c(1, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
-# k <- min(smp_gen):max(smp_gen)
-# plot(k, pop_frq[1, ], type = 'l', lwd = 1.5,
-#      xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(pop_frq[1, ], smp_frq[1, ]), max(pop_frq[1, ], smp_frq[1, ])),
-#      xlab = "Generation", ylab = "Allele frequency",
-#      main = "Mutant alleles")
-# points(smp_gen, smp_frq[1, ], col = 'red', pch = 17, cex = 1)
-#
-# plot(k, pop_frq[2, ], type = 'l', lwd = 1.5,
-#      xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(pop_frq[2, ], smp_frq[2, ]), max(pop_frq[2, ], smp_frq[2, ])),
-#      xlab = "Generation", ylab = "Allele frequency",
-#      main = "Continent alleles")
-# points(smp_gen, smp_frq[2, ], col = 'red', pch = 17, cex = 1)
-# dev.off()
+load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
+
+pdf(file = "./Output/Output v1.0/Test v1.0/TEST_SimData.pdf", width = 16, height = 6)
+par(mfrow = c(1, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
+k <- min(smp_gen):max(smp_gen)
+plot(k, pop_frq[1, ], type = 'l', lwd = 1.5,
+     xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(pop_frq[1, ], smp_frq[1, ]), max(pop_frq[1, ], smp_frq[1, ])),
+     xlab = "Generation", ylab = "Allele frequency",
+     main = "Mutant alleles")
+points(smp_gen, smp_frq[1, ], col = 'red', pch = 17, cex = 1)
+
+plot(k, pop_frq[2, ], type = 'l', lwd = 1.5,
+     xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(pop_frq[2, ], smp_frq[2, ]), max(pop_frq[2, ], smp_frq[2, ])),
+     xlab = "Generation", ylab = "Allele frequency",
+     main = "Continent alleles")
+points(smp_gen, smp_frq[2, ], col = 'red', pch = 17, cex = 1)
+dev.off()
 
 ########################################
 
@@ -413,7 +413,7 @@ ptn_num <- 5e+00
 pcl_num <- 1e+03
 gap_num <- 1e+02
 
-system.time(OptNum <- calculateOptimalParticleNum(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_ale_cnt, ptn_num, pcl_num, gap_num))
+system.time(OptNum <- calculateOptimalParticleNum(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, gap_num))
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, gap_num, OptNum,
      file = "./Output/Output v1.0/Test v1.0/TEST_OptNum.rda")
@@ -459,20 +459,20 @@ dom_par
 mig_rat <- 0e-00
 pop_siz
 sel_gen <- min(smp_gen)
-mig_gen <- ifelse(smp_gen[which(smp_cnt[2, ] > 0)[1]] - min(smp_gen) > 0, smp_gen[which(smp_cnt[2, ] > 0)[1]] - 1, smp_gen[which(smp_cnt[2, ] > 0)[1]])
+mig_gen <- ifelse(smp_gen[which(smp_cnt[2, ] > 0)[1]] - min(smp_gen) > 0, smp_gen[which(smp_cnt[2, ] > 0)[1] - 1], smp_gen[which(smp_cnt[2, ] > 0)[1]])
 ext_frq
 smp_gen
 smp_siz
 smp_cnt
 ptn_num <- 5e+00
 pcl_num <- 1e+03
-itn_num <- 1e+04
+itn_num <- 5e+04
 
-system.time(PMMH <- cmprunPMMH(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_ale_cnt, ptn_num, pcl_num, itn_num))
+system.time(PMMH <- cmprunPMMH(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num))
 
 load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
-save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_ale_cnt, ptn_num, pcl_num, itn_num, PMMH,
+save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, PMMH,
      file = "./Output/Output v1.0/Test v1.0/TEST_PMMH.rda")
 
 # load("./Output/Output v1.0/Test v1.0/TEST_PMMH.rda")
@@ -504,7 +504,7 @@ save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp
 # abline(h = mig_gen, col = 'red', lty = 2, lwd = 2)
 # dev.off()
 #
-# brn_num <- 1e+03
+# brn_num <- 1e+04
 # sel_cof_chn <- sel_cof_chn[brn_num:length(sel_cof_chn)]
 # sel_gen_chn <- sel_gen_chn[brn_num:length(sel_gen_chn)]
 # mig_rat_chn <- mig_rat_chn[brn_num:length(mig_rat_chn)]
@@ -592,7 +592,7 @@ dom_par
 mig_rat <- 0e-00
 pop_siz
 sel_gen <- min(smp_gen)
-mig_gen <- ifelse(smp_gen[which(smp_cnt[2, ] > 0)[1]] - min(smp_gen) > 0, smp_gen[which(smp_cnt[2, ] > 0)[1]] - 1, smp_gen[which(smp_cnt[2, ] > 0)[1]])
+mig_gen <- ifelse(smp_gen[which(smp_cnt[2, ] > 0)[1]] - min(smp_gen) > 0, smp_gen[which(smp_cnt[2, ] > 0)[1] - 1], smp_gen[which(smp_cnt[2, ] > 0)[1]])
 ext_frq
 smp_gen
 smp_siz
@@ -601,11 +601,11 @@ ptn_num <- 5e+00
 pcl_num <- 1e+03
 itn_num <- 5e+04
 
-system.time(PMMHwGibbs <- cmprunPMMHwGibbs(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_ale_cnt, ptn_num, pcl_num, itn_num))
+system.time(PMMHwGibbs <- cmprunPMMHwGibbs(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num))
 
 load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
-save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_ale_cnt, ptn_num, pcl_num, itn_num, PMMHwGibbs,
+save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, PMMHwGibbs,
      file = "./Output/Output v1.0/Test v1.0/TEST_PMMHwGibbs.rda")
 
 # load("./Output/Output v1.0/Test v1.0/TEST_PMMHwGibbs.rda")
@@ -637,7 +637,7 @@ save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp
 # abline(h = mig_gen, col = 'red', lty = 2, lwd = 2)
 # dev.off()
 #
-# brn_num <- 1e+03
+# brn_num <- 1e+04
 # sel_cof_chn <- sel_cof_chn[brn_num:length(sel_cof_chn)]
 # sel_gen_chn <- sel_gen_chn[brn_num:length(sel_gen_chn)]
 # mig_rat_chn <- mig_rat_chn[brn_num:length(mig_rat_chn)]
@@ -727,7 +727,7 @@ dom_par
 mig_rat <- 0e-00
 pop_siz
 sel_gen <- min(smp_gen)
-mig_gen <- ifelse(smp_gen[which(smp_cnt[2, ] > 0)[1]] - min(smp_gen) > 0, smp_gen[which(smp_cnt[2, ] > 0)[1]] - 1, smp_gen[which(smp_cnt[2, ] > 0)[1]])
+mig_gen <- ifelse(smp_gen[which(smp_cnt[2, ] > 0)[1]] - min(smp_gen) > 0, smp_gen[which(smp_cnt[2, ] > 0)[1] - 1], smp_gen[which(smp_cnt[2, ] > 0)[1]])
 ext_frq
 smp_gen
 smp_siz
@@ -738,11 +738,11 @@ itn_num <- 5e+04
 brn_num <- 1e+04
 thn_num <- 8e+00
 
-system.time(BayesianProcedure <- cmprunBayesianProcedure(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_ale_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num))
+system.time(BayesianProcedure <- cmprunBayesianProcedure(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num))
 
 load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
-save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_ale_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, BayesianProcedure,
+save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, BayesianProcedure,
      file = "./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure.rda")
 
 # load("./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure.rda")
