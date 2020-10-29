@@ -169,25 +169,25 @@ arma::imat calculateAlleleCnt_arma(const int& smp_siz, const arma::icolvec& smp_
   // ensure RNG gets set/reset
   RNGScope scope;
 
-  arma::imat ptl_cnt = arma::zeros<arma::imat>(4, 1);
+  arma::imat ale_cnt = arma::zeros<arma::imat>(4, 1);
   if (smp_cnt.n_elem == 2) {
     for (int i = 0; i <= min(smp_cnt(0), smp_cnt(1)); i++) {
       int j = smp_cnt(0) - i;
       int k = smp_cnt(1) - i;
       if (i + j + k <= smp_siz) {
-        ptl_cnt(0, 0) = j;
-        ptl_cnt(1, 0) = smp_siz - i - j - k;
-        ptl_cnt(2, 0) = i;
-        ptl_cnt(3, 0) = k;
-        ptl_cnt.insert_cols(0, 1);
+        ale_cnt(0, 0) = j;
+        ale_cnt(1, 0) = smp_siz - i - j - k;
+        ale_cnt(2, 0) = i;
+        ale_cnt(3, 0) = k;
+        ale_cnt.insert_cols(0, 1);
       }
     }
-    ptl_cnt.shed_cols(0, 0);
+    ale_cnt.shed_cols(0, 0);
   } else {
-    ptl_cnt.col(0) = smp_cnt;
+    ale_cnt.col(0) = smp_cnt;
   }
 
-  return ptl_cnt;
+  return ale_cnt;
 }
 
 // Calculate the multinomial probabilities
@@ -290,12 +290,12 @@ List runBPF_arma(const double& sel_cof, const double& dom_par, const double& mig
   // initialise the particles
   cout << "generation: " << all_gen(0) << endl;
   arma::uword smp_ind = 0;
-  arma::imat ptl_cnt = calculateAlleleCnt_arma(smp_siz(smp_ind), smp_cnt.col(smp_ind));
+  arma::imat ale_cnt = calculateAlleleCnt_arma(smp_siz(smp_ind), smp_cnt.col(smp_ind));
   arma::dmat part_tmp = initialiseParticle_arma(mig_gen, smp_gen, pcl_num);
   arma::dcolvec wght_tmp = arma::zeros<arma::dcolvec>(pcl_num);
   for (arma::uword i = 0; i < pcl_num; i++) {
-    for (arma::uword j = 0; j < ptl_cnt.n_cols; j++) {
-      wght_tmp(i) = wght_tmp(i) + calculateMultinomProb_arma(ptl_cnt.col(j), smp_siz(smp_ind), part_tmp.col(i));
+    for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
+      wght_tmp(i) = wght_tmp(i) + calculateMultinomProb_arma(ale_cnt.col(j), smp_siz(smp_ind), part_tmp.col(i));
     }
   }
 
@@ -330,12 +330,12 @@ List runBPF_arma(const double& sel_cof, const double& dom_par, const double& mig
     cout << "generation: " << all_gen(k) << endl;
     if (arma::any(smp_gen == all_gen(k))) {
       smp_ind = smp_ind + 1;
-      arma::imat ptl_cnt = calculateAlleleCnt_arma(smp_siz(smp_ind), smp_cnt.col(smp_ind));
+      arma::imat ale_cnt = calculateAlleleCnt_arma(smp_siz(smp_ind), smp_cnt.col(smp_ind));
       part_tmp = generateParticle_arma(sel_cof, dom_par, mig_rat, pop_siz, non_sel, non_mig, ext_frq, part_tmp, all_gen(k - 1), all_gen(k), ptn_num, pcl_num);
       wght_tmp = arma::zeros<arma::dcolvec>(pcl_num);
       for (arma::uword i = 0; i < pcl_num; i++) {
-        for (arma::uword j = 0; j < ptl_cnt.n_cols; j++) {
-          wght_tmp(i) = wght_tmp(i) + calculateMultinomProb_arma(ptl_cnt.col(j), smp_siz(smp_ind), part_tmp.col(i));
+        for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
+          wght_tmp(i) = wght_tmp(i) + calculateMultinomProb_arma(ale_cnt.col(j), smp_siz(smp_ind), part_tmp.col(i));
         }
       }
       if (arma::sum(wght_tmp) > 0) {
