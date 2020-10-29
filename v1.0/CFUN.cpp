@@ -563,53 +563,36 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
   for (arma::uword i = 1; i < itn_num; i++) {
     cout << "iteration: " << i + 1 << endl;
 
-    double apt_rto = 0;
-    // draw the candidate of the selection coefficient from the random walk proposal
     sel_cof_chn(i) = sel_cof_chn(i - 1) + sel_cof_sd * arma::randn();
+    sel_gen_chn(i) = sel_gen_chn(i - 1) + int(round(sel_gen_sd * arma::randn()));
+    mig_rat_chn(i) = mig_rat_chn(i - 1) + mig_rat_sd * arma::randn();
+    mig_gen_chn(i) = mig_gen_chn(i - 1) + int(round(mig_gen_sd * arma::randn()));
+
     if (sel_cof_chn(i) > 1) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
       sel_gen_chn(i) = sel_gen_chn(i - 1);
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
       log_lik(1) = log_lik(0);
-    } else {
-      apt_rto = apt_rto + 1;
-    }
-    // draw the candidate of the selection time from the random walk proposal
-    sel_gen_chn(i) = sel_gen_chn(i - 1) + int(round(sel_gen_sd * arma::randn()));
-    if (sel_gen_chn(i) < smp_gen.min() || sel_gen_chn(i) > smp_gen.max()) {
+    } else if (sel_gen_chn(i) < smp_gen.min() || sel_gen_chn(i) > smp_gen.max()) {
+      sel_cof_chn(i) = sel_cof_chn(i - 1);
+      sel_gen_chn(i) = sel_gen_chn(i - 1);
+      mig_rat_chn(i) = mig_rat_chn(i - 1);
+      mig_gen_chn(i) = mig_gen_chn(i - 1);
+      log_lik(1) = log_lik(0);
+    } else if (mig_rat_chn(i) < 0 || mig_rat_chn(i) > 1) {
+      sel_cof_chn(i) = sel_cof_chn(i - 1);
+      sel_gen_chn(i) = sel_gen_chn(i - 1);
+      mig_rat_chn(i) = mig_rat_chn(i - 1);
+      mig_gen_chn(i) = mig_gen_chn(i - 1);
+      log_lik(1) = log_lik(0);
+    } else if (mig_gen_chn(i) < smp_gen.min() || mig_gen_chn(i) > smp_gen(arma::find(smp_cnt.row(1) > 0).min())) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
       sel_gen_chn(i) = sel_gen_chn(i - 1);
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
       log_lik(1) = log_lik(0);
     } else {
-      apt_rto = apt_rto + 1;
-    }
-    // draw the candidate of the migration rate from the random walk proposal
-    mig_rat_chn(i) = mig_rat_chn(i - 1) + mig_rat_sd * arma::randn();
-    if (mig_rat_chn(i) < 0 || mig_rat_chn(i) > 1) {
-      sel_cof_chn(i) = sel_cof_chn(i - 1);
-      sel_gen_chn(i) = sel_gen_chn(i - 1);
-      mig_rat_chn(i) = mig_rat_chn(i - 1);
-      mig_gen_chn(i) = mig_gen_chn(i - 1);
-      log_lik(1) = log_lik(0);
-    } else {
-      apt_rto = apt_rto + 1;
-    }
-    // draw the candidate of the migration time from the random walk proposal
-    mig_gen_chn(i) = mig_gen_chn(i - 1) + int(round(mig_gen_sd * arma::randn()));
-    if (mig_gen_chn(i) < smp_gen.min() || mig_gen_chn(i) > smp_gen(arma::find(smp_cnt.row(1) > 0).min())) {
-      sel_cof_chn(i) = sel_cof_chn(i - 1);
-      sel_gen_chn(i) = sel_gen_chn(i - 1);
-      mig_rat_chn(i) = mig_rat_chn(i - 1);
-      mig_gen_chn(i) = mig_gen_chn(i - 1);
-      log_lik(1) = log_lik(0);
-    } else {
-      apt_rto = apt_rto + 1;
-    }
-
-    if (apt_rto == 4)  {
       // calculate the proposal
       //arma::drowvec log_psl = arma::zeros<arma::drowvec>(2);
 
@@ -617,7 +600,7 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
       log_lik(1) = calculateLogLikelihood_arma(sel_cof_chn(i), dom_par, mig_rat_chn(i), pop_siz, sel_gen_chn(i), mig_gen_chn(i), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
 
       // calculate the acceptance ratio
-      apt_rto = exp(log_lik(1) - log_lik(0));
+      double apt_rto = exp(log_lik(1) - log_lik(0));
       //apt_rto = exp((log_pri(1) + log_lik(1) + log_psl(1)) - (log_pri(0) + log_lik(0) + log_psl(0)));
 
       if (arma::randu() > apt_rto) {
@@ -673,32 +656,22 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
 
   log_lik(0) = calculateLogLikelihood_arma(sel_cof_chn(0), dom_par, mig_rat_chn(0), pop_siz, sel_gen_chn(0), mig_gen_chn(0), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
 
-  double apt_rto = 0;
   for (arma::uword i = 1; i < itn_num; i++) {
     cout << "iteration: " << i + 1 << endl;
 
     // update natural selection related parameters in the Gibbs step
-    apt_rto = 0;
-    // draw the candidate of the selection coefficient from the random walk proposal
     sel_cof_chn(i) = sel_cof_chn(i - 1) + sel_cof_sd * arma::randn();
+    sel_gen_chn(i) = sel_gen_chn(i - 1) + int(round(sel_gen_sd * arma::randn()));
+
     if (sel_cof_chn(i) > 1) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
       sel_gen_chn(i) = sel_gen_chn(i - 1);
       log_lik(1) = log_lik(0);
-    } else {
-      apt_rto = apt_rto + 1;
-    }
-    // draw the candidate of the selection time from the random walk proposal
-    sel_gen_chn(i) = sel_gen_chn(i - 1) + int(round(sel_gen_sd * arma::randn()));
-    if (sel_gen_chn(i) < smp_gen.min() || sel_gen_chn(i) > smp_gen.max()) {
+    } else if (sel_gen_chn(i) < smp_gen.min() || sel_gen_chn(i) > smp_gen.max()) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
       sel_gen_chn(i) = sel_gen_chn(i - 1);
       log_lik(1) = log_lik(0);
     } else {
-      apt_rto = apt_rto + 1;
-    }
-
-    if (apt_rto == 2)  {
       // calculate the proposal
       //arma::drowvec log_psl = arma::zeros<arma::drowvec>(2);
 
@@ -706,7 +679,7 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
       log_lik(1) = calculateLogLikelihood_arma(sel_cof_chn(i), dom_par, mig_rat_chn(i - 1), pop_siz, sel_gen_chn(i), mig_gen_chn(i - 1), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
 
       // calculate the acceptance ratio
-      apt_rto = exp(log_lik(1) - log_lik(0));
+      double apt_rto = exp(log_lik(1) - log_lik(0));
       //apt_rto = exp((log_pri(1) + log_lik(1) + log_psl(1)) - (log_pri(0) + log_lik(0) + log_psl(0)));
 
       if (arma::randu() > apt_rto) {
@@ -717,27 +690,18 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
     }
 
     // update gene migration related parameters in the Gibbs step
-    apt_rto = 0;
-    // draw the candidate of the migration rate from the random walk proposal
     mig_rat_chn(i) = mig_rat_chn(i - 1) + mig_rat_sd * arma::randn();
+    mig_gen_chn(i) = mig_gen_chn(i - 1) + int(round(mig_gen_sd * arma::randn()));
+    
     if (mig_rat_chn(i) < 0 || mig_rat_chn(i) > 1) {
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
       log_lik(0) = log_lik(1);
-    } else {
-      apt_rto = apt_rto + 1;
-    }
-    // draw the candidate of the migration time from the random walk proposal
-    mig_gen_chn(i) = mig_gen_chn(i - 1) + int(round(mig_gen_sd * arma::randn()));
-    if (mig_gen_chn(i) < smp_gen.min() || mig_gen_chn(i) > smp_gen(arma::find(smp_cnt.row(1) > 0).min())) {
+    } else if (mig_gen_chn(i) < smp_gen.min() || mig_gen_chn(i) > smp_gen(arma::find(smp_cnt.row(1) > 0).min())) {
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
       log_lik(0) = log_lik(1);
     } else {
-      apt_rto = apt_rto + 1;
-    }
-
-    if (apt_rto == 2)  {
       // calculate the proposal
       //arma::drowvec log_psl = arma::zeros<arma::drowvec>(2);
 
@@ -745,7 +709,7 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
       log_lik(0) = calculateLogLikelihood_arma(sel_cof_chn(i), dom_par, mig_rat_chn(i), pop_siz, sel_gen_chn(i), mig_gen_chn(i), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
 
       // calculate the acceptance ratio
-      apt_rto = exp(log_lik(0) - log_lik(1));
+      double apt_rto = exp(log_lik(0) - log_lik(1));
       //apt_rto = exp((log_pri(0) + log_lik(0) + log_psl(0)) - (log_pri(1) + log_lik(1) + log_psl(1)));
 
       if (arma::randu() > apt_rto) {
