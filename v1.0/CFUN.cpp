@@ -546,8 +546,8 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
 
   double sel_cof_sd = 5e-03;
   double sel_gen_sd = 5e+01;
-  double mig_rat_sd = 5e-03;
-  double mig_gen_sd = 5e+01;
+  double mig_rat_sd = 1e-03;
+  double mig_gen_sd = 1e+01;
 
   // initialise the population genetic parameters
   cout << "iteration: " << 1 << endl;
@@ -642,8 +642,8 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
 
   double sel_cof_sd = 5e-03;
   double sel_gen_sd = 5e+01;
-  double mig_rat_sd = 5e-03;
-  double mig_gen_sd = 5e+01;
+  double mig_rat_sd = 1e-03;
+  double mig_gen_sd = 1e+01;
 
   // initialise the population genetic parameters
   cout << "iteration: " << 1 << endl;
