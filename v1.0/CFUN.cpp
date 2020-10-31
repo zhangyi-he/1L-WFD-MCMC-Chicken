@@ -170,21 +170,22 @@ arma::imat calculateAlleleCnt_arma(const int& smp_siz, const arma::icolvec& smp_
   RNGScope scope;
 
   arma::imat ale_cnt = arma::zeros<arma::imat>(4, 1);
-  if (smp_cnt.n_elem == 2) {
+  if (arma::any(smp_cnt < 0)) {
+    ale_cnt(0, 0) = smp_cnt(0);
+    ale_cnt(1, 0) = -1;
+    ale_cnt(2, 0) = -1;
+    ale_cnt(3, 0) = -1;
+  } else {
     for (int i = 0; i <= min(smp_cnt(0), smp_cnt(1)); i++) {
-      int j = smp_cnt(0) - i;
-      int k = smp_cnt(1) - i;
-      if (i + j + k <= smp_siz) {
-        ale_cnt(0, 0) = j;
-        ale_cnt(1, 0) = smp_siz - i - j - k;
+      if (i >= smp_cnt(0) + smp_cnt(1) - smp_siz) {
+        ale_cnt(0, 0) = smp_cnt(0) - i;
+        ale_cnt(1, 0) = smp_siz - smp_cnt(0) - smp_cnt(1) + i;
         ale_cnt(2, 0) = i;
-        ale_cnt(3, 0) = k;
+        ale_cnt(3, 0) = smp_cnt(1) - i;
         ale_cnt.insert_cols(0, 1);
       }
     }
     ale_cnt.shed_cols(0, 0);
-  } else {
-    ale_cnt.col(0) = smp_cnt;
   }
 
   return ale_cnt;
@@ -293,9 +294,17 @@ List runBPF_arma(const double& sel_cof, const double& dom_par, const double& mig
   arma::imat ale_cnt = calculateAlleleCnt_arma(smp_siz(smp_ind), smp_cnt.col(smp_ind));
   arma::dmat part_tmp = initialiseParticle_arma(mig_gen, smp_gen, pcl_num);
   arma::dcolvec wght_tmp = arma::zeros<arma::dcolvec>(pcl_num);
-  for (arma::uword i = 0; i < pcl_num; i++) {
-    for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
-      wght_tmp(i) = wght_tmp(i) + calculateMultinomProb_arma(ale_cnt.col(j), smp_siz(smp_ind), part_tmp.col(i));
+  if (arma::any(ale_cnt.row(1) < 0)) {
+    for (arma::uword i = 0; i < pcl_num; i++) {
+      for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
+        wght_tmp(i) = wght_tmp(i) + R::dbinom(ale_cnt(0, j), smp_siz(smp_ind), part_tmp(0, i) + part_tmp(2, i), false);
+      }
+    }
+  } else {
+    for (arma::uword i = 0; i < pcl_num; i++) {
+      for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
+        wght_tmp(i) = wght_tmp(i) + calculateMultinomProb_arma(ale_cnt.col(j), smp_siz(smp_ind), part_tmp.col(i));
+      }
     }
   }
 
@@ -333,11 +342,20 @@ List runBPF_arma(const double& sel_cof, const double& dom_par, const double& mig
       arma::imat ale_cnt = calculateAlleleCnt_arma(smp_siz(smp_ind), smp_cnt.col(smp_ind));
       part_tmp = generateParticle_arma(sel_cof, dom_par, mig_rat, pop_siz, non_sel, non_mig, ext_frq, part_tmp, all_gen(k - 1), all_gen(k), ptn_num, pcl_num);
       wght_tmp = arma::zeros<arma::dcolvec>(pcl_num);
-      for (arma::uword i = 0; i < pcl_num; i++) {
-        for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
-          wght_tmp(i) = wght_tmp(i) + calculateMultinomProb_arma(ale_cnt.col(j), smp_siz(smp_ind), part_tmp.col(i));
+      if (arma::any(ale_cnt.row(1) < 0)) {
+        for (arma::uword i = 0; i < pcl_num; i++) {
+          for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
+            wght_tmp(i) = wght_tmp(i) + R::dbinom(ale_cnt(0, j), smp_siz(smp_ind), part_tmp(0, i) + part_tmp(2, i), false);
+          }
+        }
+      } else {
+        for (arma::uword i = 0; i < pcl_num; i++) {
+          for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
+            wght_tmp(i) = wght_tmp(i) + calculateMultinomProb_arma(ale_cnt.col(j), smp_siz(smp_ind), part_tmp.col(i));
+          }
         }
       }
+
       if (arma::sum(wght_tmp) > 0) {
         arma::dcolvec prob = arma::normalise(wght_tmp, 1);
         arma::ucolvec elem = arma::linspace<arma::ucolvec>(0, pcl_num - 1, pcl_num);
@@ -394,9 +412,18 @@ double calculateLogLikelihood_arma(const double& sel_cof, const double& dom_par,
   arma::uword smp_ind = 0;
   arma::imat ale_cnt = ptl_cnt(smp_ind);
   part_pre = initialiseParticle_arma(mig_gen, smp_gen, pcl_num);
-  for (arma::uword i = 0; i < pcl_num; i++) {
-    for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
-      wght(i) = wght(i) + calculateMultinomProb_arma(ale_cnt.col(j), smp_siz(0), part_pre.col(i));
+  // wght = arma::zeros<arma::dcolvec>(pcl_num);
+  if (arma::any(ale_cnt.row(1) < 0)) {
+    for (arma::uword i = 0; i < pcl_num; i++) {
+      for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
+        wght(i) = wght(i) + R::dbinom(ale_cnt(0, j), smp_siz(smp_ind), part_pre(0, i) + part_pre(2, i), false);
+      }
+    }
+  } else {
+    for (arma::uword i = 0; i < pcl_num; i++) {
+      for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
+        wght(i) = wght(i) + calculateMultinomProb_arma(ale_cnt.col(j), smp_siz(smp_ind), part_pre.col(i));
+      }
     }
   }
 
@@ -422,9 +449,17 @@ double calculateLogLikelihood_arma(const double& sel_cof, const double& dom_par,
       arma::imat ale_cnt = ptl_cnt(smp_ind);
       part_pre = generateParticle_arma(sel_cof, dom_par, mig_rat, pop_siz, non_sel, non_mig, ext_frq, part_pst, all_gen(k - 1), all_gen(k), ptn_num, pcl_num);
       wght = arma::zeros<arma::dcolvec>(pcl_num);
-      for (arma::uword i = 0; i < pcl_num; i++) {
-        for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
-          wght(i) = wght(i) + calculateMultinomProb_arma(ale_cnt.col(j), smp_siz(smp_ind), part_pre.col(i));
+      if (arma::any(ale_cnt.row(1) < 0)) {
+        for (arma::uword i = 0; i < pcl_num; i++) {
+          for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
+            wght(i) = wght(i) + R::dbinom(ale_cnt(0, j), smp_siz(smp_ind), part_pre(0, i) + part_pre(2, i), false);
+          }
+        }
+      } else {
+        for (arma::uword i = 0; i < pcl_num; i++) {
+          for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
+            wght(i) = wght(i) + calculateMultinomProb_arma(ale_cnt.col(j), smp_siz(smp_ind), part_pre.col(i));
+          }
         }
       }
 
@@ -692,7 +727,7 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
     // update gene migration related parameters in the Gibbs step
     mig_rat_chn(i) = mig_rat_chn(i - 1) + mig_rat_sd * arma::randn();
     mig_gen_chn(i) = mig_gen_chn(i - 1) + int(round(mig_gen_sd * arma::randn()));
-    
+
     if (mig_rat_chn(i) < 0 || mig_rat_chn(i) > 1) {
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
