@@ -232,7 +232,7 @@ source("./Code/Code v1.0/Code v1.0/RFUN.R")
 ################################################################################
 
 #' Generate a simulated dataset under the Wright-Fisher model
-test_seed <- 21
+test_seed <- 2
 set.seed(test_seed)
 
 #' Simulate the dataset under the Wright-Fisher model
@@ -246,7 +246,7 @@ mig_gen <- 320
 ext_frq <- 9e-01
 int_frq <- c(1e-01, 9e-01, 0e-00, 0e-00)
 smp_gen <- (0:10) * 50
-smp_siz <- rep(500, 11)
+smp_siz <- rep(100, 11)
 
 sim_HMM_WFM <- cmpsimulateHMM(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz)
 smp_gen <- sim_HMM_WFM$smp_gen
