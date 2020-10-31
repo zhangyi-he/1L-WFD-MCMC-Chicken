@@ -93,10 +93,11 @@ cmpsimulateWFD <- cmpfun(simulateWFD)
 #' @param int_frq the initial allele frequencies (of the island population)
 #' @param smp_gen the sampling time points measured in one generation
 #' @param smp_siz the count of the chromosomes drawn from the population at all sampling time points
+#' @param cna_gen the sampling time points that the count of the continent alleles are not available in the sample
 #' @param ptn_num the number of the subintervals divided per generation in the Euler-Maruyama method for the WFD
 
 #' Standard version
-simulateHMM <- function(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz, ...) {
+simulateHMM <- function(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz, cna_gen = NULL, ...) {
   int_gen <- min(smp_gen)
   lst_gen <- max(smp_gen)
 
@@ -252,14 +253,28 @@ simulateHMM <- function(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_
     smp_frq[, k] <- smp_cnt[, k] / smp_siz[k]
   }
 
-  return(list(smp_gen = smp_gen,
-              smp_siz = smp_siz,
-              smp_cnt = smp_cnt,
-              smp_frq = smp_frq,
-              pop_frq = pop_frq,
-              smp_ale_cnt = smp_ale_cnt,
-              smp_ale_frq = smp_ale_frq,
-              pop_ale_frq = pop_ale_frq))
+  if (is.null(cna_gen)) {
+    return(list(smp_gen = smp_gen,
+                smp_siz = smp_siz,
+                smp_cnt = smp_cnt,
+                smp_frq = smp_frq,
+                pop_frq = pop_frq,
+                smp_ale_cnt = smp_ale_cnt,
+                smp_ale_frq = smp_ale_frq,
+                pop_ale_frq = pop_ale_frq))
+  } else {
+    smp_cnt[2, which(smp_gen %in% cna_gen)] <- NA
+    smp_frq[2, which(smp_gen %in% cna_gen)] <- NA
+
+    return(list(smp_gen = smp_gen,
+                smp_siz = smp_siz,
+                smp_cnt = smp_cnt,
+                smp_frq = smp_frq,
+                pop_frq = pop_frq,
+                smp_ale_cnt = smp_ale_cnt,
+                smp_ale_frq = smp_ale_frq,
+                pop_ale_frq = pop_ale_frq))
+  }
 }
 #' Compiled version
 cmpsimulateHMM <- cmpfun(simulateHMM)
@@ -287,6 +302,10 @@ runBPF <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq
   sel_gen <- ifelse(sel_gen > max(smp_gen), max(smp_gen), sel_gen)
   mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
   mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
+
+  if (any(is.na(smp_cnt[2, ]))) {
+    smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
+  }
 
   # run the BPF
   BPF <- runBPF_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num)
@@ -324,6 +343,10 @@ calculateOptimalParticleNum <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_
   mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
   mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
 
+  if (any(is.na(smp_cnt[2, ]))) {
+    smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
+  }
+
   # calculate the optimal particle number
   OptNum <- calculateOptimalParticleNum_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, gap_num)
 
@@ -357,6 +380,10 @@ runPMMH <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_fr
   sel_gen <- ifelse(sel_gen > max(smp_gen), max(smp_gen), sel_gen)
   mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
   mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
+
+  if (any(is.na(smp_cnt[2, ]))) {
+    smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
+  }
 
   # run the PMMH
   PMMH <- runPMMH_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
@@ -393,6 +420,10 @@ runPMMHwGibbs <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, 
   sel_gen <- ifelse(sel_gen > max(smp_gen), max(smp_gen), sel_gen)
   mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
   mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
+
+  if (any(is.na(smp_cnt[2, ]))) {
+    smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
+  }
 
   # run the PMMHwGibbs
   PMMH <- runPMMHwGibbs_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
@@ -431,6 +462,10 @@ runBayesianProcedure <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mi
   sel_gen <- ifelse(sel_gen > max(smp_gen), max(smp_gen), sel_gen)
   mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
   mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
+
+  if (any(is.na(smp_cnt[2, ]))) {
+    smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
+  }
 
   # run the PMMH
   # PMMH <- runPMMH_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
