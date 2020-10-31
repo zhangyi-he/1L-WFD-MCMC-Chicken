@@ -154,6 +154,7 @@ source("./Code/Code v1.0/Code v1.0/RFUN.R")
 #' @param int_frq the initial allele frequencies (of the island population)
 #' @param smp_gen the sampling time points measured in one generation
 #' @param smp_siz the count of the chromosomes drawn from the population at all sampling time points
+#' @param cna_gen the sampling time points that the count of the continent alleles are not available in the sample
 #' @param ptn_num the number of the subintervals divided per generation in the Euler-Maruyama method for the WFD
 
 #' Simulate the dataset under the Wright-Fisher model
@@ -168,8 +169,9 @@ source("./Code/Code v1.0/Code v1.0/RFUN.R")
 # int_frq <- c(1e-01, 9e-01, 0e-00, 0e-00)
 # smp_gen <- (0:10) * 50
 # smp_siz <- rep(100, 11)
+# cna_gen <- NULL
 #
-# sim_HMM_WFM <- cmpsimulateHMM(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz)
+# sim_HMM_WFM <- cmpsimulateHMM(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz, cna_gen)
 # smp_gen <- sim_HMM_WFM$smp_gen
 # smp_siz <- sim_HMM_WFM$smp_siz
 # smp_cnt <- sim_HMM_WFM$smp_cnt
@@ -181,12 +183,12 @@ source("./Code/Code v1.0/Code v1.0/RFUN.R")
 #
 # k <- min(smp_gen):max(smp_gen)
 # plot(k, pop_frq[1, ], type = 'l', lwd = 1.5,
-#      xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(smp_frq[1, ], pop_frq[1, ]), max(smp_frq[1, ], pop_frq[1, ])),
+#      xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(smp_frq[1, ], pop_frq[1, ], na.rm = TRUE), max(smp_frq[1, ], pop_frq[1, ], na.rm = TRUE)),
 #      xlab = "Generation", ylab = "Allele frequency",
 #      main = "WFM-HMM: the mutant allele")
 # points(smp_gen, smp_frq[1, ], col = 'red', pch = 17, cex = 1)
 # plot(k, pop_frq[2, ], type = 'l', lwd = 1.5,
-#      xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(smp_frq[2, ], pop_frq[2, ]), max(smp_frq[2, ], pop_frq[2, ])),
+#      xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(smp_frq[2, ], pop_frq[2, ], na.rm = TRUE), max(smp_frq[2, ], pop_frq[2, ], na.rm = TRUE)),
 #      xlab = "Generation", ylab = "Allele frequency",
 #      main = "WFM-HMM: the continent allele")
 # points(smp_gen, smp_frq[2, ], col = 'red', pch = 17, cex = 1)
@@ -205,9 +207,10 @@ source("./Code/Code v1.0/Code v1.0/RFUN.R")
 # int_frq <- c(1e-01, 9e-01, 0e-00, 0e-00)
 # smp_gen <- (0:10) * 50
 # smp_siz <- rep(100, 11)
+# cna_gen <- NULL
 # ptn_num <- 5e+00
 #
-# sim_HMM_WFD <- cmpsimulateHMM(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz, ptn_num)
+# sim_HMM_WFD <- cmpsimulateHMM(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz, cna_gen, ptn_num)
 # smp_gen <- sim_HMM_WFD$smp_gen
 # smp_siz <- sim_HMM_WFD$smp_siz
 # smp_cnt <- sim_HMM_WFD$smp_cnt
@@ -219,12 +222,12 @@ source("./Code/Code v1.0/Code v1.0/RFUN.R")
 #
 # k <- min(smp_gen):max(smp_gen)
 # plot(k, pop_frq[1, ], type = 'l', lwd = 1.5,
-#      xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(smp_frq[1, ], pop_frq[1, ]), max(smp_frq[1, ], pop_frq[1, ])),
+#      xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(smp_frq[1, ], pop_frq[1, ], na.rm = TRUE), max(smp_frq[1, ], pop_frq[1, ], na.rm = TRUE)),
 #      xlab = "Generation", ylab = "Allele frequency",
 #      main = "WFD-HMM: the mutant allele")
 # points(smp_gen, smp_frq[1, ], col = 'red', pch = 17, cex = 1)
 # plot(k, pop_frq[2, ], type = 'l', lwd = 1.5,
-#      xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(smp_frq[2, ], pop_frq[2, ]), max(smp_frq[2, ], pop_frq[2, ])),
+#      xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(smp_frq[2, ], pop_frq[2, ], na.rm = TRUE), max(smp_frq[2, ], pop_frq[2, ], na.rm = TRUE)),
 #      xlab = "Generation", ylab = "Allele frequency",
 #      main = "WFD-HMM: the continent allele")
 # points(smp_gen, smp_frq[2, ], col = 'red', pch = 17, cex = 1)
@@ -247,8 +250,9 @@ ext_frq <- 9e-01
 int_frq <- c(1e-01, 9e-01, 0e-00, 0e-00)
 smp_gen <- (0:10) * 50
 smp_siz <- rep(100, 11)
+cna_gen <- sample(smp_gen, 3)
 
-sim_HMM_WFM <- cmpsimulateHMM(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz)
+sim_HMM_WFM <- cmpsimulateHMM(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz, cna_gen)
 smp_gen <- sim_HMM_WFM$smp_gen
 smp_siz <- sim_HMM_WFM$smp_siz
 smp_cnt <- sim_HMM_WFM$smp_cnt
@@ -258,7 +262,7 @@ smp_ale_cnt <- sim_HMM_WFM$smp_ale_cnt
 smp_ale_frq <- sim_HMM_WFM$smp_ale_frq
 pop_ale_frq <- sim_HMM_WFM$pop_ale_frq
 
-save(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz, smp_cnt, smp_frq, pop_frq, smp_ale_cnt, smp_ale_frq, pop_ale_frq,
+save(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz, cna_gen, smp_cnt, smp_frq, pop_frq, smp_ale_cnt, smp_ale_frq, pop_ale_frq,
      file = "./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
 load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
@@ -267,13 +271,13 @@ pdf(file = "./Output/Output v1.0/Test v1.0/TEST_SimData.pdf", width = 16, height
 par(mfrow = c(1, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
 k <- min(smp_gen):max(smp_gen)
 plot(k, pop_frq[1, ], type = 'l', lwd = 1.5,
-     xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(pop_frq[1, ], smp_frq[1, ]), max(pop_frq[1, ], smp_frq[1, ])),
+     xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(pop_frq[1, ], smp_frq[1, ], na.rm = TRUE), max(pop_frq[1, ], smp_frq[1, ], na.rm = TRUE)),
      xlab = "Generation", ylab = "Allele frequency",
      main = "Mutant alleles")
 points(smp_gen, smp_frq[1, ], col = 'red', pch = 17, cex = 1)
 
 plot(k, pop_frq[2, ], type = 'l', lwd = 1.5,
-     xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(pop_frq[2, ], smp_frq[2, ]), max(pop_frq[2, ], smp_frq[2, ])),
+     xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(pop_frq[2, ], smp_frq[2, ], na.rm = TRUE), max(pop_frq[2, ], smp_frq[2, ], na.rm = TRUE)),
      xlab = "Generation", ylab = "Allele frequency",
      main = "Continent alleles")
 points(smp_gen, smp_frq[2, ], col = 'red', pch = 17, cex = 1)
@@ -750,9 +754,9 @@ smp_siz
 smp_cnt
 ptn_num <- 5e+00
 pcl_num <- 1e+03
-itn_num <- 5e+04
-brn_num <- 1e+04
-thn_num <- 8e+00
+itn_num <- 2e+04
+brn_num <- 5e+03
+thn_num <- 5e+00
 
 system.time(BayesianProcedure <- cmprunBayesianProcedure(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num))
 
