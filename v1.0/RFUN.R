@@ -82,7 +82,7 @@ cmpsimulateWFD <- cmpfun(simulateWFD)
 
 #' Simulate the hidden Markov model
 #' Parameter setting
-#' @param model = "WFM"/"WFD" (return the observations from the underlying population evolving according to the WFM or the WFD)
+#' @param model = "WFM"/"WFD" (return the samples obtained from the underlying population evolving according to the WFM or the WFD)
 #' @param sel_cof the selection coefficient
 #' @param dom_par the dominance parameter
 #' @param mig_rat the migration rate
@@ -97,14 +97,9 @@ cmpsimulateWFD <- cmpfun(simulateWFD)
 #' @param ptn_num the number of the subintervals divided per generation in the Euler-Maruyama method for the WFD
 
 #' Standard version
-simulateHMM <- function(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz, cna_gen = NULL, ...) {
-  int_gen <- min(smp_gen)
-  lst_gen <- max(smp_gen)
-
-  sel_gen <- ifelse(sel_gen < int_gen, int_gen, sel_gen)
-  sel_gen <- ifelse(sel_gen > lst_gen, lst_gen, sel_gen)
-  mig_gen <- ifelse(mig_gen < int_gen, int_gen, mig_gen)
-  mig_gen <- ifelse(mig_gen > lst_gen, lst_gen, mig_gen)
+simulateHMM <- function(model = "WFM", sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz, cna_gen = NULL, ...) {
+  int_gen <- min(sel_gen, mig_gen, smp_gen)
+  lst_gen <- max(sel_gen, mig_gen, smp_gen)
 
   # generate the population allele frequency trajectories
   if (model == "WFM") {
@@ -246,7 +241,7 @@ simulateHMM <- function(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_
   smp_cnt <- matrix(NA, nrow = 2, ncol = length(smp_gen))
   smp_frq <- matrix(NA, nrow = 2, ncol = length(smp_gen))
   for (k in 1:length(smp_gen)) {
-    smp_ale_cnt[, k] <- rmultinom(1, size = smp_siz[k], prob = pop_ale_frq[, smp_gen[k] - int_gen + 1])
+    smp_ale_cnt[, k] <- rmultinom(1, size = smp_siz[k], prob = pop_ale_frq[, which(int_gen:lst_gen %in% smp_gen)[k]])
     smp_ale_frq[, k] <- smp_ale_cnt[, k] / smp_siz[k]
     smp_cnt[1, k] <- smp_ale_cnt[1, k] + smp_ale_cnt[3, k]
     smp_cnt[2, k] <- smp_ale_cnt[3, k] + smp_ale_cnt[4, k]
@@ -298,11 +293,6 @@ cmpsimulateHMM <- cmpfun(simulateHMM)
 
 #' Standard version
 runBPF <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num) {
-  sel_gen <- ifelse(sel_gen < min(smp_gen), min(smp_gen), sel_gen)
-  sel_gen <- ifelse(sel_gen > max(smp_gen), max(smp_gen), sel_gen)
-  mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
-  mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
-
   if (any(is.na(smp_cnt[2, ]))) {
     smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
   }
@@ -338,11 +328,6 @@ cmprunBPF <- cmpfun(runBPF)
 
 #' Standard version
 calculateOptimalParticleNum <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, gap_num) {
-  sel_gen <- ifelse(sel_gen < min(smp_gen), min(smp_gen), sel_gen)
-  sel_gen <- ifelse(sel_gen > max(smp_gen), max(smp_gen), sel_gen)
-  mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
-  mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
-
   if (any(is.na(smp_cnt[2, ]))) {
     smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
   }
@@ -376,11 +361,6 @@ cmpcalculateOptimalParticleNum <- cmpfun(calculateOptimalParticleNum)
 
 #' Standard version
 runPMMH <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num) {
-  sel_gen <- ifelse(sel_gen < min(smp_gen), min(smp_gen), sel_gen)
-  sel_gen <- ifelse(sel_gen > max(smp_gen), max(smp_gen), sel_gen)
-  mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
-  mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
-
   if (any(is.na(smp_cnt[2, ]))) {
     smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
   }
@@ -416,11 +396,6 @@ cmprunPMMH <- cmpfun(runPMMH)
 
 #' Standard version
 runPMMHwGibbs <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num) {
-  sel_gen <- ifelse(sel_gen < min(smp_gen), min(smp_gen), sel_gen)
-  sel_gen <- ifelse(sel_gen > max(smp_gen), max(smp_gen), sel_gen)
-  mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
-  mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
-
   if (any(is.na(smp_cnt[2, ]))) {
     smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
   }
@@ -440,6 +415,7 @@ cmprunPMMHwGibbs <- cmpfun(runPMMHwGibbs)
 
 #' Run the Bayesian procedure for the inference of natural selection and gene migration
 #' Parameter settings
+#' @param algorithm = "PHHM"/"PMMHwGibbs" (return the results obtained with PMMH/PMMHwGibbs)
 #' @param sel_cof the selection coefficient
 #' @param dom_par the dominance parameter
 #' @param mig_rat the migration rate
@@ -457,20 +433,18 @@ cmprunPMMHwGibbs <- cmpfun(runPMMHwGibbs)
 #' @param thn_num the number of the iterations for thinning
 
 #' Standard version
-runBayesianProcedure <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num) {
-  sel_gen <- ifelse(sel_gen < min(smp_gen), min(smp_gen), sel_gen)
-  sel_gen <- ifelse(sel_gen > max(smp_gen), max(smp_gen), sel_gen)
-  mig_gen <- ifelse(mig_gen < min(smp_gen), min(smp_gen), mig_gen)
-  mig_gen <- ifelse(mig_gen > max(smp_gen), max(smp_gen), mig_gen)
-
+runBayesianProcedure <- function(algorithm = "PMMHwGibbs", sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num) {
   if (any(is.na(smp_cnt[2, ]))) {
     smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
   }
 
-  # run the PMMH
-  # PMMH <- runPMMH_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
-  # run the PMMHwGibbs
-  PMMH <- runPMMHwGibbs_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
+  if (algorithm == "PMMH") {
+    # run the PMMH
+    PMMH <- runPMMH_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
+  } else {
+    # run the PMMHwGibbs
+    PMMH <- runPMMHwGibbs_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
+  }
 
   # burn-in and thinning
   sel_cof_chn <- as.vector(PMMH$sel_cof_chn)
