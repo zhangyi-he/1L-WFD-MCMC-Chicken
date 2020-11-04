@@ -29,7 +29,7 @@ arma::dmat calculateFitnessMat_arma(const double& sel_cof, const double& dom_par
   arma::dmat fts_mat = arma::ones<arma::dmat>(4, 4);
   // fts_mat(0, 0) = 1;
   fts_mat(1, 0) = (1 - dom_par * sel_cof);
-  //fts_mat(2, 0) = 1;
+  // fts_mat(2, 0) = 1;
   fts_mat(3, 0) = (1 - dom_par * sel_cof);
   fts_mat(0, 1) = fts_mat(1, 0);
   fts_mat(1, 1) = (1 - sel_cof);
@@ -37,7 +37,7 @@ arma::dmat calculateFitnessMat_arma(const double& sel_cof, const double& dom_par
   fts_mat(3, 1) = (1 - sel_cof);
   fts_mat(0, 2) = fts_mat(2, 0);
   fts_mat(1, 2) = fts_mat(2, 1);
-  //fts_mat(2, 2) = 1;
+  // fts_mat(2, 2) = 1;
   fts_mat(3, 2) = (1 - dom_par * sel_cof);
   fts_mat(0, 3) = fts_mat(3, 0);
   fts_mat(1, 3) = fts_mat(3, 1);
@@ -289,46 +289,50 @@ List runBPF_arma(const double& sel_cof, const double& dom_par, const double& mig
   arma::dcube part_pst = arma::zeros<arma::dcube>(4, pcl_num, smp_gen.n_elem);
 
   // initialise the particles
-  cout << "generation: " << all_gen(0) << endl;
+  // cout << "generation: " << all_gen(0) << endl;
   arma::uword smp_ind = 0;
-  arma::imat ale_cnt = calculateAlleleCnt_arma(smp_siz(smp_ind), smp_cnt.col(smp_ind));
   arma::dmat part_tmp = initialiseParticle_arma(mig_gen, smp_gen, pcl_num);
-  arma::dcolvec wght_tmp = arma::zeros<arma::dcolvec>(pcl_num);
-  if (arma::any(ale_cnt.row(1) < 0)) {
-    for (arma::uword i = 0; i < pcl_num; i++) {
-      for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
-        wght_tmp(i) = wght_tmp(i) + R::dbinom(ale_cnt(0, j), smp_siz(smp_ind), part_tmp(0, i) + part_tmp(2, i), false);
+  if (arma::any(smp_gen == all_gen(0))) {
+    arma::imat ale_cnt = calculateAlleleCnt_arma(smp_siz(smp_ind), smp_cnt.col(smp_ind));
+    arma::dcolvec wght_tmp = arma::zeros<arma::dcolvec>(pcl_num);
+    if (arma::any(ale_cnt.row(1) < 0)) {
+      for (arma::uword i = 0; i < pcl_num; i++) {
+        for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
+          wght_tmp(i) = wght_tmp(i) + R::dbinom(ale_cnt(0, j), smp_siz(smp_ind), part_tmp(0, i) + part_tmp(2, i), false);
+        }
+      }
+    } else {
+      for (arma::uword i = 0; i < pcl_num; i++) {
+        for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
+          wght_tmp(i) = wght_tmp(i) + calculateMultinomProb_arma(ale_cnt.col(j), smp_siz(smp_ind), part_tmp.col(i));
+        }
       }
     }
-  } else {
-    for (arma::uword i = 0; i < pcl_num; i++) {
-      for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
-        wght_tmp(i) = wght_tmp(i) + calculateMultinomProb_arma(ale_cnt.col(j), smp_siz(smp_ind), part_tmp.col(i));
-      }
+
+    if (arma::sum(wght_tmp) > 0) {
+      arma::dcolvec prob = arma::normalise(wght_tmp, 1);
+      arma::ucolvec elem = arma::linspace<arma::ucolvec>(0, pcl_num - 1, pcl_num);
+      arma::ucolvec indx = RcppArmadillo::sample(elem, pcl_num, TRUE, prob);
+
+      lik = lik * arma::mean(wght_tmp);
+      wght.col(smp_ind) = wght_tmp;
+      part_pre.slice(smp_ind) = part_tmp;
+      part_pst.slice(smp_ind) = part_tmp.cols(indx);
+
+      part_tmp = part_pst.slice(smp_ind);
+    } else {
+      lik = 0;
+      wght.shed_cols(smp_ind, smp_gen.n_elem - 1);
+      part_pre.shed_slices(smp_ind, smp_gen.n_elem - 1);
+      part_pst.shed_slices(smp_ind, smp_gen.n_elem - 1);
+
+      return List::create(Named("lik", lik),
+                          Named("wght", wght),
+                          Named("part_pre_resmp", part_pre),
+                          Named("part_pst_resmp", part_pst));
     }
-  }
 
-  if (arma::sum(wght_tmp) > 0) {
-    arma::dcolvec prob = arma::normalise(wght_tmp, 1);
-    arma::ucolvec elem = arma::linspace<arma::ucolvec>(0, pcl_num - 1, pcl_num);
-    arma::ucolvec indx = RcppArmadillo::sample(elem, pcl_num, TRUE, prob);
-
-    lik = lik * arma::mean(wght_tmp);
-    wght.col(smp_ind) = wght_tmp;
-    part_pre.slice(smp_ind) = part_tmp;
-    part_pst.slice(smp_ind) = part_tmp.cols(indx);
-
-    part_tmp = part_pst.slice(smp_ind);
-  } else {
-    lik = 0;
-    wght.shed_cols(smp_ind, smp_gen.n_elem - 1);
-    part_pre.shed_slices(smp_ind, smp_gen.n_elem - 1);
-    part_pst.shed_slices(smp_ind, smp_gen.n_elem - 1);
-
-    return List::create(Named("lik", lik),
-                        Named("wght", wght),
-                        Named("part_pre_resmp", part_pre),
-                        Named("part_pst_resmp", part_pst));
+    smp_ind = smp_ind + 1;
   }
 
   // run the bootstrap particle filter
@@ -336,12 +340,11 @@ List runBPF_arma(const double& sel_cof, const double& dom_par, const double& mig
     bool non_sel = (sel_gen > all_gen(k - 1)) ? true : false;
     bool non_mig = (mig_gen > all_gen(k - 1)) ? true : false;
 
-    cout << "generation: " << all_gen(k) << endl;
+    // cout << "generation: " << all_gen(k) << endl;
+    part_tmp = generateParticle_arma(sel_cof, dom_par, mig_rat, pop_siz, non_sel, non_mig, ext_frq, part_tmp, all_gen(k - 1), all_gen(k), ptn_num, pcl_num);
     if (arma::any(smp_gen == all_gen(k))) {
-      smp_ind = smp_ind + 1;
       arma::imat ale_cnt = calculateAlleleCnt_arma(smp_siz(smp_ind), smp_cnt.col(smp_ind));
-      part_tmp = generateParticle_arma(sel_cof, dom_par, mig_rat, pop_siz, non_sel, non_mig, ext_frq, part_tmp, all_gen(k - 1), all_gen(k), ptn_num, pcl_num);
-      wght_tmp = arma::zeros<arma::dcolvec>(pcl_num);
+      arma::dcolvec wght_tmp = arma::zeros<arma::dcolvec>(pcl_num);
       if (arma::any(ale_cnt.row(1) < 0)) {
         for (arma::uword i = 0; i < pcl_num; i++) {
           for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
@@ -375,8 +378,8 @@ List runBPF_arma(const double& sel_cof, const double& dom_par, const double& mig
 
         break;
       }
-    } else {
-      part_tmp = generateParticle_arma(sel_cof, dom_par, mig_rat, pop_siz, non_sel, non_mig, ext_frq, part_tmp, all_gen(k - 1), all_gen(k), ptn_num, pcl_num);
+
+      smp_ind = smp_ind + 1;
     }
   }
 
@@ -410,33 +413,40 @@ double calculateLogLikelihood_arma(const double& sel_cof, const double& dom_par,
 
   // initialise the particles
   arma::uword smp_ind = 0;
-  arma::imat ale_cnt = ptl_cnt(smp_ind);
-  part_pre = initialiseParticle_arma(mig_gen, smp_gen, pcl_num);
-  // wght = arma::zeros<arma::dcolvec>(pcl_num);
-  if (arma::any(ale_cnt.row(1) < 0)) {
-    for (arma::uword i = 0; i < pcl_num; i++) {
-      for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
-        wght(i) = wght(i) + R::dbinom(ale_cnt(0, j), smp_siz(smp_ind), part_pre(0, i) + part_pre(2, i), false);
+  if (arma::any(smp_gen == all_gen(0))) {
+    arma::imat ale_cnt = ptl_cnt(smp_ind);
+    part_pre = initialiseParticle_arma(mig_gen, smp_gen, pcl_num);
+    // wght = arma::zeros<arma::dcolvec>(pcl_num);
+    if (arma::any(ale_cnt.row(1) < 0)) {
+      for (arma::uword i = 0; i < pcl_num; i++) {
+        for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
+          wght(i) = wght(i) + R::dbinom(ale_cnt(0, j), smp_siz(smp_ind), part_pre(0, i) + part_pre(2, i), false);
+        }
+      }
+    } else {
+      for (arma::uword i = 0; i < pcl_num; i++) {
+        for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
+          wght(i) = wght(i) + calculateMultinomProb_arma(ale_cnt.col(j), smp_siz(smp_ind), part_pre.col(i));
+        }
       }
     }
-  } else {
-    for (arma::uword i = 0; i < pcl_num; i++) {
-      for (arma::uword j = 0; j < ale_cnt.n_cols; j++) {
-        wght(i) = wght(i) + calculateMultinomProb_arma(ale_cnt.col(j), smp_siz(smp_ind), part_pre.col(i));
-      }
+
+    if (arma::mean(wght) > 0) {
+      log_lik = log_lik + log(arma::mean(wght));
+      arma::dcolvec prob = arma::normalise(wght, 1);
+      arma::ucolvec elem = arma::linspace<arma::ucolvec>(0, pcl_num - 1, pcl_num);
+      arma::ucolvec indx = RcppArmadillo::sample(elem, pcl_num, TRUE, prob);
+      part_pst = part_pre.cols(indx);
+    } else {
+      log_lik = -(arma::datum::inf);
+
+      return log_lik;
     }
-  }
 
-  if (arma::mean(wght) > 0) {
-    log_lik = log_lik + log(arma::mean(wght));
-    arma::dcolvec prob = arma::normalise(wght, 1);
-    arma::ucolvec elem = arma::linspace<arma::ucolvec>(0, pcl_num - 1, pcl_num);
-    arma::ucolvec indx = RcppArmadillo::sample(elem, pcl_num, TRUE, prob);
-    part_pst = part_pre.cols(indx);
+    smp_ind = smp_ind + 1;
   } else {
-    log_lik = -(arma::datum::inf);
-
-    return log_lik;
+    part_pre = initialiseParticle_arma(mig_gen, smp_gen, pcl_num);
+    part_pst = part_pre;
   }
 
   // run the bootstrap particle filter
@@ -445,7 +455,6 @@ double calculateLogLikelihood_arma(const double& sel_cof, const double& dom_par,
     bool non_mig = (mig_gen > all_gen(k - 1)) ? true : false;
 
     if (arma::any(smp_gen == all_gen(k))) {
-      smp_ind = smp_ind + 1;
       arma::imat ale_cnt = ptl_cnt(smp_ind);
       part_pre = generateParticle_arma(sel_cof, dom_par, mig_rat, pop_siz, non_sel, non_mig, ext_frq, part_pst, all_gen(k - 1), all_gen(k), ptn_num, pcl_num);
       wght = arma::zeros<arma::dcolvec>(pcl_num);
@@ -474,6 +483,8 @@ double calculateLogLikelihood_arma(const double& sel_cof, const double& dom_par,
 
         break;
       }
+
+      smp_ind = smp_ind + 1;
     } else {
       part_pre = generateParticle_arma(sel_cof, dom_par, mig_rat, pop_siz, non_sel, non_mig, ext_frq, part_pst, all_gen(k - 1), all_gen(k), ptn_num, pcl_num);
       part_pst = part_pre;
@@ -561,7 +572,7 @@ List calculateOptimalParticleNum_arma(const double& sel_cof, const double& dom_p
 }
 
 // Run the particle marginal Metropolis-Hastings
-//[[Rcpp::export]]
+// [[Rcpp::export]]
 List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mig_rat, const int& pop_siz, const int& sel_gen, const int& mig_gen, const double& ext_frq, const arma::irowvec& smp_gen, const arma::irowvec& smp_siz, const arma::imat& smp_cnt, const arma::uword& ptn_num, const arma::uword& pcl_num, const arma::uword& itn_num) {
   // ensure RNG gets set/reset
   RNGScope scope;
@@ -576,7 +587,7 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
   arma::drowvec mig_rat_chn = arma::zeros<arma::drowvec>(itn_num);
   arma::irowvec mig_gen_chn = arma::zeros<arma::irowvec>(itn_num);
 
-  //arma::drowvec log_pri = arma::zeros<arma::drowvec>(2);
+  // arma::drowvec log_pri = arma::zeros<arma::drowvec>(2);
   arma::drowvec log_lik = arma::zeros<arma::drowvec>(2);
 
   double sel_cof_sd = 5e-03;
@@ -585,7 +596,7 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
   double mig_gen_sd = 1e+01;
 
   // initialise the population genetic parameters
-  cout << "iteration: " << 1 << endl;
+  // cout << "iteration: " << 1 << endl;
   // take the uniform prior and fix the initial value of the population genetic parameters to zero
   // or take the beta prior with alpha = 1 and beta = 3
   sel_cof_chn(0) = sel_cof;
@@ -596,7 +607,7 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
   log_lik(0) = calculateLogLikelihood_arma(sel_cof_chn(0), dom_par, mig_rat_chn(0), pop_siz, sel_gen_chn(0), mig_gen_chn(0), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
 
   for (arma::uword i = 1; i < itn_num; i++) {
-    cout << "iteration: " << i + 1 << endl;
+    // cout << "iteration: " << i + 1 << endl;
 
     sel_cof_chn(i) = sel_cof_chn(i - 1) + sel_cof_sd * arma::randn();
     sel_gen_chn(i) = sel_gen_chn(i - 1) + int(round(sel_gen_sd * arma::randn()));
@@ -609,19 +620,13 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
       log_lik(1) = log_lik(0);
-    } else if (sel_gen_chn(i) < smp_gen.min() || sel_gen_chn(i) > smp_gen.max()) {
-      sel_cof_chn(i) = sel_cof_chn(i - 1);
-      sel_gen_chn(i) = sel_gen_chn(i - 1);
-      mig_rat_chn(i) = mig_rat_chn(i - 1);
-      mig_gen_chn(i) = mig_gen_chn(i - 1);
-      log_lik(1) = log_lik(0);
     } else if (mig_rat_chn(i) < 0 || mig_rat_chn(i) > 1) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
       sel_gen_chn(i) = sel_gen_chn(i - 1);
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
       log_lik(1) = log_lik(0);
-    } else if (mig_gen_chn(i) < smp_gen.min() || mig_gen_chn(i) > smp_gen(arma::find(smp_cnt.row(1) > 0).min())) {
+    } else if (mig_gen_chn(i) > smp_gen(arma::find(smp_cnt.row(1) > 0).min())) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
       sel_gen_chn(i) = sel_gen_chn(i - 1);
       mig_rat_chn(i) = mig_rat_chn(i - 1);
@@ -629,14 +634,14 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
       log_lik(1) = log_lik(0);
     } else {
       // calculate the proposal
-      //arma::drowvec log_psl = arma::zeros<arma::drowvec>(2);
+      // arma::drowvec log_psl = arma::zeros<arma::drowvec>(2);
 
       // calculate the likelihood
       log_lik(1) = calculateLogLikelihood_arma(sel_cof_chn(i), dom_par, mig_rat_chn(i), pop_siz, sel_gen_chn(i), mig_gen_chn(i), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
 
       // calculate the acceptance ratio
       double apt_rto = exp(log_lik(1) - log_lik(0));
-      //apt_rto = exp((log_pri(1) + log_lik(1) + log_psl(1)) - (log_pri(0) + log_lik(0) + log_psl(0)));
+      // apt_rto = exp((log_pri(1) + log_lik(1) + log_psl(1)) - (log_pri(0) + log_lik(0) + log_psl(0)));
 
       if (arma::randu() > apt_rto) {
         sel_cof_chn(i) = sel_cof_chn(i - 1);
@@ -657,7 +662,7 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
 }
 
 // Run the particle marginal Metropolis-Hastings within Gibbs
-//[[Rcpp::export]]
+// [[Rcpp::export]]
 List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const double& mig_rat, const int& pop_siz, const int& sel_gen, const int& mig_gen, const double& ext_frq, const arma::irowvec& smp_gen, const arma::irowvec& smp_siz, const arma::imat& smp_cnt, const arma::uword& ptn_num, const arma::uword& pcl_num, const arma::uword& itn_num) {
   // ensure RNG gets set/reset
   RNGScope scope;
@@ -672,7 +677,7 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
   arma::drowvec mig_rat_chn = arma::zeros<arma::drowvec>(itn_num);
   arma::irowvec mig_gen_chn = arma::zeros<arma::irowvec>(itn_num);
 
-  //arma::drowvec log_pri = arma::zeros<arma::drowvec>(2);
+  // arma::drowvec log_pri = arma::zeros<arma::drowvec>(2);
   arma::drowvec log_lik = arma::zeros<arma::drowvec>(2);
 
   double sel_cof_sd = 5e-03;
@@ -681,7 +686,7 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
   double mig_gen_sd = 1e+01;
 
   // initialise the population genetic parameters
-  cout << "iteration: " << 1 << endl;
+  // cout << "iteration: " << 1 << endl;
   // take the uniform prior and fix the initial value of the population genetic parameters to zero
   // or take the beta prior with alpha = 1 and beta = 3
   sel_cof_chn(0) = sel_cof;
@@ -692,7 +697,7 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
   log_lik(0) = calculateLogLikelihood_arma(sel_cof_chn(0), dom_par, mig_rat_chn(0), pop_siz, sel_gen_chn(0), mig_gen_chn(0), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
 
   for (arma::uword i = 1; i < itn_num; i++) {
-    cout << "iteration: " << i + 1 << endl;
+    // cout << "iteration: " << i + 1 << endl;
 
     // update natural selection related parameters in the Gibbs step
     sel_cof_chn(i) = sel_cof_chn(i - 1) + sel_cof_sd * arma::randn();
@@ -702,20 +707,16 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
       sel_cof_chn(i) = sel_cof_chn(i - 1);
       sel_gen_chn(i) = sel_gen_chn(i - 1);
       log_lik(1) = log_lik(0);
-    } else if (sel_gen_chn(i) < smp_gen.min() || sel_gen_chn(i) > smp_gen.max()) {
-      sel_cof_chn(i) = sel_cof_chn(i - 1);
-      sel_gen_chn(i) = sel_gen_chn(i - 1);
-      log_lik(1) = log_lik(0);
     } else {
       // calculate the proposal
-      //arma::drowvec log_psl = arma::zeros<arma::drowvec>(2);
+      // arma::drowvec log_psl = arma::zeros<arma::drowvec>(2);
 
       // calculate the likelihood
       log_lik(1) = calculateLogLikelihood_arma(sel_cof_chn(i), dom_par, mig_rat_chn(i - 1), pop_siz, sel_gen_chn(i), mig_gen_chn(i - 1), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
 
       // calculate the acceptance ratio
       double apt_rto = exp(log_lik(1) - log_lik(0));
-      //apt_rto = exp((log_pri(1) + log_lik(1) + log_psl(1)) - (log_pri(0) + log_lik(0) + log_psl(0)));
+      // apt_rto = exp((log_pri(1) + log_lik(1) + log_psl(1)) - (log_pri(0) + log_lik(0) + log_psl(0)));
 
       if (arma::randu() > apt_rto) {
         sel_cof_chn(i) = sel_cof_chn(i - 1);
@@ -732,20 +733,20 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
       log_lik(0) = log_lik(1);
-    } else if (mig_gen_chn(i) < smp_gen.min() || mig_gen_chn(i) > smp_gen(arma::find(smp_cnt.row(1) > 0).min())) {
+    } else if (mig_gen_chn(i) > smp_gen(arma::find(smp_cnt.row(1) > 0).min())) {
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
       log_lik(0) = log_lik(1);
     } else {
       // calculate the proposal
-      //arma::drowvec log_psl = arma::zeros<arma::drowvec>(2);
+      // arma::drowvec log_psl = arma::zeros<arma::drowvec>(2);
 
       // calculate the likelihood
       log_lik(0) = calculateLogLikelihood_arma(sel_cof_chn(i), dom_par, mig_rat_chn(i), pop_siz, sel_gen_chn(i), mig_gen_chn(i), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
 
       // calculate the acceptance ratio
       double apt_rto = exp(log_lik(0) - log_lik(1));
-      //apt_rto = exp((log_pri(0) + log_lik(0) + log_psl(0)) - (log_pri(1) + log_lik(1) + log_psl(1)));
+      // apt_rto = exp((log_pri(0) + log_lik(0) + log_psl(0)) - (log_pri(1) + log_lik(1) + log_psl(1)));
 
       if (arma::randu() > apt_rto) {
         mig_rat_chn(i) = mig_rat_chn(i - 1);
