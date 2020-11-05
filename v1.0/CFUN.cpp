@@ -613,6 +613,32 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
     sel_gen_chn(i) = sel_gen_chn(i - 1) + int(round(sel_gen_sd * arma::randn()));
     mig_rat_chn(i) = mig_rat_chn(i - 1) + mig_rat_sd * arma::randn();
     mig_gen_chn(i) = mig_gen_chn(i - 1) + int(round(mig_gen_sd * arma::randn()));
+    
+    // if (sel_cof_chn(i) > 1) {
+    //   sel_cof_chn(i) = sel_cof_chn(i - 1);
+    //   sel_gen_chn(i) = sel_gen_chn(i - 1);
+    //   mig_rat_chn(i) = mig_rat_chn(i - 1);
+    //   mig_gen_chn(i) = mig_gen_chn(i - 1);
+    //   log_lik(1) = log_lik(0);
+    // } else if (sel_gen_chn(i) < smp_gen.min() || sel_gen_chn(i) > smp_gen.max()) {
+    //   sel_cof_chn(i) = sel_cof_chn(i - 1);
+    //   sel_gen_chn(i) = sel_gen_chn(i - 1);
+    //   mig_rat_chn(i) = mig_rat_chn(i - 1);
+    //   mig_gen_chn(i) = mig_gen_chn(i - 1);
+    //   log_lik(1) = log_lik(0);
+    // } else if (mig_rat_chn(i) < 0 || mig_rat_chn(i) > 1) {
+    //   sel_cof_chn(i) = sel_cof_chn(i - 1);
+    //   sel_gen_chn(i) = sel_gen_chn(i - 1);
+    //   mig_rat_chn(i) = mig_rat_chn(i - 1);
+    //   mig_gen_chn(i) = mig_gen_chn(i - 1);
+    //   log_lik(1) = log_lik(0);
+    // } else if (mig_gen_chn(i) < smp_gen.min() || mig_gen_chn(i) > smp_gen(arma::find(smp_cnt.row(1) > 0).min())) {
+    //   sel_cof_chn(i) = sel_cof_chn(i - 1);
+    //   sel_gen_chn(i) = sel_gen_chn(i - 1);
+    //   mig_rat_chn(i) = mig_rat_chn(i - 1);
+    //   mig_gen_chn(i) = mig_gen_chn(i - 1);
+    //   log_lik(1) = log_lik(0);
+    // }
 
     if (sel_cof_chn(i) > 1) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
@@ -680,10 +706,10 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
   // arma::drowvec log_pri = arma::zeros<arma::drowvec>(2);
   arma::drowvec log_lik = arma::zeros<arma::drowvec>(2);
 
-  double sel_cof_sd = 5e-03;
-  double sel_gen_sd = 5e+01;
-  double mig_rat_sd = 1e-03;
-  double mig_gen_sd = 1e+01;
+  double sel_cof_sd = 4e-03;
+  double sel_gen_sd = 8e+01;
+  double mig_rat_sd = 2e-03;
+  double mig_gen_sd = 2e+01;
 
   // initialise the population genetic parameters
   // cout << "iteration: " << 1 << endl;
@@ -702,6 +728,16 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
     // update natural selection related parameters in the Gibbs step
     sel_cof_chn(i) = sel_cof_chn(i - 1) + sel_cof_sd * arma::randn();
     sel_gen_chn(i) = sel_gen_chn(i - 1) + int(round(sel_gen_sd * arma::randn()));
+
+    // if (sel_cof_chn(i) > 1) {
+    //   sel_cof_chn(i) = sel_cof_chn(i - 1);
+    //   sel_gen_chn(i) = sel_gen_chn(i - 1);
+    //   log_lik(1) = log_lik(0);
+    // } else if (sel_gen_chn(i) < smp_gen.min() || sel_gen_chn(i) > smp_gen.max()) {
+    //   sel_cof_chn(i) = sel_cof_chn(i - 1);
+    //   sel_gen_chn(i) = sel_gen_chn(i - 1);
+    //   log_lik(1) = log_lik(0);
+    // } 
 
     if (sel_cof_chn(i) > 1) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
@@ -728,6 +764,16 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
     // update gene migration related parameters in the Gibbs step
     mig_rat_chn(i) = mig_rat_chn(i - 1) + mig_rat_sd * arma::randn();
     mig_gen_chn(i) = mig_gen_chn(i - 1) + int(round(mig_gen_sd * arma::randn()));
+
+    // if (mig_rat_chn(i) < 0 || mig_rat_chn(i) > 1) {
+    //   mig_rat_chn(i) = mig_rat_chn(i - 1);
+    //   mig_gen_chn(i) = mig_gen_chn(i - 1);
+    //   log_lik(0) = log_lik(1);
+    // } else if (mig_gen_chn(i) < smp_gen.min() || mig_gen_chn(i) > smp_gen(arma::find(smp_cnt.row(1) > 0).min())) {
+    //   mig_rat_chn(i) = mig_rat_chn(i - 1);
+    //   mig_gen_chn(i) = mig_gen_chn(i - 1);
+    //   log_lik(0) = log_lik(1);
+    // }
 
     if (mig_rat_chn(i) < 0 || mig_rat_chn(i) > 1) {
       mig_rat_chn(i) = mig_rat_chn(i - 1);
