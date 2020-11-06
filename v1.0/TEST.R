@@ -1,5 +1,5 @@
 #' @title Inferring natural selection and gene migration in the evolution of chickens from ancient DNA data
-#' @author Zhangyi He, Wenyang Lyu, Xiaoyang Dai, Mark Beaumont and Feng Yu
+#' @author Wenyang Lyu, Xiaoyang Dai, Sile Hu, Mark Beaumont, Feng Yu, Zhangyi He
 
 #' version 1.0
 
