@@ -1,5 +1,5 @@
 // Inferring natural selection and gene migration in the evolution of chickens from ancient DNA data
-// Wenyang Lyu, Xiaoyang Dai, Mark Beaumont, Feng Yu and Zhangyi He
+// Wenyang Lyu, Xiaoyang Dai, Sile Hu, Mark Beaumont, Feng Yu, Zhangyi He
 
 // version 1.0
 
@@ -613,7 +613,7 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
     sel_gen_chn(i) = sel_gen_chn(i - 1) + int(round(sel_gen_sd * arma::randn()));
     mig_rat_chn(i) = mig_rat_chn(i - 1) + mig_rat_sd * arma::randn();
     mig_gen_chn(i) = mig_gen_chn(i - 1) + int(round(mig_gen_sd * arma::randn()));
-    
+
     // if (sel_cof_chn(i) > 1) {
     //   sel_cof_chn(i) = sel_cof_chn(i - 1);
     //   sel_gen_chn(i) = sel_gen_chn(i - 1);
@@ -737,7 +737,7 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
     //   sel_cof_chn(i) = sel_cof_chn(i - 1);
     //   sel_gen_chn(i) = sel_gen_chn(i - 1);
     //   log_lik(1) = log_lik(0);
-    // } 
+    // }
 
     if (sel_cof_chn(i) > 1) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
