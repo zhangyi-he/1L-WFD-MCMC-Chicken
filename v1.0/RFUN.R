@@ -5,6 +5,9 @@
 
 #' R functions
 
+# install.packages("pdfCluster")
+library("pdfCluster")
+
 #install.packages("MASS")
 library("MASS")
 
@@ -460,11 +463,21 @@ runBayesianProcedure <- function(algorithm = "PMMHwGibbs", sel_cof, dom_par, mig
   mig_gen_chn <- mig_gen_chn[brn_num:length(mig_gen_chn)]
   mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
 
-  # MMSE estimates for the population genetic parameters
-  sel_cof_est <- mean(sel_cof_chn)
-  sel_gen_est <- mean(sel_gen_chn)
-  mig_rat_est <- mean(mig_rat_chn)
-  mig_gen_est <- mean(mig_gen_chn)
+  # MAP estimates for the population genetic parameters
+  smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
+  # colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
+  pdf <- kepdf(smp, bwtype = "adaptive")
+  est <- pdf@eval.points[which(pdf@estimate == max(pdf@estimate))[1], ]
+  sel_cof_est <- est[1]
+  sel_gen_est <- est[2]
+  mig_rat_est <- est[3]
+  mig_gen_est <- est[4]
+
+  # # MMSE estimates for the population genetic parameters
+  # sel_cof_est <- mean(sel_cof_chn)
+  # sel_gen_est <- mean(sel_gen_chn)
+  # mig_rat_est <- mean(mig_rat_chn)
+  # mig_gen_est <- mean(mig_gen_chn)
 
   # 95% HPD intervals for the population genetic parameters
   sel_cof_hpd <- HPDinterval(as.mcmc(sel_cof_chn), prob = 0.95)
