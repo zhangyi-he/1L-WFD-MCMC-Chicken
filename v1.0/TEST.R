@@ -536,10 +536,21 @@ save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp
 # mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
 # mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
 #
-# sel_cof_est <- mean(sel_cof_chn)
-# sel_gen_est <- mean(sel_gen_chn)
-# mig_rat_est <- mean(mig_rat_chn)
-# mig_gen_est <- mean(mig_gen_chn)
+# smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
+# colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
+# pdf <- kepdf(smp, bwtype = "adaptive")
+# plot(pdf, main = "Posterior for strength and timing of natural selection and gene migration", col = colorRampPalette(rev(brewer.pal(11, 'Spectral')))(32),
+#      props = c(100,100,100, 100), method = "perspective", gap = 0.5, phi = 30, theta = 10)
+# est <- pdf@eval.points[which(pdf@estimate == max(pdf@estimate))[1], ]
+# sel_cof_est <- est[1]
+# sel_gen_est <- est[2]
+# mig_rat_est <- est[3]
+# mig_gen_est <- est[4]
+#
+# # sel_cof_est <- median(sel_cof_chn)
+# # sel_gen_est <- median(sel_gen_chn)
+# # mig_rat_est <- median(mig_rat_chn)
+# # mig_gen_est <- median(mig_gen_chn)
 #
 # sel_cof_hpd <- HPDinterval(as.mcmc(sel_cof_chn), prob = 0.95)
 # sel_gen_hpd <- HPDinterval(as.mcmc(sel_gen_chn), prob = 0.95)
@@ -669,10 +680,21 @@ save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp
 # mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
 # mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
 #
-# sel_cof_est <- mean(sel_cof_chn)
-# sel_gen_est <- mean(sel_gen_chn)
-# mig_rat_est <- mean(mig_rat_chn)
-# mig_gen_est <- mean(mig_gen_chn)
+# smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
+# colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
+# pdf <- kepdf(smp, bwtype = "adaptive")
+# plot(pdf, main = "Posterior for strength and timing of natural selection and gene migration", col = colorRampPalette(rev(brewer.pal(11, 'Spectral')))(32),
+#      props = c(100,100,100, 100), method = "perspective", gap = 0.5, phi = 30, theta = 10)
+# est <- pdf@eval.points[which(pdf@estimate == max(pdf@estimate))[1], ]
+# sel_cof_est <- est[1]
+# sel_gen_est <- est[2]
+# mig_rat_est <- est[3]
+# mig_gen_est <- est[4]
+#
+# # sel_cof_est <- median(sel_cof_chn)
+# # sel_gen_est <- median(sel_gen_chn)
+# # mig_rat_est <- median(mig_rat_chn)
+# # mig_gen_est <- median(mig_gen_chn)
 #
 # sel_cof_hpd <- HPDinterval(as.mcmc(sel_cof_chn), prob = 0.95)
 # sel_gen_hpd <- HPDinterval(as.mcmc(sel_gen_chn), prob = 0.95)
