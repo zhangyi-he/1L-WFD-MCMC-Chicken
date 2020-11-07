@@ -289,7 +289,7 @@ List runBPF_arma(const double& sel_cof, const double& dom_par, const double& mig
   arma::dcube part_pst = arma::zeros<arma::dcube>(4, pcl_num, smp_gen.n_elem);
 
   // initialise the particles
-  // cout << "generation: " << all_gen(0) << endl;
+  cout << "generation: " << all_gen(0) << endl;
   arma::uword smp_ind = 0;
   arma::dmat part_tmp = initialiseParticle_arma(mig_gen, smp_gen, pcl_num);
   if (arma::any(smp_gen == all_gen(0))) {
@@ -340,7 +340,7 @@ List runBPF_arma(const double& sel_cof, const double& dom_par, const double& mig
     bool non_sel = (sel_gen > all_gen(k - 1)) ? true : false;
     bool non_mig = (mig_gen > all_gen(k - 1)) ? true : false;
 
-    // cout << "generation: " << all_gen(k) << endl;
+    cout << "generation: " << all_gen(k) << endl;
     part_tmp = generateParticle_arma(sel_cof, dom_par, mig_rat, pop_siz, non_sel, non_mig, ext_frq, part_tmp, all_gen(k - 1), all_gen(k), ptn_num, pcl_num);
     if (arma::any(smp_gen == all_gen(k))) {
       arma::imat ale_cnt = calculateAlleleCnt_arma(smp_siz(smp_ind), smp_cnt.col(smp_ind));
@@ -596,7 +596,7 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
   double mig_gen_sd = 1e+01;
 
   // initialise the population genetic parameters
-  // cout << "iteration: " << 1 << endl;
+  cout << "iteration: " << 1 << endl;
   // take the uniform prior and fix the initial value of the population genetic parameters to zero
   // or take the beta prior with alpha = 1 and beta = 3
   sel_cof_chn(0) = sel_cof;
@@ -607,7 +607,7 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
   log_lik(0) = calculateLogLikelihood_arma(sel_cof_chn(0), dom_par, mig_rat_chn(0), pop_siz, sel_gen_chn(0), mig_gen_chn(0), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
 
   for (arma::uword i = 1; i < itn_num; i++) {
-    // cout << "iteration: " << i + 1 << endl;
+    cout << "iteration: " << i + 1 << endl;
 
     sel_cof_chn(i) = sel_cof_chn(i - 1) + sel_cof_sd * arma::randn();
     sel_gen_chn(i) = sel_gen_chn(i - 1) + int(round(sel_gen_sd * arma::randn()));
@@ -712,7 +712,7 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
   double mig_gen_sd = 2e+01;
 
   // initialise the population genetic parameters
-  // cout << "iteration: " << 1 << endl;
+  cout << "iteration: " << 1 << endl;
   // take the uniform prior and fix the initial value of the population genetic parameters to zero
   // or take the beta prior with alpha = 1 and beta = 3
   sel_cof_chn(0) = sel_cof;
@@ -723,7 +723,7 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
   log_lik(0) = calculateLogLikelihood_arma(sel_cof_chn(0), dom_par, mig_rat_chn(0), pop_siz, sel_gen_chn(0), mig_gen_chn(0), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
 
   for (arma::uword i = 1; i < itn_num; i++) {
-    // cout << "iteration: " << i + 1 << endl;
+    cout << "iteration: " << i + 1 << endl;
 
     // update natural selection related parameters in the Gibbs step
     sel_cof_chn(i) = sel_cof_chn(i - 1) + sel_cof_sd * arma::randn();
