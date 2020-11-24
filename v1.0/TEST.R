@@ -468,7 +468,7 @@ save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp
 #' @param smp_cnt the count of the mutant alleles and continent alleles observed in the sample at all sampling time points
 #' @param ptn_num the number of subintervals divided per generation in the Euler-Maruyama method
 #' @param pcl_num the number of particles generated in the bootstrap particle filter
-#' @param itn_num the number of the iterations carried out in the particle marginal Metropolis-Hastings
+#' @param itn_num the number of the iterations carried out in the PMMH
 
 load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
@@ -612,7 +612,7 @@ save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp
 #' @param smp_cnt the count of the mutant alleles and continent alleles observed in the sample at all sampling time points
 #' @param ptn_num the number of subintervals divided per generation in the Euler-Maruyama method
 #' @param pcl_num the number of particles generated in the bootstrap particle filter
-#' @param itn_num the number of the iterations carried out in the particle marginal Metropolis-Hastings within Gibbs
+#' @param itn_num the number of the iterations carried out in the PMMH within Gibbs
 
 load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
@@ -744,7 +744,7 @@ save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp
 
 #' Run the Bayesian procedure for the inference of natural selection and gene migration
 #' Parameter settings
-#' @param algorithm = "PHHM"/"PMMHwGibbs" (return the results obtained with PMMH/PMMHwGibbs)
+#' @param method = "PMMH"/"PMMHwGibss" (return the results obtained from with the PMMH/PMMHwGibbs)
 #' @param sel_cof the selection coefficient
 #' @param dom_par the dominance parameter
 #' @param mig_rat the migration rate
@@ -765,7 +765,7 @@ load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
 set.seed(test_seed)
 
-algorithm <- "PMMHwGibbs"
+method <- "PMMHwGibbs"
 sel_cof <- 0e-00
 dom_par
 mig_rat <- 0e-00
@@ -782,11 +782,11 @@ itn_num <- 2e+04
 brn_num <- 5e+03
 thn_num <- 5e+00
 
-system.time(BayesianProcedure <- cmprunBayesianProcedure(algorithm, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num))
+system.time(BayesianProcedure <- cmprunBayesianProcedure(method, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num))
 
 load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
-save(algorithm, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, BayesianProcedure,
+save(method, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, BayesianProcedure,
      file = "./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure.rda")
 
 # load("./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure.rda")
