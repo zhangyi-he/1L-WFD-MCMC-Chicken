@@ -742,7 +742,7 @@ save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp
 
 ########################################
 
-#' Run the adaptive particle marginal Metropolis-Hastings (AdpatPMMH)
+#' Run the adaptive particle marginal Metropolis-Hastings (AdaptPMMH)
 #' Parameter settings
 #' @param sel_cof the selection coefficient
 #' @param dom_par the dominance parameter
@@ -890,7 +890,7 @@ save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp
 
 ########################################
 
-#' Run the adaptive particle marginal Metropolis-Hastings within Gibbs (AdpatPMMHwGibbs)
+#' Run the adaptive particle marginal Metropolis-Hastings within Gibbs (AdaptPMMHwGibbs)
 #' Parameter settings
 #' @param sel_cof the selection coefficient
 #' @param dom_par the dominance parameter
@@ -1040,7 +1040,7 @@ save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp
 
 #' Run the Bayesian procedure for the inference of natural selection and gene migration
 #' Parameter settings
-#' @param method = "PMMH"/"PMMHwGibss"/"AdaptPMMH"/"AdaptPMMHwGibbs" (return the results obtained from with the PMMH/PMMHwGibbs/AdaptPMMH/AdaptPMMHwGibbs)
+#' @param method = "PMMH"/"PMMHwGibss" (return the results obtained from with the PMMH/PMMHwGibbs)
 #' @param sel_cof the selection coefficient
 #' @param dom_par the dominance parameter
 #' @param mig_rat the migration rate
@@ -1053,9 +1053,10 @@ save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp
 #' @param smp_cnt the count of the mutant alleles and continent alleles observed in the sample at all sampling time points
 #' @param ptn_num the number of subintervals divided per generation in the Euler-Maruyama method
 #' @param pcl_num the number of particles generated in the bootstrap particle filter
-#' @param itn_num the number of the iterations carried out in the PMMH
+#' @param itn_num the number of the iterations carried out in the PMMH/PMMH within Gibbs
 #' @param brn_num the number of the iterations for burn-in
 #' @param thn_num the number of the iterations for thinning
+#' @param adp_set = TRUE/FALSE (return the result with the adaptive setting or not)
 #' @param stp_siz the step size sequence in the adaptive setting (decaying to zero)
 #' @param apt_rto the target mean acceptance probability of the adaptive setting
 
@@ -1063,6 +1064,7 @@ load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
 set.seed(test_seed)
 
+method <- "PMMHwGibbs"
 sel_cof <- 0e-00
 dom_par
 mig_rat <- 0e-00
@@ -1078,16 +1080,15 @@ pcl_num <- 1e+03
 itn_num <- 2e+04
 brn_num <- 5e+03
 thn_num <- 5e+00
-bck_upd <- TRUE
 adp_set <- TRUE
 stp_siz <- (1:itn_num)^(-2 / 3)
 apt_rto <- 4e-01
 
-system.time(BayesianProcedure <- cmprunBayesianProcedure(method, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, stp_siz, apt_rto))
+system.time(BayesianProcedure <- cmprunBayesianProcedure(method, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, adp_set, stp_siz, apt_rto))
 
 load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
-save(method, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, stp_siz, apt_rto, BayesianProcedure,
+save(method, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, adp_set, stp_siz, apt_rto, BayesianProcedure,
      file = "./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure.rda")
 
 # load("./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure.rda")
