@@ -416,7 +416,7 @@ cmprunPMMHwGibbs <- cmpfun(runPMMHwGibbs)
 
 ########################################
 
-#' Run the adaptive particle marginal Metropolis-Hastings (AdpatPMMH)
+#' Run the adaptive particle marginal Metropolis-Hastings (AdaptPMMH)
 #' Parameter settings
 #' @param sel_cof the selection coefficient
 #' @param dom_par the dominance parameter
@@ -435,13 +435,13 @@ cmprunPMMHwGibbs <- cmpfun(runPMMHwGibbs)
 #' @param apt_rto the target mean acceptance probability of the adaptive setting
 
 #' Standard version
-runAdpatPMMH <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto) {
+runAdaptPMMH <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto) {
   if (any(is.na(smp_cnt[2, ]))) {
     smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
   }
 
   # run the adaptive PMMH
-  PMMH <- runAdpatPMMH_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto)
+  PMMH <- runAdaptPMMH_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto)
 
   return(list(sel_cof_chn = as.vector(PMMH$sel_cof_chn),
               sel_gen_chn = as.vector(PMMH$sel_gen_chn),
@@ -449,11 +449,11 @@ runAdpatPMMH <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, e
               mig_gen_chn = as.vector(PMMH$mig_gen_chn)))
 }
 #' Compiled version
-cmprunAdpatPMMH <- cmpfun(runAdpatPMMH)
+cmprunAdaptPMMH <- cmpfun(runAdaptPMMH)
 
 ########################################
 
-#' Run the adaptive particle marginal Metropolis-Hastings within Gibbs (AdpatPMMHwGibbs)
+#' Run the adaptive particle marginal Metropolis-Hastings within Gibbs (AdaptPMMHwGibbs)
 #' Parameter settings
 #' @param sel_cof the selection coefficient
 #' @param dom_par the dominance parameter
@@ -472,13 +472,13 @@ cmprunAdpatPMMH <- cmpfun(runAdpatPMMH)
 #' @param apt_rto the target mean acceptance probability of the adaptive setting
 
 #' Standard version
-runAdpatPMMHwGibbs <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto) {
+runAdaptPMMHwGibbs <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto) {
   if (any(is.na(smp_cnt[2, ]))) {
     smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
   }
 
   # run the adaptive PMMH within Gibbs
-  PMMH <- runAdpatPMMHwGibbs_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto)
+  PMMH <- runAdaptPMMHwGibbs_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto)
 
   return(list(sel_cof_chn = as.vector(PMMH$sel_cof_chn),
               sel_gen_chn = as.vector(PMMH$sel_gen_chn),
@@ -486,13 +486,13 @@ runAdpatPMMHwGibbs <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_
               mig_gen_chn = as.vector(PMMH$mig_gen_chn)))
 }
 #' Compiled version
-cmprunAdpatPMMHwGibbs <- cmpfun(runAdpatPMMHwGibbs)
+cmprunAdaptPMMHwGibbs <- cmpfun(runAdaptPMMHwGibbs)
 
 ########################################
 
 #' Run the Bayesian procedure for the inference of natural selection and gene migration
 #' Parameter settings
-#' @param method = "PMMH"/"PMMHwGibss"/"AdaptPMMH"/"AdaptPMMHwGibbs" (return the results obtained from with the PMMH/PMMHwGibbs/AdaptPMMH/AdaptPMMHwGibbs)
+#' @param method = "PMMH"/"PMMHwGibss" (return the results obtained from with the PMMH/PMMHwGibbs)
 #' @param sel_cof the selection coefficient
 #' @param dom_par the dominance parameter
 #' @param mig_rat the migration rate
@@ -505,25 +505,26 @@ cmprunAdpatPMMHwGibbs <- cmpfun(runAdpatPMMHwGibbs)
 #' @param smp_cnt the count of the mutant alleles and continent alleles observed in the sample at all sampling time points
 #' @param ptn_num the number of subintervals divided per generation in the Euler-Maruyama method
 #' @param pcl_num the number of particles generated in the bootstrap particle filter
-#' @param itn_num the number of the iterations carried out in the PMMH
+#' @param itn_num the number of the iterations carried out in the PMMH/PMMH within Gibbs
 #' @param brn_num the number of the iterations for burn-in
 #' @param thn_num the number of the iterations for thinning
+#' @param adp_set = TRUE/FALSE (return the result with the adaptive setting or not)
 #' @param stp_siz the step size sequence in the adaptive setting (decaying to zero)
 #' @param apt_rto the target mean acceptance probability of the adaptive setting
 
 #' Standard version
-runBayesianProcedure <- function(method = "AdaptPMMHwGibbs", sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, ...) {
+runBayesianProcedure <- function(method = "PMMHwGibbs", sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, adp_set = TRUE, brn_num, thn_num, ...) {
   if (any(is.na(smp_cnt[2, ]))) {
     smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
   }
 
-  if (method == "AdaptPMMHwGibbs") {
+  if (method == "PMMHwGibbs" && adp_set == TRUE) {
     # run the adaptive PMMH within Gibbs
-    PMMH <- runAdpatPMMHwGibbs_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto)
-  } else if (method == "PMMHwGibbs") {
+    PMMH <- runAdaptPMMHwGibbs_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto)
+  } else if (method == "PMMHwGibbs" && adp_set == FALSE) {
     # run the PMMH within Gibbs
-    PMMH <- runAdpatPMMH_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto)
-  } else if (method == "AdaptPMMH") {
+    PMMH <- runAdaptPMMH_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto)
+  } else if (mmethod == "PMMH" && adp_set == TRUE) {
     # run the adaptive PMMH
     PMMH <- runPMMHwGibbs_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
   } else {
