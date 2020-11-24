@@ -360,7 +360,7 @@ cmpcalculateOptimalParticleNum <- cmpfun(calculateOptimalParticleNum)
 #' @param smp_cnt the count of the mutant alleles and continent alleles observed in the sample at all sampling time points
 #' @param ptn_num the number of subintervals divided per generation in the Euler-Maruyama method
 #' @param pcl_num the number of particles generated in the bootstrap particle filter
-#' @param itn_num the number of the iterations carried out in the particle marginal Metropolis-Hastings
+#' @param itn_num the number of the iterations carried out in the PMMH
 
 #' Standard version
 runPMMH <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num) {
@@ -395,7 +395,7 @@ cmprunPMMH <- cmpfun(runPMMH)
 #' @param smp_cnt the count of the mutant alleles and continent alleles observed in the sample at all sampling time points
 #' @param ptn_num the number of subintervals divided per generation in the Euler-Maruyama method
 #' @param pcl_num the number of particles generated in the bootstrap particle filter
-#' @param itn_num the number of the iterations carried out in the particle marginal Metropolis-Hastings within Gibbs
+#' @param itn_num the number of the iterations carried out in the PMMH within Gibbs
 
 #' Standard version
 runPMMHwGibbs <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num) {
@@ -418,7 +418,7 @@ cmprunPMMHwGibbs <- cmpfun(runPMMHwGibbs)
 
 #' Run the Bayesian procedure for the inference of natural selection and gene migration
 #' Parameter settings
-#' @param algorithm = "PHHM"/"PMMHwGibbs" (return the results obtained with PMMH/PMMHwGibbs)
+#' @param method = "PMMH"/"PMMHwGibss" (return the results obtained from with the PMMH/PMMHwGibbs)
 #' @param sel_cof the selection coefficient
 #' @param dom_par the dominance parameter
 #' @param mig_rat the migration rate
@@ -436,17 +436,17 @@ cmprunPMMHwGibbs <- cmpfun(runPMMHwGibbs)
 #' @param thn_num the number of the iterations for thinning
 
 #' Standard version
-runBayesianProcedure <- function(algorithm = "PMMHwGibbs", sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num) {
+runBayesianProcedure <- function(method =  "PMMHwGibbs", sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num) {
   if (any(is.na(smp_cnt[2, ]))) {
     smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
   }
 
-  if (algorithm == "PMMH") {
+  if (method == "PMMHwGibbs") {
+    # run the PMMH within Gibbs
+    PMMH <- runPMMHwGibbs_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
+  } else {
     # run the PMMH
     PMMH <- runPMMH_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
-  } else {
-    # run the PMMHwGibbs
-    PMMH <- runPMMHwGibbs_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
   }
 
   # burn-in and thinning
