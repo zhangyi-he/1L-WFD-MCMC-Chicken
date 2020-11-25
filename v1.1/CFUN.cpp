@@ -275,10 +275,15 @@ List runBPF_arma(const double& sel_cof, const double& dom_par, const double& mig
   // ensure RNG gets set/reset
   RNGScope scope;
 
-  arma::irowvec all_gen(smp_gen.n_elem + 2);
-  all_gen.subvec(1, smp_gen.n_elem) = smp_gen;
-  all_gen.head(1) = sel_gen;
-  all_gen.tail(1) = mig_gen;
+  arma::irowvec all_gen = smp_gen;
+  if (sel_gen <= max(smp_gen)) {
+    all_gen.insert_cols(0, 1);
+    all_gen(0) = sel_gen; 
+  }
+  if (mig_gen <= max(smp_gen)) {
+    all_gen.insert_cols(0, 1);
+    all_gen(0) = mig_gen; 
+  }
   all_gen = arma::unique(all_gen);
   all_gen = arma::sort(all_gen);
 
@@ -398,10 +403,15 @@ double calculateLogLikelihood_arma(const double& sel_cof, const double& dom_par,
   // ensure RNG gets set/reset
   RNGScope scope;
 
-  arma::irowvec all_gen(smp_gen.n_elem + 2);
-  all_gen.subvec(1, smp_gen.n_elem) = smp_gen;
-  all_gen.head(1) = sel_gen;
-  all_gen.tail(1) = mig_gen;
+  arma::irowvec all_gen = smp_gen;
+  if (sel_gen <= max(smp_gen)) {
+    all_gen.insert_cols(0, 1);
+    all_gen(0) = sel_gen; 
+  }
+  if (mig_gen <= max(smp_gen)) {
+    all_gen.insert_cols(0, 1);
+    all_gen(0) = mig_gen; 
+  }
   all_gen = arma::unique(all_gen);
   all_gen = arma::sort(all_gen);
 
