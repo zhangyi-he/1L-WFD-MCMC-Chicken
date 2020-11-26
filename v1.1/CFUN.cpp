@@ -278,11 +278,11 @@ List runBPF_arma(const double& sel_cof, const double& dom_par, const double& mig
   arma::irowvec all_gen = smp_gen;
   if (sel_gen <= max(smp_gen)) {
     all_gen.insert_cols(0, 1);
-    all_gen(0) = sel_gen; 
+    all_gen(0) = sel_gen;
   }
   if (mig_gen <= max(smp_gen)) {
     all_gen.insert_cols(0, 1);
-    all_gen(0) = mig_gen; 
+    all_gen(0) = mig_gen;
   }
   all_gen = arma::unique(all_gen);
   all_gen = arma::sort(all_gen);
@@ -406,11 +406,11 @@ double calculateLogLikelihood_arma(const double& sel_cof, const double& dom_par,
   arma::irowvec all_gen = smp_gen;
   if (sel_gen <= max(smp_gen)) {
     all_gen.insert_cols(0, 1);
-    all_gen(0) = sel_gen; 
+    all_gen(0) = sel_gen;
   }
   if (mig_gen <= max(smp_gen)) {
     all_gen.insert_cols(0, 1);
-    all_gen(0) = mig_gen; 
+    all_gen(0) = mig_gen;
   }
   all_gen = arma::unique(all_gen);
   all_gen = arma::sort(all_gen);
@@ -660,6 +660,14 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
       log_lik(1) = log_lik(0);
       // apt_cnt = apt_cnt + 0;
       cout << "acceptance: " << apt_cnt / i << endl;
+    } else if (sel_gen_chn(i) > max(smp_gen)) {
+      sel_cof_chn(i) = sel_cof_chn(i - 1);
+      sel_gen_chn(i) = sel_gen_chn(i - 1);
+      mig_rat_chn(i) = mig_rat_chn(i - 1);
+      mig_gen_chn(i) = mig_gen_chn(i - 1);
+      log_lik(1) = log_lik(0);
+      // apt_cnt = apt_cnt + 0;
+      cout << "acceptance: " << apt_cnt / i << endl;
     } else if (mig_rat_chn(i) < 0 || mig_rat_chn(i) > 1) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
       sel_gen_chn(i) = sel_gen_chn(i - 1);
@@ -768,6 +776,12 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
 
     alpha = 0;
     if (sel_cof_chn(i) > 1) {
+      sel_cof_chn(i) = sel_cof_chn(i - 1);
+      sel_gen_chn(i) = sel_gen_chn(i - 1);
+      log_lik(1) = log_lik(0);
+      // apt_cnt = apt_cnt + 0;
+      cout << "acceptance: " << apt_cnt / i << endl;
+    } else if (sel_gen_chn(i) > max(smp_gen)) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
       sel_gen_chn(i) = sel_gen_chn(i - 1);
       log_lik(1) = log_lik(0);
@@ -915,6 +929,11 @@ List runAdaptPMMH_arma(const double& sel_cof, const double& dom_par, const doubl
       log_lik(1) = log_lik(0);
       // apt_cnt = apt_cnt + 0;
       cout << "acceptance: " << apt_cnt / i << endl;
+    } else if (par_chn(1, i) > max(smp_gen)) {
+      par_chn.col(i) = par_chn.col(i - 1);
+      log_lik(1) = log_lik(0);
+      // apt_cnt = apt_cnt + 0;
+      cout << "acceptance: " << apt_cnt / i << endl;
     } else if (par_chn(2, i) < 0 || par_chn(2, i) > 1) {
       par_chn.col(i) = par_chn.col(i - 1);
       log_lik(1) = log_lik(0);
@@ -1023,6 +1042,11 @@ List runAdaptPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const
 
     alpha = 0;
     if (sel_par_chn(0, i) > 1) {
+      sel_par_chn.col(i) = sel_par_chn.col(i - 1);
+      log_lik(1) = log_lik(0);
+      // apt_cnt = apt_cnt + 0;
+      cout << "acceptance: " << apt_cnt / i << endl;
+    } else if (sel_par_chn(1, i) > max(smp_gen)) {
       sel_par_chn.col(i) = sel_par_chn.col(i - 1);
       log_lik(1) = log_lik(0);
       // apt_cnt = apt_cnt + 0;
