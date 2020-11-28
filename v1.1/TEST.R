@@ -235,22 +235,23 @@ source("./Code/Code v1.0/Code v1.0/RFUN.R")
 ################################################################################
 
 #' Generate a simulated dataset under the Wright-Fisher model
-test_seed <- 5
+test_seed <- 19
 set.seed(test_seed)
 
 #' Simulate the dataset under the Wright-Fisher model
 model <- "WFM"
-sel_cof <- 1e-02
+sel_cof <- 8e-03
 dom_par <- 5e-01
-mig_rat <- 1e-03
-pop_siz <- 1e+04
-sel_gen <- 120
-mig_gen <- 320
+mig_rat <- 5e-03
+pop_siz <- 5e+03
+sel_gen <- 180
+mig_gen <- 360
 ext_frq <- 9e-01
 int_frq <- c(4e-01, 6e-01, 0e-00, 0e-00)
 smp_gen <- (0:10) * 50
 smp_siz <- rep(100, 11)
-cna_gen <- sample(smp_gen, 5)
+# cna_gen <- sample(smp_gen, 5)
+cna_gen <- NULL
 
 sim_HMM_WFM <- cmpsimulateHMM(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz, cna_gen)
 smp_gen <- sim_HMM_WFM$smp_gen
@@ -321,7 +322,7 @@ system.time(BPF <- cmprunBPF(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_ge
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, BPF,
      file = "./Output/Output v1.0/Test v1.0/TEST_BPF.rda")
-
+#
 # load("./Output/Output v1.0/Test v1.0/TEST_BPF.rda")
 #
 # lik <- rep(1, pcl_num)
@@ -437,7 +438,7 @@ system.time(OptNum <- calculateOptimalParticleNum(sel_cof, dom_par, mig_rat, pop
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, gap_num, OptNum,
      file = "./Output/Output v1.0/Test v1.0/TEST_OptNum.rda")
-
+#
 # load("./Output/Output v1.0/Test v1.0/TEST_OptNum.rda")
 #
 # opt_pcl_num <- OptNum$opt_pcl_num
@@ -494,7 +495,7 @@ load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, PMMH,
      file = "./Output/Output v1.0/Test v1.0/TEST_PMMH.rda")
-
+#
 # load("./Output/Output v1.0/Test v1.0/TEST_PMMH.rda")
 #
 # sel_cof_chn <- PMMH$sel_cof_chn
@@ -638,7 +639,7 @@ load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, PMMHwGibbs,
      file = "./Output/Output v1.0/Test v1.0/TEST_PMMHwGibbs.rda")
-
+#
 # load("./Output/Output v1.0/Test v1.0/TEST_PMMHwGibbs.rda")
 #
 # sel_cof_chn <- PMMHwGibbs$sel_cof_chn
@@ -786,7 +787,7 @@ load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto, AdaptPMMH,
      file = "./Output/Output v1.0/Test v1.0/TEST_AdaptPMMH.rda")
-
+#
 # load("./Output/Output v1.0/Test v1.0/TEST_AdaptPMMH.rda")
 #
 # sel_cof_chn <- AdaptPMMH$sel_cof_chn
@@ -934,7 +935,7 @@ load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto, AdaptPMMHwGibbs,
      file = "./Output/Output v1.0/Test v1.0/TEST_AdaptPMMHwGibbs.rda")
-
+#
 # load("./Output/Output v1.0/Test v1.0/TEST_AdaptPMMHwGibbs.rda")
 #
 # sel_cof_chn <- AdaptPMMHwGibbs$sel_cof_chn
@@ -1060,37 +1061,37 @@ save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp
 #' @param stp_siz the step size sequence in the adaptive setting (decaying to zero)
 #' @param apt_rto the target mean acceptance probability of the adaptive setting
 
-load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
-
-set.seed(test_seed)
-
-method <- "PMMHwGibbs"
-sel_cof <- 0e-00
-dom_par
-mig_rat <- 0e-00
-pop_siz
-sel_gen <- min(smp_gen)
-mig_gen <- ifelse(smp_gen[which(smp_cnt[2, ] > 0)[1]] - min(smp_gen) > 0, smp_gen[which(smp_cnt[2, ] > 0)[1] - 1], smp_gen[which(smp_cnt[2, ] > 0)[1]])
-ext_frq
-smp_gen
-smp_siz
-smp_cnt
-ptn_num <- 5e+00
-pcl_num <- 1e+03
-itn_num <- 2e+04
-brn_num <- 5e+03
-thn_num <- 5e+00
-adp_set <- TRUE
-stp_siz <- (1:itn_num)^(-2 / 3)
-apt_rto <- 4e-01
-
-system.time(BayesianProcedure <- cmprunBayesianProcedure(method, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, adp_set, stp_siz, apt_rto))
-
-load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
-
-save(method, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, adp_set, stp_siz, apt_rto, BayesianProcedure,
-     file = "./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure.rda")
-
+# load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
+#
+# set.seed(test_seed)
+#
+# method <- "PMMHwGibbs"
+# sel_cof <- 0e-00
+# dom_par
+# mig_rat <- 0e-00
+# pop_siz
+# sel_gen <- min(smp_gen)
+# mig_gen <- ifelse(smp_gen[which(smp_cnt[2, ] > 0)[1]] - min(smp_gen) > 0, smp_gen[which(smp_cnt[2, ] > 0)[1] - 1], smp_gen[which(smp_cnt[2, ] > 0)[1]])
+# ext_frq
+# smp_gen
+# smp_siz
+# smp_cnt
+# ptn_num <- 5e+00
+# pcl_num <- 1e+03
+# itn_num <- 2e+04
+# brn_num <- 5e+03
+# thn_num <- 5e+00
+# adp_set <- TRUE
+# stp_siz <- (1:itn_num)^(-2 / 3)
+# apt_rto <- 4e-01
+#
+# system.time(BayesianProcedure <- cmprunBayesianProcedure(method, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, adp_set, stp_siz, apt_rto))
+#
+# load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
+#
+# save(method, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, adp_set, stp_siz, apt_rto, BayesianProcedure,
+#      file = "./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure.rda")
+#
 # load("./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure.rda")
 #
 # sel_cof_chn <- BayesianProcedure$sel_cof_chn
