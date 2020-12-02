@@ -1,5 +1,5 @@
 #' @title Inferring natural selection and gene migration in the evolution of chickens from ancient DNA data
-#' @author Wenyang Lyu, Xiaoyang Dai, Sile Hu, Mark Beaumont, Feng Yu, Zhangyi He
+#' @author Zhangyi He, Wenyang Lyu, Xiaoyang Dai, Sile Hu, Mark Beaumont, Feng Yu
 
 #' version 1.0
 
@@ -322,81 +322,81 @@ system.time(BPF <- cmprunBPF(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_ge
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, BPF,
      file = "./Output/Output v1.0/Test v1.0/TEST_BPF.rda")
-#
-# load("./Output/Output v1.0/Test v1.0/TEST_BPF.rda")
-#
-# lik <- rep(1, pcl_num)
-# wght <- BPF$wght
-# for (k in 1:length(smp_gen)) {
-#   lik <- lik * (cumsum(wght[, k]) / (1:pcl_num))
-# }
-#
-# pdf(file = "./Output/Output v1.0/Test v1.0/TEST_BPF_Likelihood.pdf", width = 8, height = 6)
-# par(mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
-# plot(1:pcl_num, log(lik), type = 'l',
-#      xlab = "Number of particles", ylab = "Log likelihood",
-#      main = "Log likelihood through the bootstrap particle filter")
-# dev.off()
-#
-# pop_frq_pre_resmp <- BPF$pop_frq_pre_resmp
-# pop_frq_pst_resmp <- BPF$pop_frq_pst_resmp
-#
-# pdf(file = "./Output/Output v1.0/Test v1.0/TEST_BPF_Particle.pdf", width = 32, height = 66)
-# par(mfrow = c(11, 4), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
-# for (k in 1:length(smp_gen)) {
-#   hist_pst_resmp <- hist(pop_frq_pst_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 50), plot = FALSE)
-#   hist_pre_resmp <- hist(pop_frq_pre_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 50), plot = FALSE)
-#   if (!any(is.nan(c(hist_pst_resmp$density, hist_pre_resmp$density)))) {
-#     hist(pop_frq_pst_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
-#          xlim = c(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k], smp_ale_frq[1, k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k], smp_ale_frq[1, k])), ylim = c(0, max(hist_pst_resmp$density, hist_pre_resmp$density)),
-#          xlab = "Allele frequency",
-#          main = paste("Island mutant allele at generation", smp_gen[k]))
-#     hist(pop_frq_pre_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
-#     abline(v = smp_ale_frq[1, k], col = 'red', lty = 2, lwd = 2)
-#   } else {
-#     plot(0, type = "n", axes = FALSE, ann = FALSE)
-#   }
-#
-#   hist_pst_resmp <- hist(pop_frq_pst_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 50), plot = FALSE)
-#   hist_pre_resmp <- hist(pop_frq_pre_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 50), plot = FALSE)
-#   if (!any(is.nan(c(hist_pst_resmp$density, hist_pre_resmp$density)))) {
-#     hist(pop_frq_pst_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
-#          xlim = c(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k], smp_ale_frq[2, k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k], smp_ale_frq[2, k])), ylim = c(0, max(hist_pst_resmp$density, hist_pre_resmp$density)),
-#          xlab = "Allele frequency",
-#          main = paste("Island ancestral allele at generation", smp_gen[k]))
-#     hist(pop_frq_pre_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
-#     abline(v = smp_ale_frq[2, k], col = 'red', lty = 2, lwd = 2)
-#   } else {
-#     plot(0, type = "n", axes = FALSE, ann = FALSE)
-#   }
-#
-#   hist_pst_resmp <- hist(pop_frq_pst_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 50), plot = FALSE)
-#   hist_pre_resmp <- hist(pop_frq_pre_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 50), plot = FALSE)
-#   if (!any(is.nan(c(hist_pst_resmp$density, hist_pre_resmp$density)))) {
-#     hist(pop_frq_pst_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
-#          xlim = c(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k], smp_ale_frq[3, k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k], smp_ale_frq[3, k])), ylim = c(0, max(hist_pst_resmp$density, hist_pre_resmp$density)),
-#          xlab = "Allele frequency",
-#          main = paste("Continent mutant allele at generation", smp_gen[k]))
-#     hist(pop_frq_pre_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
-#     abline(v = smp_ale_frq[3, k], col = 'red', lty = 2, lwd = 2)
-#   } else {
-#     plot(0, type = "n", axes = FALSE, ann = FALSE)
-#   }
-#
-#   hist_pst_resmp <- hist(pop_frq_pst_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 50), plot = FALSE)
-#   hist_pre_resmp <- hist(pop_frq_pre_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 50), plot = FALSE)
-#   if (!any(is.nan(c(hist_pst_resmp$density, hist_pre_resmp$density)))) {
-#     hist(pop_frq_pst_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
-#          xlim = c(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k], smp_ale_frq[4, k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k], smp_ale_frq[4, k])), ylim = c(0, max(hist_pst_resmp$density, hist_pre_resmp$density)),
-#          xlab = "Allele frequency",
-#          main = paste("Continent ancestral allele at generation", smp_gen[k]))
-#     hist(pop_frq_pre_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
-#     abline(v = smp_ale_frq[4, k], col = 'red', lty = 2, lwd = 2)
-#   } else {
-#     plot(0, type = "n", axes = FALSE, ann = FALSE)
-#   }
-# }
-# dev.off()
+
+load("./Output/Output v1.0/Test v1.0/TEST_BPF.rda")
+
+lik <- rep(1, pcl_num)
+wght <- BPF$wght
+for (k in 1:length(smp_gen)) {
+  lik <- lik * (cumsum(wght[, k]) / (1:pcl_num))
+}
+
+pdf(file = "./Output/Output v1.0/Test v1.0/TEST_BPF_Likelihood.pdf", width = 8, height = 6)
+par(mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
+plot(1:pcl_num, log(lik), type = 'l',
+     xlab = "Number of particles", ylab = "Log likelihood",
+     main = "Log likelihood through the bootstrap particle filter")
+dev.off()
+
+pop_frq_pre_resmp <- BPF$pop_frq_pre_resmp
+pop_frq_pst_resmp <- BPF$pop_frq_pst_resmp
+
+pdf(file = "./Output/Output v1.0/Test v1.0/TEST_BPF_Particle.pdf", width = 32, height = 66)
+par(mfrow = c(11, 4), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
+for (k in 1:length(smp_gen)) {
+  hist_pst_resmp <- hist(pop_frq_pst_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 50), plot = FALSE)
+  hist_pre_resmp <- hist(pop_frq_pre_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 50), plot = FALSE)
+  if (!any(is.nan(c(hist_pst_resmp$density, hist_pre_resmp$density)))) {
+    hist(pop_frq_pst_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
+         xlim = c(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k], smp_ale_frq[1, k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k], smp_ale_frq[1, k])), ylim = c(0, max(hist_pst_resmp$density, hist_pre_resmp$density)),
+         xlab = "Allele frequency",
+         main = paste("Island mutant allele at generation", smp_gen[k]))
+    hist(pop_frq_pre_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
+    abline(v = smp_ale_frq[1, k], col = 'red', lty = 2, lwd = 2)
+  } else {
+    plot(0, type = "n", axes = FALSE, ann = FALSE)
+  }
+
+  hist_pst_resmp <- hist(pop_frq_pst_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 50), plot = FALSE)
+  hist_pre_resmp <- hist(pop_frq_pre_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 50), plot = FALSE)
+  if (!any(is.nan(c(hist_pst_resmp$density, hist_pre_resmp$density)))) {
+    hist(pop_frq_pst_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
+         xlim = c(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k], smp_ale_frq[2, k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k], smp_ale_frq[2, k])), ylim = c(0, max(hist_pst_resmp$density, hist_pre_resmp$density)),
+         xlab = "Allele frequency",
+         main = paste("Island ancestral allele at generation", smp_gen[k]))
+    hist(pop_frq_pre_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
+    abline(v = smp_ale_frq[2, k], col = 'red', lty = 2, lwd = 2)
+  } else {
+    plot(0, type = "n", axes = FALSE, ann = FALSE)
+  }
+
+  hist_pst_resmp <- hist(pop_frq_pst_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 50), plot = FALSE)
+  hist_pre_resmp <- hist(pop_frq_pre_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 50), plot = FALSE)
+  if (!any(is.nan(c(hist_pst_resmp$density, hist_pre_resmp$density)))) {
+    hist(pop_frq_pst_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
+         xlim = c(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k], smp_ale_frq[3, k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k], smp_ale_frq[3, k])), ylim = c(0, max(hist_pst_resmp$density, hist_pre_resmp$density)),
+         xlab = "Allele frequency",
+         main = paste("Continent mutant allele at generation", smp_gen[k]))
+    hist(pop_frq_pre_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
+    abline(v = smp_ale_frq[3, k], col = 'red', lty = 2, lwd = 2)
+  } else {
+    plot(0, type = "n", axes = FALSE, ann = FALSE)
+  }
+
+  hist_pst_resmp <- hist(pop_frq_pst_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 50), plot = FALSE)
+  hist_pre_resmp <- hist(pop_frq_pre_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 50), plot = FALSE)
+  if (!any(is.nan(c(hist_pst_resmp$density, hist_pre_resmp$density)))) {
+    hist(pop_frq_pst_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
+         xlim = c(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k], smp_ale_frq[4, k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k], smp_ale_frq[4, k])), ylim = c(0, max(hist_pst_resmp$density, hist_pre_resmp$density)),
+         xlab = "Allele frequency",
+         main = paste("Continent ancestral allele at generation", smp_gen[k]))
+    hist(pop_frq_pre_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
+    abline(v = smp_ale_frq[4, k], col = 'red', lty = 2, lwd = 2)
+  } else {
+    plot(0, type = "n", axes = FALSE, ann = FALSE)
+  }
+}
+dev.off()
 
 ########################################
 
@@ -438,20 +438,20 @@ system.time(OptNum <- calculateOptimalParticleNum(sel_cof, dom_par, mig_rat, pop
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, gap_num, OptNum,
      file = "./Output/Output v1.0/Test v1.0/TEST_OptNum.rda")
-#
-# load("./Output/Output v1.0/Test v1.0/TEST_OptNum.rda")
-#
-# opt_pcl_num <- OptNum$opt_pcl_num
-# log_lik_sdv <- OptNum$log_lik_sdv
-#
-# pdf(file = "./Output/Output v1.0/Test v1.0/TEST_OptNum.pdf", width = 8, height = 6)
-# par(mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
-# plot(opt_pcl_num, log_lik_sdv, type = 'b', lwd = 2,
-#      xlab = "Particle number", ylab = "Log-likelihood standard deviation",
-#      main = "Optimal particle number in the PMMH")
-# abline(h = 1.7, col = 'red', lty = 2, lwd = 2)
-# abline(h = 1.0, col = 'red', lty = 2, lwd = 2)
-# dev.off()
+
+load("./Output/Output v1.0/Test v1.0/TEST_OptNum.rda")
+
+opt_pcl_num <- OptNum$opt_pcl_num
+log_lik_sdv <- OptNum$log_lik_sdv
+
+pdf(file = "./Output/Output v1.0/Test v1.0/TEST_OptNum.pdf", width = 8, height = 6)
+par(mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
+plot(opt_pcl_num, log_lik_sdv, type = 'b', lwd = 2,
+     xlab = "Particle number", ylab = "Log-likelihood standard deviation",
+     main = "Optimal particle number in the PMMH")
+abline(h = 1.7, col = 'red', lty = 2, lwd = 2)
+abline(h = 1.0, col = 'red', lty = 2, lwd = 2)
+dev.off()
 
 ########################################
 
@@ -495,107 +495,107 @@ load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, PMMH,
      file = "./Output/Output v1.0/Test v1.0/TEST_PMMH.rda")
-#
-# load("./Output/Output v1.0/Test v1.0/TEST_PMMH.rda")
-#
-# sel_cof_chn <- PMMH$sel_cof_chn
-# sel_gen_chn <- PMMH$sel_gen_chn
-# mig_rat_chn <- PMMH$mig_rat_chn
-# mig_gen_chn <- PMMH$mig_gen_chn
-# pdf(file = "./Output/Output v1.0/Test v1.0/TEST_PMMH_Traceplot.pdf", width = 16, height = 12)
-# par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 2, cex.sub = 1.75, cex.axis = 1.75, cex.lab = 1.75)
-# plot(1:itn_num, sel_cof_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Selection coefficient",
-#      main = "Trace plot of the selection coefficient")
-# abline(h = sel_cof, col = 'red', lty = 2, lwd = 2)
-#
-# plot(1:itn_num, sel_gen_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Selection time",
-#      main = "Trace plot of the selection time")
-# abline(h = sel_gen, col = 'red', lty = 2, lwd = 2)
-#
-# plot(1:itn_num, mig_rat_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Migration rate",
-#      main = "Trace plot of the migration rate")
-# abline(h = mig_rat, col = 'red', lty = 2, lwd = 2)
-#
-# plot(1:itn_num, mig_gen_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Migration time",
-#      main = "Trace plot of the migration time")
-# abline(h = mig_gen, col = 'red', lty = 2, lwd = 2)
-# dev.off()
-#
-# brn_num <- 1e+04
-# sel_cof_chn <- sel_cof_chn[brn_num:length(sel_cof_chn)]
-# sel_gen_chn <- sel_gen_chn[brn_num:length(sel_gen_chn)]
-# mig_rat_chn <- mig_rat_chn[brn_num:length(mig_rat_chn)]
-# mig_gen_chn <- mig_gen_chn[brn_num:length(mig_gen_chn)]
-#
-# thn_num <- 8e+00
-# sel_cof_chn <- sel_cof_chn[(1:round(length(sel_cof_chn) / thn_num)) * thn_num]
-# sel_gen_chn <- sel_gen_chn[(1:round(length(sel_gen_chn) / thn_num)) * thn_num]
-# mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
-# mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
-#
-# smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
-# colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
-# pdf <- kepdf(smp, bwtype = "adaptive")
-# plot(pdf, main = "Posterior for strength and timing of natural selection and gene migration", col = colorRampPalette(rev(brewer.pal(11, 'Spectral')))(32),
-#      props = c(100,100,100, 100), method = "perspective", gap = 0.5, phi = 30, theta = 10)
-# est <- pdf@eval.points[which(pdf@estimate == max(pdf@estimate))[1], ]
-# sel_cof_est <- est[1]
-# sel_gen_est <- est[2]
-# mig_rat_est <- est[3]
-# mig_gen_est <- est[4]
-#
-# # sel_cof_est <- median(sel_cof_chn)
-# # sel_gen_est <- median(sel_gen_chn)
-# # mig_rat_est <- median(mig_rat_chn)
-# # mig_gen_est <- median(mig_gen_chn)
-#
-# sel_cof_hpd <- HPDinterval(as.mcmc(sel_cof_chn), prob = 0.95)
-# sel_gen_hpd <- HPDinterval(as.mcmc(sel_gen_chn), prob = 0.95)
-# mig_rat_hpd <- HPDinterval(as.mcmc(mig_rat_chn), prob = 0.95)
-# mig_gen_hpd <- HPDinterval(as.mcmc(mig_gen_chn), prob = 0.95)
-#
-# pdf(file = "./Output/Output v1.0/Test v1.0/TEST_PMMH_Posterior.pdf", width = 16, height = 12)
-# par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
-# hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the selection coefficient")
-# lines(density(sel_cof_chn), lwd = 2, col = 'black')
-# abline(v = sel_cof, col = 'red', lty = 2, lwd = 2)
-# abline(v = sel_cof_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = sel_cof_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the selection time")
-# lines(density(sel_gen_chn), lwd = 2, col = 'black')
-# abline(v = sel_gen, col = 'red', lty = 2, lwd = 2)
-# abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = sel_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = sel_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the migration rate")
-# lines(density(mig_rat_chn), lwd = 2, col = 'black')
-# abline(v = mig_rat, col = 'red', lty = 2, lwd = 2)
-# abline(v = mig_rat_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = mig_rat_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the migration time")
-# lines(density(mig_gen_chn), lwd = 2, col = 'black')
-# abline(v = mig_gen, col = 'red', lty = 2, lwd = 2)
-# abline(v = mig_gen_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = mig_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = mig_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
-# dev.off()
+
+load("./Output/Output v1.0/Test v1.0/TEST_PMMH.rda")
+
+sel_cof_chn <- PMMH$sel_cof_chn
+sel_gen_chn <- PMMH$sel_gen_chn
+mig_rat_chn <- PMMH$mig_rat_chn
+mig_gen_chn <- PMMH$mig_gen_chn
+pdf(file = "./Output/Output v1.0/Test v1.0/TEST_PMMH_Traceplot.pdf", width = 16, height = 12)
+par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 2, cex.sub = 1.75, cex.axis = 1.75, cex.lab = 1.75)
+plot(1:itn_num, sel_cof_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Selection coefficient",
+     main = "Trace plot of the selection coefficient")
+abline(h = sel_cof, col = 'red', lty = 2, lwd = 2)
+
+plot(1:itn_num, sel_gen_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Selection time",
+     main = "Trace plot of the selection time")
+abline(h = sel_gen, col = 'red', lty = 2, lwd = 2)
+
+plot(1:itn_num, mig_rat_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Migration rate",
+     main = "Trace plot of the migration rate")
+abline(h = mig_rat, col = 'red', lty = 2, lwd = 2)
+
+plot(1:itn_num, mig_gen_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Migration time",
+     main = "Trace plot of the migration time")
+abline(h = mig_gen, col = 'red', lty = 2, lwd = 2)
+dev.off()
+
+brn_num <- 1e+04
+sel_cof_chn <- sel_cof_chn[brn_num:length(sel_cof_chn)]
+sel_gen_chn <- sel_gen_chn[brn_num:length(sel_gen_chn)]
+mig_rat_chn <- mig_rat_chn[brn_num:length(mig_rat_chn)]
+mig_gen_chn <- mig_gen_chn[brn_num:length(mig_gen_chn)]
+
+thn_num <- 8e+00
+sel_cof_chn <- sel_cof_chn[(1:round(length(sel_cof_chn) / thn_num)) * thn_num]
+sel_gen_chn <- sel_gen_chn[(1:round(length(sel_gen_chn) / thn_num)) * thn_num]
+mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
+mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
+
+smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
+colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
+pdf <- kepdf(smp, bwtype = "adaptive")
+plot(pdf, main = "Posterior for strength and timing of natural selection and gene migration", col = colorRampPalette(rev(brewer.pal(11, 'Spectral')))(32),
+     props = c(100, 100, 100, 100), method = "perspective", gap = 0.5, phi = 30, theta = 10)
+est <- pdf@eval.points[which(pdf@estimate == max(pdf@estimate))[1], ]
+sel_cof_est <- est[1]
+sel_gen_est <- est[2]
+mig_rat_est <- est[3]
+mig_gen_est <- est[4]
+
+# sel_cof_est <- median(sel_cof_chn)
+# sel_gen_est <- median(sel_gen_chn)
+# mig_rat_est <- median(mig_rat_chn)
+# mig_gen_est <- median(mig_gen_chn)
+
+sel_cof_hpd <- HPDinterval(as.mcmc(sel_cof_chn), prob = 0.95)
+sel_gen_hpd <- HPDinterval(as.mcmc(sel_gen_chn), prob = 0.95)
+mig_rat_hpd <- HPDinterval(as.mcmc(mig_rat_chn), prob = 0.95)
+mig_gen_hpd <- HPDinterval(as.mcmc(mig_gen_chn), prob = 0.95)
+
+pdf(file = "./Output/Output v1.0/Test v1.0/TEST_PMMH_Posterior.pdf", width = 16, height = 12)
+par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
+hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the selection coefficient")
+lines(density(sel_cof_chn), lwd = 2, col = 'black')
+abline(v = sel_cof, col = 'red', lty = 2, lwd = 2)
+abline(v = sel_cof_est, col = 'black', lty = 2, lwd = 2)
+abline(v = sel_cof_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the selection time")
+lines(density(sel_gen_chn), lwd = 2, col = 'black')
+abline(v = sel_gen, col = 'red', lty = 2, lwd = 2)
+abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
+abline(v = sel_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = sel_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the migration rate")
+lines(density(mig_rat_chn), lwd = 2, col = 'black')
+abline(v = mig_rat, col = 'red', lty = 2, lwd = 2)
+abline(v = mig_rat_est, col = 'black', lty = 2, lwd = 2)
+abline(v = mig_rat_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the migration time")
+lines(density(mig_gen_chn), lwd = 2, col = 'black')
+abline(v = mig_gen, col = 'red', lty = 2, lwd = 2)
+abline(v = mig_gen_est, col = 'black', lty = 2, lwd = 2)
+abline(v = mig_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = mig_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
+dev.off()
 
 ########################################
 
@@ -639,107 +639,107 @@ load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, PMMHwGibbs,
      file = "./Output/Output v1.0/Test v1.0/TEST_PMMHwGibbs.rda")
-#
-# load("./Output/Output v1.0/Test v1.0/TEST_PMMHwGibbs.rda")
-#
-# sel_cof_chn <- PMMHwGibbs$sel_cof_chn
-# sel_gen_chn <- PMMHwGibbs$sel_gen_chn
-# mig_rat_chn <- PMMHwGibbs$mig_rat_chn
-# mig_gen_chn <- PMMHwGibbs$mig_gen_chn
-# pdf(file = "./Output/Output v1.0/Test v1.0/TEST_PMMHwGibbs_Traceplot.pdf", width = 16, height = 12)
-# par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 2, cex.sub = 1.75, cex.axis = 1.75, cex.lab = 1.75)
-# plot(1:itn_num, sel_cof_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Selection coefficient",
-#      main = "Trace plot of the selection coefficient")
-# abline(h = sel_cof, col = 'red', lty = 2, lwd = 2)
-#
-# plot(1:itn_num, sel_gen_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Selection time",
-#      main = "Trace plot of the selection time")
-# abline(h = sel_gen, col = 'red', lty = 2, lwd = 2)
-#
-# plot(1:itn_num, mig_rat_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Migration rate",
-#      main = "Trace plot of the migration rate")
-# abline(h = mig_rat, col = 'red', lty = 2, lwd = 2)
-#
-# plot(1:itn_num, mig_gen_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Migration time",
-#      main = "Trace plot of the migration time")
-# abline(h = mig_gen, col = 'red', lty = 2, lwd = 2)
-# dev.off()
-#
-# brn_num <- 1e+04
-# sel_cof_chn <- sel_cof_chn[brn_num:length(sel_cof_chn)]
-# sel_gen_chn <- sel_gen_chn[brn_num:length(sel_gen_chn)]
-# mig_rat_chn <- mig_rat_chn[brn_num:length(mig_rat_chn)]
-# mig_gen_chn <- mig_gen_chn[brn_num:length(mig_gen_chn)]
-#
-# thn_num <- 8e+00
-# sel_cof_chn <- sel_cof_chn[(1:round(length(sel_cof_chn) / thn_num)) * thn_num]
-# sel_gen_chn <- sel_gen_chn[(1:round(length(sel_gen_chn) / thn_num)) * thn_num]
-# mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
-# mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
-#
-# smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
-# colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
-# pdf <- kepdf(smp, bwtype = "adaptive")
-# plot(pdf, main = "Posterior for strength and timing of natural selection and gene migration", col = colorRampPalette(rev(brewer.pal(11, 'Spectral')))(32),
-#      props = c(100,100,100, 100), method = "perspective", gap = 0.5, phi = 30, theta = 10)
-# est <- pdf@eval.points[which(pdf@estimate == max(pdf@estimate))[1], ]
-# sel_cof_est <- est[1]
-# sel_gen_est <- est[2]
-# mig_rat_est <- est[3]
-# mig_gen_est <- est[4]
-#
-# # sel_cof_est <- median(sel_cof_chn)
-# # sel_gen_est <- median(sel_gen_chn)
-# # mig_rat_est <- median(mig_rat_chn)
-# # mig_gen_est <- median(mig_gen_chn)
-#
-# sel_cof_hpd <- HPDinterval(as.mcmc(sel_cof_chn), prob = 0.95)
-# sel_gen_hpd <- HPDinterval(as.mcmc(sel_gen_chn), prob = 0.95)
-# mig_rat_hpd <- HPDinterval(as.mcmc(mig_rat_chn), prob = 0.95)
-# mig_gen_hpd <- HPDinterval(as.mcmc(mig_gen_chn), prob = 0.95)
-#
-# pdf(file = "./Output/Output v1.0/Test v1.0/TEST_PMMHwGibbs_Posterior.pdf", width = 16, height = 12)
-# par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
-# hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the selection coefficient")
-# lines(density(sel_cof_chn), lwd = 2, col = 'black')
-# abline(v = sel_cof, col = 'red', lty = 2, lwd = 2)
-# abline(v = sel_cof_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = sel_cof_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the selection time")
-# lines(density(sel_gen_chn), lwd = 2, col = 'black')
-# abline(v = sel_gen, col = 'red', lty = 2, lwd = 2)
-# abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = sel_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = sel_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the migration rate")
-# lines(density(mig_rat_chn), lwd = 2, col = 'black')
-# abline(v = mig_rat, col = 'red', lty = 2, lwd = 2)
-# abline(v = mig_rat_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = mig_rat_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the migration time")
-# lines(density(mig_gen_chn), lwd = 2, col = 'black')
-# abline(v = mig_gen, col = 'red', lty = 2, lwd = 2)
-# abline(v = mig_gen_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = mig_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = mig_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
-# dev.off()
+
+load("./Output/Output v1.0/Test v1.0/TEST_PMMHwGibbs.rda")
+
+sel_cof_chn <- PMMHwGibbs$sel_cof_chn
+sel_gen_chn <- PMMHwGibbs$sel_gen_chn
+mig_rat_chn <- PMMHwGibbs$mig_rat_chn
+mig_gen_chn <- PMMHwGibbs$mig_gen_chn
+pdf(file = "./Output/Output v1.0/Test v1.0/TEST_PMMHwGibbs_Traceplot.pdf", width = 16, height = 12)
+par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 2, cex.sub = 1.75, cex.axis = 1.75, cex.lab = 1.75)
+plot(1:itn_num, sel_cof_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Selection coefficient",
+     main = "Trace plot of the selection coefficient")
+abline(h = sel_cof, col = 'red', lty = 2, lwd = 2)
+
+plot(1:itn_num, sel_gen_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Selection time",
+     main = "Trace plot of the selection time")
+abline(h = sel_gen, col = 'red', lty = 2, lwd = 2)
+
+plot(1:itn_num, mig_rat_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Migration rate",
+     main = "Trace plot of the migration rate")
+abline(h = mig_rat, col = 'red', lty = 2, lwd = 2)
+
+plot(1:itn_num, mig_gen_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Migration time",
+     main = "Trace plot of the migration time")
+abline(h = mig_gen, col = 'red', lty = 2, lwd = 2)
+dev.off()
+
+brn_num <- 1e+04
+sel_cof_chn <- sel_cof_chn[brn_num:length(sel_cof_chn)]
+sel_gen_chn <- sel_gen_chn[brn_num:length(sel_gen_chn)]
+mig_rat_chn <- mig_rat_chn[brn_num:length(mig_rat_chn)]
+mig_gen_chn <- mig_gen_chn[brn_num:length(mig_gen_chn)]
+
+thn_num <- 8e+00
+sel_cof_chn <- sel_cof_chn[(1:round(length(sel_cof_chn) / thn_num)) * thn_num]
+sel_gen_chn <- sel_gen_chn[(1:round(length(sel_gen_chn) / thn_num)) * thn_num]
+mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
+mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
+
+smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
+colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
+pdf <- kepdf(smp, bwtype = "adaptive")
+plot(pdf, main = "Posterior for strength and timing of natural selection and gene migration", col = colorRampPalette(rev(brewer.pal(11, 'Spectral')))(32),
+     props = c(100, 100, 100, 100), method = "perspective", gap = 0.5, phi = 30, theta = 10)
+est <- pdf@eval.points[which(pdf@estimate == max(pdf@estimate))[1], ]
+sel_cof_est <- est[1]
+sel_gen_est <- est[2]
+mig_rat_est <- est[3]
+mig_gen_est <- est[4]
+
+# sel_cof_est <- median(sel_cof_chn)
+# sel_gen_est <- median(sel_gen_chn)
+# mig_rat_est <- median(mig_rat_chn)
+# mig_gen_est <- median(mig_gen_chn)
+
+sel_cof_hpd <- HPDinterval(as.mcmc(sel_cof_chn), prob = 0.95)
+sel_gen_hpd <- HPDinterval(as.mcmc(sel_gen_chn), prob = 0.95)
+mig_rat_hpd <- HPDinterval(as.mcmc(mig_rat_chn), prob = 0.95)
+mig_gen_hpd <- HPDinterval(as.mcmc(mig_gen_chn), prob = 0.95)
+
+pdf(file = "./Output/Output v1.0/Test v1.0/TEST_PMMHwGibbs_Posterior.pdf", width = 16, height = 12)
+par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
+hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the selection coefficient")
+lines(density(sel_cof_chn), lwd = 2, col = 'black')
+abline(v = sel_cof, col = 'red', lty = 2, lwd = 2)
+abline(v = sel_cof_est, col = 'black', lty = 2, lwd = 2)
+abline(v = sel_cof_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the selection time")
+lines(density(sel_gen_chn), lwd = 2, col = 'black')
+abline(v = sel_gen, col = 'red', lty = 2, lwd = 2)
+abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
+abline(v = sel_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = sel_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the migration rate")
+lines(density(mig_rat_chn), lwd = 2, col = 'black')
+abline(v = mig_rat, col = 'red', lty = 2, lwd = 2)
+abline(v = mig_rat_est, col = 'black', lty = 2, lwd = 2)
+abline(v = mig_rat_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the migration time")
+lines(density(mig_gen_chn), lwd = 2, col = 'black')
+abline(v = mig_gen, col = 'red', lty = 2, lwd = 2)
+abline(v = mig_gen_est, col = 'black', lty = 2, lwd = 2)
+abline(v = mig_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = mig_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
+dev.off()
 
 ########################################
 
@@ -787,107 +787,107 @@ load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto, AdaptPMMH,
      file = "./Output/Output v1.0/Test v1.0/TEST_AdaptPMMH.rda")
-#
-# load("./Output/Output v1.0/Test v1.0/TEST_AdaptPMMH.rda")
-#
-# sel_cof_chn <- AdaptPMMH$sel_cof_chn
-# sel_gen_chn <- AdaptPMMH$sel_gen_chn
-# mig_rat_chn <- AdaptPMMH$mig_rat_chn
-# mig_gen_chn <- AdaptPMMH$mig_gen_chn
-# pdf(file = "./Output/Output v1.0/Test v1.0/TEST_AdaptPMMH_Traceplot.pdf", width = 16, height = 12)
-# par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 2, cex.sub = 1.75, cex.axis = 1.75, cex.lab = 1.75)
-# plot(1:itn_num, sel_cof_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Selection coefficient",
-#      main = "Trace plot of the selection coefficient")
-# abline(h = sel_cof, col = 'red', lty = 2, lwd = 2)
-#
-# plot(1:itn_num, sel_gen_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Selection time",
-#      main = "Trace plot of the selection time")
-# abline(h = sel_gen, col = 'red', lty = 2, lwd = 2)
-#
-# plot(1:itn_num, mig_rat_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Migration rate",
-#      main = "Trace plot of the migration rate")
-# abline(h = mig_rat, col = 'red', lty = 2, lwd = 2)
-#
-# plot(1:itn_num, mig_gen_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Migration time",
-#      main = "Trace plot of the migration time")
-# abline(h = mig_gen, col = 'red', lty = 2, lwd = 2)
-# dev.off()
-#
-# brn_num <- 1e+04
-# sel_cof_chn <- sel_cof_chn[brn_num:length(sel_cof_chn)]
-# sel_gen_chn <- sel_gen_chn[brn_num:length(sel_gen_chn)]
-# mig_rat_chn <- mig_rat_chn[brn_num:length(mig_rat_chn)]
-# mig_gen_chn <- mig_gen_chn[brn_num:length(mig_gen_chn)]
-#
-# thn_num <- 8e+00
-# sel_cof_chn <- sel_cof_chn[(1:round(length(sel_cof_chn) / thn_num)) * thn_num]
-# sel_gen_chn <- sel_gen_chn[(1:round(length(sel_gen_chn) / thn_num)) * thn_num]
-# mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
-# mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
-#
-# smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
-# colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
-# pdf <- kepdf(smp, bwtype = "adaptive")
-# plot(pdf, main = "Posterior for strength and timing of natural selection and gene migration", col = colorRampPalette(rev(brewer.pal(11, 'Spectral')))(32),
-#      props = c(100,100,100, 100), method = "perspective", gap = 0.5, phi = 30, theta = 10)
-# est <- pdf@eval.points[which(pdf@estimate == max(pdf@estimate))[1], ]
-# sel_cof_est <- est[1]
-# sel_gen_est <- est[2]
-# mig_rat_est <- est[3]
-# mig_gen_est <- est[4]
-#
-# # sel_cof_est <- median(sel_cof_chn)
-# # sel_gen_est <- median(sel_gen_chn)
-# # mig_rat_est <- median(mig_rat_chn)
-# # mig_gen_est <- median(mig_gen_chn)
-#
-# sel_cof_hpd <- HPDinterval(as.mcmc(sel_cof_chn), prob = 0.95)
-# sel_gen_hpd <- HPDinterval(as.mcmc(sel_gen_chn), prob = 0.95)
-# mig_rat_hpd <- HPDinterval(as.mcmc(mig_rat_chn), prob = 0.95)
-# mig_gen_hpd <- HPDinterval(as.mcmc(mig_gen_chn), prob = 0.95)
-#
-# pdf(file = "./Output/Output v1.0/Test v1.0/TEST_AdaptPMMH_Posterior.pdf", width = 16, height = 12)
-# par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
-# hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the selection coefficient")
-# lines(density(sel_cof_chn), lwd = 2, col = 'black')
-# abline(v = sel_cof, col = 'red', lty = 2, lwd = 2)
-# abline(v = sel_cof_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = sel_cof_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the selection time")
-# lines(density(sel_gen_chn), lwd = 2, col = 'black')
-# abline(v = sel_gen, col = 'red', lty = 2, lwd = 2)
-# abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = sel_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = sel_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the migration rate")
-# lines(density(mig_rat_chn), lwd = 2, col = 'black')
-# abline(v = mig_rat, col = 'red', lty = 2, lwd = 2)
-# abline(v = mig_rat_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = mig_rat_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the migration time")
-# lines(density(mig_gen_chn), lwd = 2, col = 'black')
-# abline(v = mig_gen, col = 'red', lty = 2, lwd = 2)
-# abline(v = mig_gen_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = mig_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = mig_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
-# dev.off()
+
+load("./Output/Output v1.0/Test v1.0/TEST_AdaptPMMH.rda")
+
+sel_cof_chn <- AdaptPMMH$sel_cof_chn
+sel_gen_chn <- AdaptPMMH$sel_gen_chn
+mig_rat_chn <- AdaptPMMH$mig_rat_chn
+mig_gen_chn <- AdaptPMMH$mig_gen_chn
+pdf(file = "./Output/Output v1.0/Test v1.0/TEST_AdaptPMMH_Traceplot.pdf", width = 16, height = 12)
+par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 2, cex.sub = 1.75, cex.axis = 1.75, cex.lab = 1.75)
+plot(1:itn_num, sel_cof_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Selection coefficient",
+     main = "Trace plot of the selection coefficient")
+abline(h = sel_cof, col = 'red', lty = 2, lwd = 2)
+
+plot(1:itn_num, sel_gen_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Selection time",
+     main = "Trace plot of the selection time")
+abline(h = sel_gen, col = 'red', lty = 2, lwd = 2)
+
+plot(1:itn_num, mig_rat_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Migration rate",
+     main = "Trace plot of the migration rate")
+abline(h = mig_rat, col = 'red', lty = 2, lwd = 2)
+
+plot(1:itn_num, mig_gen_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Migration time",
+     main = "Trace plot of the migration time")
+abline(h = mig_gen, col = 'red', lty = 2, lwd = 2)
+dev.off()
+
+brn_num <- 1e+04
+sel_cof_chn <- sel_cof_chn[brn_num:length(sel_cof_chn)]
+sel_gen_chn <- sel_gen_chn[brn_num:length(sel_gen_chn)]
+mig_rat_chn <- mig_rat_chn[brn_num:length(mig_rat_chn)]
+mig_gen_chn <- mig_gen_chn[brn_num:length(mig_gen_chn)]
+
+thn_num <- 8e+00
+sel_cof_chn <- sel_cof_chn[(1:round(length(sel_cof_chn) / thn_num)) * thn_num]
+sel_gen_chn <- sel_gen_chn[(1:round(length(sel_gen_chn) / thn_num)) * thn_num]
+mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
+mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
+
+smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
+colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
+pdf <- kepdf(smp, bwtype = "adaptive")
+plot(pdf, main = "Posterior for strength and timing of natural selection and gene migration", col = colorRampPalette(rev(brewer.pal(11, 'Spectral')))(32),
+     props = c(100, 100, 100, 100), method = "perspective", gap = 0.5, phi = 30, theta = 10)
+est <- pdf@eval.points[which(pdf@estimate == max(pdf@estimate))[1], ]
+sel_cof_est <- est[1]
+sel_gen_est <- est[2]
+mig_rat_est <- est[3]
+mig_gen_est <- est[4]
+
+# sel_cof_est <- median(sel_cof_chn)
+# sel_gen_est <- median(sel_gen_chn)
+# mig_rat_est <- median(mig_rat_chn)
+# mig_gen_est <- median(mig_gen_chn)
+
+sel_cof_hpd <- HPDinterval(as.mcmc(sel_cof_chn), prob = 0.95)
+sel_gen_hpd <- HPDinterval(as.mcmc(sel_gen_chn), prob = 0.95)
+mig_rat_hpd <- HPDinterval(as.mcmc(mig_rat_chn), prob = 0.95)
+mig_gen_hpd <- HPDinterval(as.mcmc(mig_gen_chn), prob = 0.95)
+
+pdf(file = "./Output/Output v1.0/Test v1.0/TEST_AdaptPMMH_Posterior.pdf", width = 16, height = 12)
+par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
+hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the selection coefficient")
+lines(density(sel_cof_chn), lwd = 2, col = 'black')
+abline(v = sel_cof, col = 'red', lty = 2, lwd = 2)
+abline(v = sel_cof_est, col = 'black', lty = 2, lwd = 2)
+abline(v = sel_cof_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the selection time")
+lines(density(sel_gen_chn), lwd = 2, col = 'black')
+abline(v = sel_gen, col = 'red', lty = 2, lwd = 2)
+abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
+abline(v = sel_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = sel_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the migration rate")
+lines(density(mig_rat_chn), lwd = 2, col = 'black')
+abline(v = mig_rat, col = 'red', lty = 2, lwd = 2)
+abline(v = mig_rat_est, col = 'black', lty = 2, lwd = 2)
+abline(v = mig_rat_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the migration time")
+lines(density(mig_gen_chn), lwd = 2, col = 'black')
+abline(v = mig_gen, col = 'red', lty = 2, lwd = 2)
+abline(v = mig_gen_est, col = 'black', lty = 2, lwd = 2)
+abline(v = mig_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = mig_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
+dev.off()
 
 ########################################
 
@@ -935,107 +935,107 @@ load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto, AdaptPMMHwGibbs,
      file = "./Output/Output v1.0/Test v1.0/TEST_AdaptPMMHwGibbs.rda")
-#
-# load("./Output/Output v1.0/Test v1.0/TEST_AdaptPMMHwGibbs.rda")
-#
-# sel_cof_chn <- AdaptPMMHwGibbs$sel_cof_chn
-# sel_gen_chn <- AdaptPMMHwGibbs$sel_gen_chn
-# mig_rat_chn <- AdaptPMMHwGibbs$mig_rat_chn
-# mig_gen_chn <- AdaptPMMHwGibbs$mig_gen_chn
-# pdf(file = "./Output/Output v1.0/Test v1.0/TEST_AdaptPMMHwGibbs_Traceplot.pdf", width = 16, height = 12)
-# par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 2, cex.sub = 1.75, cex.axis = 1.75, cex.lab = 1.75)
-# plot(1:itn_num, sel_cof_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Selection coefficient",
-#      main = "Trace plot of the selection coefficient")
-# abline(h = sel_cof, col = 'red', lty = 2, lwd = 2)
-#
-# plot(1:itn_num, sel_gen_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Selection time",
-#      main = "Trace plot of the selection time")
-# abline(h = sel_gen, col = 'red', lty = 2, lwd = 2)
-#
-# plot(1:itn_num, mig_rat_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Migration rate",
-#      main = "Trace plot of the migration rate")
-# abline(h = mig_rat, col = 'red', lty = 2, lwd = 2)
-#
-# plot(1:itn_num, mig_gen_chn[1:itn_num], type = 'l',
-#      xlab = "Iteration", ylab = "Migration time",
-#      main = "Trace plot of the migration time")
-# abline(h = mig_gen, col = 'red', lty = 2, lwd = 2)
-# dev.off()
-#
-# brn_num <- 1e+04
-# sel_cof_chn <- sel_cof_chn[brn_num:length(sel_cof_chn)]
-# sel_gen_chn <- sel_gen_chn[brn_num:length(sel_gen_chn)]
-# mig_rat_chn <- mig_rat_chn[brn_num:length(mig_rat_chn)]
-# mig_gen_chn <- mig_gen_chn[brn_num:length(mig_gen_chn)]
-#
-# thn_num <- 8e+00
-# sel_cof_chn <- sel_cof_chn[(1:round(length(sel_cof_chn) / thn_num)) * thn_num]
-# sel_gen_chn <- sel_gen_chn[(1:round(length(sel_gen_chn) / thn_num)) * thn_num]
-# mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
-# mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
-#
-# smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
-# colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
-# pdf <- kepdf(smp, bwtype = "adaptive")
-# plot(pdf, main = "Posterior for strength and timing of natural selection and gene migration", col = colorRampPalette(rev(brewer.pal(11, 'Spectral')))(32),
-#      props = c(100,100,100, 100), method = "perspective", gap = 0.5, phi = 30, theta = 10)
-# est <- pdf@eval.points[which(pdf@estimate == max(pdf@estimate))[1], ]
-# sel_cof_est <- est[1]
-# sel_gen_est <- est[2]
-# mig_rat_est <- est[3]
-# mig_gen_est <- est[4]
-#
-# # sel_cof_est <- median(sel_cof_chn)
-# # sel_gen_est <- median(sel_gen_chn)
-# # mig_rat_est <- median(mig_rat_chn)
-# # mig_gen_est <- median(mig_gen_chn)
-#
-# sel_cof_hpd <- HPDinterval(as.mcmc(sel_cof_chn), prob = 0.95)
-# sel_gen_hpd <- HPDinterval(as.mcmc(sel_gen_chn), prob = 0.95)
-# mig_rat_hpd <- HPDinterval(as.mcmc(mig_rat_chn), prob = 0.95)
-# mig_gen_hpd <- HPDinterval(as.mcmc(mig_gen_chn), prob = 0.95)
-#
-# pdf(file = "./Output/Output v1.0/Test v1.0/TEST_AdaptPMMHwGibbs_Posterior.pdf", width = 16, height = 12)
-# par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
-# hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the selection coefficient")
-# lines(density(sel_cof_chn), lwd = 2, col = 'black')
-# abline(v = sel_cof, col = 'red', lty = 2, lwd = 2)
-# abline(v = sel_cof_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = sel_cof_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the selection time")
-# lines(density(sel_gen_chn), lwd = 2, col = 'black')
-# abline(v = sel_gen, col = 'red', lty = 2, lwd = 2)
-# abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = sel_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = sel_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the migration rate")
-# lines(density(mig_rat_chn), lwd = 2, col = 'black')
-# abline(v = mig_rat, col = 'red', lty = 2, lwd = 2)
-# abline(v = mig_rat_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = mig_rat_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the migration time")
-# lines(density(mig_gen_chn), lwd = 2, col = 'black')
-# abline(v = mig_gen, col = 'red', lty = 2, lwd = 2)
-# abline(v = mig_gen_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = mig_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = mig_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
-# dev.off()
+
+load("./Output/Output v1.0/Test v1.0/TEST_AdaptPMMHwGibbs.rda")
+
+sel_cof_chn <- AdaptPMMHwGibbs$sel_cof_chn
+sel_gen_chn <- AdaptPMMHwGibbs$sel_gen_chn
+mig_rat_chn <- AdaptPMMHwGibbs$mig_rat_chn
+mig_gen_chn <- AdaptPMMHwGibbs$mig_gen_chn
+pdf(file = "./Output/Output v1.0/Test v1.0/TEST_AdaptPMMHwGibbs_Traceplot.pdf", width = 16, height = 12)
+par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 2, cex.sub = 1.75, cex.axis = 1.75, cex.lab = 1.75)
+plot(1:itn_num, sel_cof_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Selection coefficient",
+     main = "Trace plot of the selection coefficient")
+abline(h = sel_cof, col = 'red', lty = 2, lwd = 2)
+
+plot(1:itn_num, sel_gen_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Selection time",
+     main = "Trace plot of the selection time")
+abline(h = sel_gen, col = 'red', lty = 2, lwd = 2)
+
+plot(1:itn_num, mig_rat_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Migration rate",
+     main = "Trace plot of the migration rate")
+abline(h = mig_rat, col = 'red', lty = 2, lwd = 2)
+
+plot(1:itn_num, mig_gen_chn[1:itn_num], type = 'l',
+     xlab = "Iteration", ylab = "Migration time",
+     main = "Trace plot of the migration time")
+abline(h = mig_gen, col = 'red', lty = 2, lwd = 2)
+dev.off()
+
+brn_num <- 1e+04
+sel_cof_chn <- sel_cof_chn[brn_num:length(sel_cof_chn)]
+sel_gen_chn <- sel_gen_chn[brn_num:length(sel_gen_chn)]
+mig_rat_chn <- mig_rat_chn[brn_num:length(mig_rat_chn)]
+mig_gen_chn <- mig_gen_chn[brn_num:length(mig_gen_chn)]
+
+thn_num <- 8e+00
+sel_cof_chn <- sel_cof_chn[(1:round(length(sel_cof_chn) / thn_num)) * thn_num]
+sel_gen_chn <- sel_gen_chn[(1:round(length(sel_gen_chn) / thn_num)) * thn_num]
+mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
+mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
+
+smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
+colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
+pdf <- kepdf(smp, bwtype = "adaptive")
+plot(pdf, main = "Posterior for strength and timing of natural selection and gene migration", col = colorRampPalette(rev(brewer.pal(11, 'Spectral')))(32),
+     props = c(100, 100, 100, 100), method = "perspective", gap = 0.5, phi = 30, theta = 10)
+est <- pdf@eval.points[which(pdf@estimate == max(pdf@estimate))[1], ]
+sel_cof_est <- est[1]
+sel_gen_est <- est[2]
+mig_rat_est <- est[3]
+mig_gen_est <- est[4]
+
+# sel_cof_est <- median(sel_cof_chn)
+# sel_gen_est <- median(sel_gen_chn)
+# mig_rat_est <- median(mig_rat_chn)
+# mig_gen_est <- median(mig_gen_chn)
+
+sel_cof_hpd <- HPDinterval(as.mcmc(sel_cof_chn), prob = 0.95)
+sel_gen_hpd <- HPDinterval(as.mcmc(sel_gen_chn), prob = 0.95)
+mig_rat_hpd <- HPDinterval(as.mcmc(mig_rat_chn), prob = 0.95)
+mig_gen_hpd <- HPDinterval(as.mcmc(mig_gen_chn), prob = 0.95)
+
+pdf(file = "./Output/Output v1.0/Test v1.0/TEST_AdaptPMMHwGibbs_Posterior.pdf", width = 16, height = 12)
+par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
+hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the selection coefficient")
+lines(density(sel_cof_chn), lwd = 2, col = 'black')
+abline(v = sel_cof, col = 'red', lty = 2, lwd = 2)
+abline(v = sel_cof_est, col = 'black', lty = 2, lwd = 2)
+abline(v = sel_cof_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the selection time")
+lines(density(sel_gen_chn), lwd = 2, col = 'black')
+abline(v = sel_gen, col = 'red', lty = 2, lwd = 2)
+abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
+abline(v = sel_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = sel_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the migration rate")
+lines(density(mig_rat_chn), lwd = 2, col = 'black')
+abline(v = mig_rat, col = 'red', lty = 2, lwd = 2)
+abline(v = mig_rat_est, col = 'black', lty = 2, lwd = 2)
+abline(v = mig_rat_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the migration time")
+lines(density(mig_gen_chn), lwd = 2, col = 'black')
+abline(v = mig_gen, col = 'red', lty = 2, lwd = 2)
+abline(v = mig_gen_est, col = 'black', lty = 2, lwd = 2)
+abline(v = mig_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = mig_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
+dev.off()
 
 ########################################
 
