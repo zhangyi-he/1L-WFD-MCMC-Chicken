@@ -501,6 +501,7 @@ save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp
 # sel_gen_chn <- PMMH$sel_gen_chn
 # mig_rat_chn <- PMMH$mig_rat_chn
 # mig_gen_chn <- PMMH$mig_gen_chn
+# 
 # pdf(file = "./Output/Output v1.0/Test v1.0/TEST_PMMH_Traceplot.pdf", width = 16, height = 12)
 # par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 2, cex.sub = 1.75, cex.axis = 1.75, cex.lab = 1.75)
 # plot(1:itn_num, sel_cof_chn[1:itn_num], type = 'l',
@@ -645,6 +646,7 @@ save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp
 # sel_gen_chn <- PMMHwGibbs$sel_gen_chn
 # mig_rat_chn <- PMMHwGibbs$mig_rat_chn
 # mig_gen_chn <- PMMHwGibbs$mig_gen_chn
+# 
 # pdf(file = "./Output/Output v1.0/Test v1.0/TEST_PMMHwGibbs_Traceplot.pdf", width = 16, height = 12)
 # par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 2, cex.sub = 1.75, cex.axis = 1.75, cex.lab = 1.75)
 # plot(1:itn_num, sel_cof_chn[1:itn_num], type = 'l',
