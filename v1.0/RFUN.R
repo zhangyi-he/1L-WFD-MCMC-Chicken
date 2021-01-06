@@ -513,7 +513,7 @@ cmprunAdaptPMMHwGibbs <- cmpfun(runAdaptPMMHwGibbs)
 #' @param apt_rto the target mean acceptance probability of the adaptive setting
 
 #' Standard version
-runBayesianProcedure <- function(method = "PMMHwGibbs", sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, adp_set = TRUE, brn_num, thn_num, ...) {
+runBayesianProcedure <- function(method = "PMMHwGibbs", sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, adp_set = TRUE, ...) {
   if (any(is.na(smp_cnt[2, ]))) {
     smp_cnt[2, which(is.na(smp_cnt[2, ]))] <- -1
   }
@@ -524,7 +524,7 @@ runBayesianProcedure <- function(method = "PMMHwGibbs", sel_cof, dom_par, mig_ra
   } else if (method == "PMMHwGibbs" && adp_set == FALSE) {
     # run the PMMH within Gibbs
     PMMH <- runPMMHwGibbs_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num)
-  } else if (mmethod == "PMMH" && adp_set == TRUE) {
+  } else if (method == "PMMH" && adp_set == TRUE) {
     # run the adaptive PMMH
     PMMH <- runAdaptPMMH_arma(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, stp_siz, apt_rto)
   } else {
