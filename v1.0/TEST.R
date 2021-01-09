@@ -538,6 +538,11 @@ sel_gen_chn <- sel_gen_chn[(1:round(length(sel_gen_chn) / thn_num)) * thn_num]
 mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
 mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
 
+mig_rat_chn <- mig_rat_chn[which(sel_gen_chn <= max(smp_gen))]
+mig_gen_chn <- mig_gen_chn[which(sel_gen_chn <= max(smp_gen))]
+sel_cof_chn <- sel_cof_chn[which(sel_gen_chn <= max(smp_gen))]
+sel_gen_chn <- sel_gen_chn[which(sel_gen_chn <= max(smp_gen))]
+
 smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
 colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
 pdf <- kepdf(smp, bwtype = "adaptive")
@@ -682,6 +687,11 @@ sel_cof_chn <- sel_cof_chn[(1:round(length(sel_cof_chn) / thn_num)) * thn_num]
 sel_gen_chn <- sel_gen_chn[(1:round(length(sel_gen_chn) / thn_num)) * thn_num]
 mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
 mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
+
+mig_rat_chn <- mig_rat_chn[which(sel_gen_chn <= max(smp_gen))]
+mig_gen_chn <- mig_gen_chn[which(sel_gen_chn <= max(smp_gen))]
+sel_cof_chn <- sel_cof_chn[which(sel_gen_chn <= max(smp_gen))]
+sel_gen_chn <- sel_gen_chn[which(sel_gen_chn <= max(smp_gen))]
 
 smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
 colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
@@ -832,6 +842,11 @@ sel_gen_chn <- sel_gen_chn[(1:round(length(sel_gen_chn) / thn_num)) * thn_num]
 mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
 mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
 
+mig_rat_chn <- mig_rat_chn[which(sel_gen_chn <= max(smp_gen))]
+mig_gen_chn <- mig_gen_chn[which(sel_gen_chn <= max(smp_gen))]
+sel_cof_chn <- sel_cof_chn[which(sel_gen_chn <= max(smp_gen))]
+sel_gen_chn <- sel_gen_chn[which(sel_gen_chn <= max(smp_gen))]
+
 smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
 colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
 pdf <- kepdf(smp, bwtype = "adaptive")
@@ -981,6 +996,11 @@ sel_gen_chn <- sel_gen_chn[(1:round(length(sel_gen_chn) / thn_num)) * thn_num]
 mig_rat_chn <- mig_rat_chn[(1:round(length(mig_rat_chn) / thn_num)) * thn_num]
 mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
 
+mig_rat_chn <- mig_rat_chn[which(sel_gen_chn <= max(smp_gen))]
+mig_gen_chn <- mig_gen_chn[which(sel_gen_chn <= max(smp_gen))]
+sel_cof_chn <- sel_cof_chn[which(sel_gen_chn <= max(smp_gen))]
+sel_gen_chn <- sel_gen_chn[which(sel_gen_chn <= max(smp_gen))]
+
 smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
 colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
 pdf <- kepdf(smp, bwtype = "adaptive")
@@ -1065,91 +1085,91 @@ dev.off()
 #' @param stp_siz the step size sequence in the adaptive setting (decaying to zero)
 #' @param apt_rto the target mean acceptance probability of the adaptive setting
 
-# load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
-#
-# set.seed(test_seed)
-#
-# method <- "PMMHwGibbs"
-# sel_cof <- 0e-00
-# dom_par
-# mig_rat <- 0e-00
-# pop_siz
-# sel_gen <- min(smp_gen)
-# mig_gen <- ifelse(smp_gen[which(smp_cnt[2, ] > 0)[1]] - min(smp_gen) > 0, smp_gen[which(smp_cnt[2, ] > 0)[1] - 1], smp_gen[which(smp_cnt[2, ] > 0)[1]])
-# ext_frq
-# smp_gen
-# smp_siz
-# smp_cnt
-# ptn_num <- 5e+00
-# pcl_num <- 1e+03
-# itn_num <- 2e+04
-# brn_num <- 5e+03
-# thn_num <- 5e+00
-# adp_set <- TRUE
-# stp_siz <- (1:itn_num)^(-2 / 3)
-# apt_rto <- 4e-01
-#
-# system.time(BayesianProcedure <- cmprunBayesianProcedure(method, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, adp_set, stp_siz, apt_rto))
-#
-# load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
-#
-# save(method, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, adp_set, stp_siz, apt_rto, BayesianProcedure,
-#      file = "./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure.rda")
-#
-# load("./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure.rda")
-#
-# sel_cof_chn <- BayesianProcedure$sel_cof_chn
-# sel_gen_chn <- BayesianProcedure$sel_gen_chn
-# mig_rat_chn <- BayesianProcedure$mig_rat_chn
-# mig_gen_chn <- BayesianProcedure$mig_gen_chn
-#
-# sel_cof_est <- BayesianProcedure$sel_cof_est
-# sel_gen_est <- BayesianProcedure$sel_gen_est
-# mig_rat_est <- BayesianProcedure$mig_rat_est
-# mig_gen_est <- BayesianProcedure$mig_gen_est
-#
-# mig_rat_hpd <- BayesianProcedure$mig_rat_hpd
-# mig_gen_hpd <- BayesianProcedure$mig_gen_hpd
-# sel_cof_hpd <- BayesianProcedure$sel_cof_hpd
-# sel_geh_hpd <- BayesianProcedure$sel_gen_hpd
-#
-# pdf(file = "./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure_Posterior.pdf", width = 16, height = 12)
-# par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
-# hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the selection coefficient")
-# lines(density(sel_cof_chn), lwd = 2, col = 'black')
-# abline(v = sel_cof, col = 'red', lty = 2, lwd = 2)
-# abline(v = sel_cof_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = sel_cof_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the selection time")
-# lines(density(sel_gen_chn), lwd = 2, col = 'black')
-# abline(v = sel_gen, col = 'red', lty = 2, lwd = 2)
-# abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = sel_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = sel_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the migration rate")
-# lines(density(mig_rat_chn), lwd = 2, col = 'black')
-# abline(v = mig_rat, col = 'red', lty = 2, lwd = 2)
-# abline(v = mig_rat_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = mig_rat_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
-#
-# hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
-#      xlab = "Selection coefficient",
-#      main = "Posterior for the migration time")
-# lines(density(mig_gen_chn), lwd = 2, col = 'black')
-# abline(v = mig_gen, col = 'red', lty = 2, lwd = 2)
-# abline(v = mig_gen_est, col = 'black', lty = 2, lwd = 2)
-# abline(v = mig_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
-# abline(v = mig_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
-# dev.off()
+load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
+
+set.seed(test_seed)
+
+method <- "PMMHwGibbs"
+sel_cof <- 0e-00
+dom_par
+mig_rat <- 0e-00
+pop_siz
+sel_gen <- min(smp_gen)
+mig_gen <- ifelse(smp_gen[which(smp_cnt[2, ] > 0)[1]] - min(smp_gen) > 0, smp_gen[which(smp_cnt[2, ] > 0)[1] - 1], smp_gen[which(smp_cnt[2, ] > 0)[1]])
+ext_frq
+smp_gen
+smp_siz
+smp_cnt
+ptn_num <- 5e+00
+pcl_num <- 1e+03
+itn_num <- 2e+04
+brn_num <- 5e+03
+thn_num <- 5e+00
+adp_set <- TRUE
+stp_siz <- (1:itn_num)^(-2 / 3)
+apt_rto <- 4e-01
+
+system.time(BayesianProcedure <- cmprunBayesianProcedure(method, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, adp_set, stp_siz, apt_rto))
+
+load("./Output/Output v1.0/Test v1.0/TEST_SimData.rda")
+
+save(method, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, adp_set, stp_siz, apt_rto, BayesianProcedure,
+     file = "./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure.rda")
+
+load("./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure.rda")
+
+sel_cof_chn <- BayesianProcedure$sel_cof_chn
+sel_gen_chn <- BayesianProcedure$sel_gen_chn
+mig_rat_chn <- BayesianProcedure$mig_rat_chn
+mig_gen_chn <- BayesianProcedure$mig_gen_chn
+
+sel_cof_est <- BayesianProcedure$sel_cof_est
+sel_gen_est <- BayesianProcedure$sel_gen_est
+mig_rat_est <- BayesianProcedure$mig_rat_est
+mig_gen_est <- BayesianProcedure$mig_gen_est
+
+mig_rat_hpd <- BayesianProcedure$mig_rat_hpd
+mig_gen_hpd <- BayesianProcedure$mig_gen_hpd
+sel_cof_hpd <- BayesianProcedure$sel_cof_hpd
+sel_geh_hpd <- BayesianProcedure$sel_gen_hpd
+
+pdf(file = "./Output/Output v1.0/Test v1.0/TEST_BayesianProcedure_Posterior.pdf", width = 16, height = 12)
+par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
+hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the selection coefficient")
+lines(density(sel_cof_chn), lwd = 2, col = 'black')
+abline(v = sel_cof, col = 'red', lty = 2, lwd = 2)
+abline(v = sel_cof_est, col = 'black', lty = 2, lwd = 2)
+abline(v = sel_cof_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the selection time")
+lines(density(sel_gen_chn), lwd = 2, col = 'black')
+abline(v = sel_gen, col = 'red', lty = 2, lwd = 2)
+abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
+abline(v = sel_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = sel_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the migration rate")
+lines(density(mig_rat_chn), lwd = 2, col = 'black')
+abline(v = mig_rat, col = 'red', lty = 2, lwd = 2)
+abline(v = mig_rat_est, col = 'black', lty = 2, lwd = 2)
+abline(v = mig_rat_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
+
+hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
+     xlab = "Selection coefficient",
+     main = "Posterior for the migration time")
+lines(density(mig_gen_chn), lwd = 2, col = 'black')
+abline(v = mig_gen, col = 'red', lty = 2, lwd = 2)
+abline(v = mig_gen_est, col = 'black', lty = 2, lwd = 2)
+abline(v = mig_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
+abline(v = mig_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
+dev.off()
 
 ################################################################################
