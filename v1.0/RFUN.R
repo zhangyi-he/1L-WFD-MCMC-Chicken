@@ -546,6 +546,11 @@ runBayesianProcedure <- function(method = "PMMHwGibbs", sel_cof, dom_par, mig_ra
   mig_gen_chn <- mig_gen_chn[brn_num:length(mig_gen_chn)]
   mig_gen_chn <- mig_gen_chn[(1:round(length(mig_gen_chn) / thn_num)) * thn_num]
 
+  mig_rat_chn <- mig_rat_chn[which(sel_gen_chn <= max(smp_gen))]
+  mig_gen_chn <- mig_gen_chn[which(sel_gen_chn <= max(smp_gen))]
+  sel_cof_chn <- sel_cof_chn[which(sel_gen_chn <= max(smp_gen))]
+  sel_gen_chn <- sel_gen_chn[which(sel_gen_chn <= max(smp_gen))]
+
   # MAP estimates for the population genetic parameters
   smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
   # colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
