@@ -626,32 +626,6 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
     mig_rat_chn(i) = mig_rat_chn(i - 1) + mig_rat_sd * arma::randn();
     mig_gen_chn(i) = mig_gen_chn(i - 1) + int(round(mig_gen_sd * arma::randn()));
 
-    // if (sel_cof_chn(i) > 1) {
-    //   sel_cof_chn(i) = sel_cof_chn(i - 1);
-    //   sel_gen_chn(i) = sel_gen_chn(i - 1);
-    //   mig_rat_chn(i) = mig_rat_chn(i - 1);
-    //   mig_gen_chn(i) = mig_gen_chn(i - 1);
-    //   log_lik(1) = log_lik(0);
-    // } else if (sel_gen_chn(i) < smp_gen.min() || sel_gen_chn(i) > smp_gen.max()) {
-    //   sel_cof_chn(i) = sel_cof_chn(i - 1);
-    //   sel_gen_chn(i) = sel_gen_chn(i - 1);
-    //   mig_rat_chn(i) = mig_rat_chn(i - 1);
-    //   mig_gen_chn(i) = mig_gen_chn(i - 1);
-    //   log_lik(1) = log_lik(0);
-    // } else if (mig_rat_chn(i) < 0 || mig_rat_chn(i) > 1) {
-    //   sel_cof_chn(i) = sel_cof_chn(i - 1);
-    //   sel_gen_chn(i) = sel_gen_chn(i - 1);
-    //   mig_rat_chn(i) = mig_rat_chn(i - 1);
-    //   mig_gen_chn(i) = mig_gen_chn(i - 1);
-    //   log_lik(1) = log_lik(0);
-    // } else if (mig_gen_chn(i) < smp_gen.min() || mig_gen_chn(i) > smp_gen(arma::find(smp_cnt.row(1) > 0).min())) {
-    //   sel_cof_chn(i) = sel_cof_chn(i - 1);
-    //   sel_gen_chn(i) = sel_gen_chn(i - 1);
-    //   mig_rat_chn(i) = mig_rat_chn(i - 1);
-    //   mig_gen_chn(i) = mig_gen_chn(i - 1);
-    //   log_lik(1) = log_lik(0);
-    // }
-
     if (sel_cof_chn(i) > 1) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
       sel_gen_chn(i) = sel_gen_chn(i - 1);
@@ -660,15 +634,17 @@ List runPMMH_arma(const double& sel_cof, const double& dom_par, const double& mi
       log_lik(1) = log_lik(0);
       // apt_cnt = apt_cnt + 0;
       cout << "acceptance: " << apt_cnt / i << endl;
-    } else if (sel_gen_chn(i) > max(smp_gen)) {
-      sel_cof_chn(i) = sel_cof_chn(i - 1);
-      sel_gen_chn(i) = sel_gen_chn(i - 1);
-      mig_rat_chn(i) = mig_rat_chn(i - 1);
-      mig_gen_chn(i) = mig_gen_chn(i - 1);
-      log_lik(1) = log_lik(0);
-      // apt_cnt = apt_cnt + 0;
-      cout << "acceptance: " << apt_cnt / i << endl;
-    } else if (mig_rat_chn(i) < 0 || mig_rat_chn(i) > 1) {
+    }
+    // else if (sel_gen_chn(i) > max(smp_gen)) {
+    //   sel_cof_chn(i) = sel_cof_chn(i - 1);
+    //   sel_gen_chn(i) = sel_gen_chn(i - 1);
+    //   mig_rat_chn(i) = mig_rat_chn(i - 1);
+    //   mig_gen_chn(i) = mig_gen_chn(i - 1);
+    //   log_lik(1) = log_lik(0);
+    //   // apt_cnt = apt_cnt + 0;
+    //   cout << "acceptance: " << apt_cnt / i << endl;
+    // } 
+    else if (mig_rat_chn(i) < 0 || mig_rat_chn(i) > 1) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
       sel_gen_chn(i) = sel_gen_chn(i - 1);
       mig_rat_chn(i) = mig_rat_chn(i - 1);
@@ -764,16 +740,6 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
     sel_cof_chn(i) = sel_cof_chn(i - 1) + sel_cof_sd * arma::randn();
     sel_gen_chn(i) = sel_gen_chn(i - 1) + int(round(sel_gen_sd * arma::randn()));
 
-    // if (sel_cof_chn(i) > 1) {
-    //   sel_cof_chn(i) = sel_cof_chn(i - 1);
-    //   sel_gen_chn(i) = sel_gen_chn(i - 1);
-    //   log_lik(1) = log_lik(0);
-    // } else if (sel_gen_chn(i) < smp_gen.min() || sel_gen_chn(i) > smp_gen.max()) {
-    //   sel_cof_chn(i) = sel_cof_chn(i - 1);
-    //   sel_gen_chn(i) = sel_gen_chn(i - 1);
-    //   log_lik(1) = log_lik(0);
-    // }
-
     alpha = 0;
     if (sel_cof_chn(i) > 1) {
       sel_cof_chn(i) = sel_cof_chn(i - 1);
@@ -781,13 +747,15 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
       log_lik(1) = log_lik(0);
       // apt_cnt = apt_cnt + 0;
       cout << "acceptance: " << apt_cnt / i << endl;
-    } else if (sel_gen_chn(i) > max(smp_gen)) {
-      sel_cof_chn(i) = sel_cof_chn(i - 1);
-      sel_gen_chn(i) = sel_gen_chn(i - 1);
-      log_lik(1) = log_lik(0);
-      // apt_cnt = apt_cnt + 0;
-      cout << "acceptance: " << apt_cnt / i << endl;
-    } else {
+    } 
+    // else if (sel_gen_chn(i) > max(smp_gen)) {
+    //   sel_cof_chn(i) = sel_cof_chn(i - 1);
+    //   sel_gen_chn(i) = sel_gen_chn(i - 1);
+    //   log_lik(1) = log_lik(0);
+    //   // apt_cnt = apt_cnt + 0;
+    //   cout << "acceptance: " << apt_cnt / i << endl;
+    // } 
+    else {
       // calculate the proposal
       // arma::drowvec log_psl = arma::zeros<arma::drowvec>(2);
 
@@ -815,16 +783,6 @@ List runPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const doub
     // update gene migration related parameters
     mig_rat_chn(i) = mig_rat_chn(i - 1) + mig_rat_sd * arma::randn();
     mig_gen_chn(i) = mig_gen_chn(i - 1) + int(round(mig_gen_sd * arma::randn()));
-
-    // if (mig_rat_chn(i) < 0 || mig_rat_chn(i) > 1) {
-    //   mig_rat_chn(i) = mig_rat_chn(i - 1);
-    //   mig_gen_chn(i) = mig_gen_chn(i - 1);
-    //   log_lik(0) = log_lik(1);
-    // } else if (mig_gen_chn(i) < smp_gen.min() || mig_gen_chn(i) > smp_gen(arma::find(smp_cnt.row(1) > 0).min())) {
-    //   mig_rat_chn(i) = mig_rat_chn(i - 1);
-    //   mig_gen_chn(i) = mig_gen_chn(i - 1);
-    //   log_lik(0) = log_lik(1);
-    // }
 
     alpha = 0;
     if (mig_rat_chn(i) < 0 || mig_rat_chn(i) > 1) {
@@ -929,12 +887,14 @@ List runAdaptPMMH_arma(const double& sel_cof, const double& dom_par, const doubl
       log_lik(1) = log_lik(0);
       // apt_cnt = apt_cnt + 0;
       cout << "acceptance: " << apt_cnt / i << endl;
-    } else if (par_chn(1, i) > max(smp_gen)) {
-      par_chn.col(i) = par_chn.col(i - 1);
-      log_lik(1) = log_lik(0);
-      // apt_cnt = apt_cnt + 0;
-      cout << "acceptance: " << apt_cnt / i << endl;
-    } else if (par_chn(2, i) < 0 || par_chn(2, i) > 1) {
+    } 
+    // else if (par_chn(1, i) > max(smp_gen)) {
+    //   par_chn.col(i) = par_chn.col(i - 1);
+    //   log_lik(1) = log_lik(0);
+    //   // apt_cnt = apt_cnt + 0;
+    //   cout << "acceptance: " << apt_cnt / i << endl;
+    // } 
+    else if (par_chn(2, i) < 0 || par_chn(2, i) > 1) {
       par_chn.col(i) = par_chn.col(i - 1);
       log_lik(1) = log_lik(0);
       // apt_cnt = apt_cnt + 0;
@@ -1046,12 +1006,14 @@ List runAdaptPMMHwGibbs_arma(const double& sel_cof, const double& dom_par, const
       log_lik(1) = log_lik(0);
       // apt_cnt = apt_cnt + 0;
       cout << "acceptance: " << apt_cnt / i << endl;
-    } else if (sel_par_chn(1, i) > max(smp_gen)) {
-      sel_par_chn.col(i) = sel_par_chn.col(i - 1);
-      log_lik(1) = log_lik(0);
-      // apt_cnt = apt_cnt + 0;
-      cout << "acceptance: " << apt_cnt / i << endl;
-    } else {
+    } 
+    // else if (sel_par_chn(1, i) > max(smp_gen)) {
+    //   sel_par_chn.col(i) = sel_par_chn.col(i - 1);
+    //   log_lik(1) = log_lik(0);
+    //   // apt_cnt = apt_cnt + 0;
+    //   cout << "acceptance: " << apt_cnt / i << endl;
+    // } 
+    else {
       // calculate the proposal
       // arma::drowvec log_psl = arma::zeros<arma::drowvec>(2);
 
