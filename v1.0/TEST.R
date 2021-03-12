@@ -1,10 +1,10 @@
 #' @title Inferring natural selection and gene migration in the evolution of chickens from ancient DNA data
-#' @author Zhangyi He, Wenyang Lyu, Xiaoyang Dai, Sile Hu, Mark Beaumont, Feng Yu
+#' @author Zhangyi He, Wenyang Lyu, Xiaoyang Dai, Mark Beaumont, Feng Yu
 
 #' version 1.1
 
 # set the directory
-setwd("~/Dropbox/Jeffery He/iResearch/Publications/2018/HE2021-WFM-1L-DiffusApprox-PMMH-MolEcol")
+setwd("~/Dropbox/Jeffery He/iResearch/Publications/2018/HE2021-WFM-1L-DiffusApprox-PMMH-MolEcolResour")
 
 #install.packages("RColorBrewer")
 library("RColorBrewer")
