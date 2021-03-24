@@ -1,10 +1,7 @@
 #' @title Inferring natural selection and gene migration in the evolution of chickens from ancient DNA data
 #' @author Zhangyi He, Wenyang Lyu, Xiaoyang Dai, Mark Beaumont, Feng Yu
 
-#' version 1.1
-
-# set the directory
-setwd("~/Dropbox/Jeffery He/iResearch/Publications/2018/HE2021-WFM-1L-DiffusApprox-PMMH-MolEcolResour")
+#' version 1.0
 
 #install.packages("RColorBrewer")
 library("RColorBrewer")
@@ -12,14 +9,23 @@ library("RColorBrewer")
 #install.packages("viridis")
 library("viridis")
 
+#install.packages("ggsci")
+library("ggsci")
+
 #install.packages("ggplot2")
 library("ggplot2")
 
 #install.packages("plot3D")
 library("plot3D")
 
+#install.packages("readr")
+library("readr")
+
+#install.packages("xtable")
+library("xtable")
+
 # call R functions
-source("./Code/Code v1.0/Code v1.1/RFUN.R")
+source("./RFUN.R")
 
 ################################################################################
 
@@ -34,12 +40,12 @@ source("./Code/Code v1.0/Code v1.1/RFUN.R")
 #' @param int_gen the first generation of the simulated mutant allele frequency trajectory
 #' @param lst_gen the last generation of the simulated mutant allele frequency trajectory
 
-# sel_cof <- 1e-02
+# sel_cof <- 9e-03
 # dom_par <- 5e-01
-# mig_rat <- 1e-03
+# mig_rat <- 5e-03
 # pop_siz <- 5e+03
 # ext_frq <- 9e-01
-# int_frq <- c(1e-01, 9e-01, 0e-00, 0e-00)
+# int_frq <- c(4e-01, 6e-01, 0e-00, 0e-00)
 # int_gen <- 0
 # lst_gen <- 500
 #
@@ -74,12 +80,12 @@ source("./Code/Code v1.0/Code v1.1/RFUN.R")
 #' @param ptn_num the number of subintervals divided per generation in the Euler-Maruyama method
 #' @param dat_aug = TRUE/FALSE (return the simulated sample trajectory with data augmentation or not)
 
-# sel_cof <- 1e-02
+# sel_cof <- 9e-03
 # dom_par <- 5e-01
-# mig_rat <- 1e-03
+# mig_rat <- 5e-03
 # pop_siz <- 5e+03
 # ext_frq <- 9e-01
-# int_frq <- c(1e-01, 9e-01, 0e-00, 0e-00)
+# int_frq <- c(4e-01, 6e-01, 0e-00, 0e-00)
 # int_gen <- 0
 # lst_gen <- 500
 # ptn_num <- 5e+00
@@ -103,12 +109,12 @@ source("./Code/Code v1.0/Code v1.1/RFUN.R")
 ########################################
 
 #' Compare the simulation generated with the Wright-Fisher model and the Wright-Fisher diffusion
-# sel_cof <- 1e-02
+# sel_cof <- 9e-03
 # dom_par <- 5e-01
-# mig_rat <- 1e-03
+# mig_rat <- 5e-03
 # pop_siz <- 5e+03
 # ext_frq <- 9e-01
-# int_frq <- c(1e-01, 9e-01, 0e-00, 0e-00)
+# int_frq <- c(4e-01, 6e-01, 0e-00, 0e-00)
 # int_gen <- 0
 # lst_gen <- 500
 # ptn_num <- 5e+00
@@ -159,14 +165,14 @@ source("./Code/Code v1.0/Code v1.1/RFUN.R")
 
 #' Simulate the dataset under the Wright-Fisher model
 # model <- "WFM"
-# sel_cof <- 1e-02
+# sel_cof <- 9e-03
 # dom_par <- 5e-01
-# mig_rat <- 1e-03
+# mig_rat <- 5e-03
 # pop_siz <- 5e+03
-# sel_gen <- 120
-# mig_gen <- 320
+# sel_gen <- 180
+# mig_gen <- 360
 # ext_frq <- 9e-01
-# int_frq <- c(1e-01, 9e-01, 0e-00, 0e-00)
+# int_frq <- c(4e-01, 6e-01, 0e-00, 0e-00)
 # smp_gen <- (0:10) * 50
 # smp_siz <- rep(100, 11)
 # cna_gen <- NULL
@@ -197,14 +203,14 @@ source("./Code/Code v1.0/Code v1.1/RFUN.R")
 
 #' Simulate the dataset under the Wright-Fisher diffusion
 # model <- "WFD"
-# sel_cof <- 1e-02
+# sel_cof <- 9e-03
 # dom_par <- 5e-01
-# mig_rat <- 1e-03
+# mig_rat <- 5e-03
 # pop_siz <- 5e+03
-# sel_gen <- 120
-# mig_gen <- 320
+# sel_gen <- 180
+# mig_gen <- 360
 # ext_frq <- 9e-01
-# int_frq <- c(1e-01, 9e-01, 0e-00, 0e-00)
+# int_frq <- c(4e-01, 6e-01, 0e-00, 0e-00)
 # smp_gen <- (0:10) * 50
 # smp_siz <- rep(100, 11)
 # cna_gen <- NULL
@@ -235,7 +241,7 @@ source("./Code/Code v1.0/Code v1.1/RFUN.R")
 ################################################################################
 
 #' Generate a simulated dataset under the Wright-Fisher model
-test_seed <- 19
+test_seed <- 1
 set.seed(test_seed)
 
 #' Simulate the dataset under the Wright-Fisher model
@@ -264,11 +270,11 @@ smp_ale_frq <- sim_HMM_WFM$smp_ale_frq
 pop_ale_frq <- sim_HMM_WFM$pop_ale_frq
 
 save(model, sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, int_frq, smp_gen, smp_siz, cna_gen, smp_cnt, smp_frq, pop_frq, smp_ale_cnt, smp_ale_frq, pop_ale_frq,
-     file = "./Output/Output v1.0/Test v1.1/TEST_SimData.rda")
+     file = "./TEST_SimData.rda")
 
-load("./Output/Output v1.0/Test v1.1/TEST_SimData.rda")
+load("./TEST_SimData.rda")
 
-pdf(file = "./Output/Output v1.0/Test v1.1/TEST_SimData.pdf", width = 16, height = 6)
+pdf(file = "./TEST_SimData.pdf", width = 16, height = 6)
 par(mfrow = c(1, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
 k <- min(smp_gen):max(smp_gen)
 plot(k, pop_frq[1, ], type = 'l', lwd = 1.5,
@@ -301,7 +307,7 @@ dev.off()
 #' @param ptn_num the number of subintervals divided per generation in the Euler-Maruyama method
 #' @param pcl_num the number of particles generated in the bootstrap particle filter
 
-load("./Output/Output v1.0/Test v1.1/TEST_SimData.rda")
+load("./TEST_SimData.rda")
 
 set.seed(test_seed)
 
@@ -321,9 +327,9 @@ pcl_num <- 1e+05
 system.time(BPF <- cmprunBPF(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num))
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, BPF,
-     file = "./Output/Output v1.0/Test v1.1/TEST_BPF.rda")
+     file = "./TEST_BPF.rda")
 
-load("./Output/Output v1.0/Test v1.1/TEST_BPF.rda")
+load("./TEST_BPF.rda")
 
 lik <- rep(1, pcl_num)
 wght <- BPF$wght
@@ -331,7 +337,7 @@ for (k in 1:length(smp_gen)) {
   lik <- lik * (cumsum(wght[, k]) / (1:pcl_num))
 }
 
-pdf(file = "./Output/Output v1.0/Test v1.1/TEST_BPF_Likelihood.pdf", width = 8, height = 6)
+pdf(file = "./TEST_BPF_Likelihood.pdf", width = 8, height = 6)
 par(mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
 plot(1:pcl_num, log(lik), type = 'l',
      xlab = "Number of particles", ylab = "Log likelihood",
@@ -341,7 +347,7 @@ dev.off()
 pop_frq_pre_resmp <- BPF$pop_frq_pre_resmp
 pop_frq_pst_resmp <- BPF$pop_frq_pst_resmp
 
-pdf(file = "./Output/Output v1.0/Test v1.1/TEST_BPF_Particle.pdf", width = 32, height = 66)
+pdf(file = "./TEST_BPF_Particle.pdf", width = 32, height = 66)
 par(mfrow = c(11, 4), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
 for (k in 1:length(smp_gen)) {
   hist_pst_resmp <- hist(pop_frq_pst_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 50), plot = FALSE)
@@ -416,7 +422,7 @@ dev.off()
 #' @param pcl_num the number of particles generated in the bootstrap particle filter
 #' @param gap_num the number of particles increased or decreased in the optimal particle number search
 
-load("./Output/Output v1.0/Test v1.1/TEST_SimData.rda")
+load("./TEST_SimData.rda")
 
 set.seed(test_seed)
 
@@ -437,14 +443,14 @@ gap_num <- 1e+02
 system.time(OptNum <- calculateOptimalParticleNum(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, gap_num))
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, gap_num, OptNum,
-     file = "./Output/Output v1.0/Test v1.1/TEST_OptNum.rda")
+     file = "./TEST_OptNum.rda")
 
-load("./Output/Output v1.0/Test v1.1/TEST_OptNum.rda")
+load("./TEST_OptNum.rda")
 
 opt_pcl_num <- OptNum$opt_pcl_num
 log_lik_sdv <- OptNum$log_lik_sdv
 
-pdf(file = "./Output/Output v1.0/Test v1.1/TEST_OptNum.pdf", width = 8, height = 6)
+pdf(file = "./TEST_OptNum.pdf", width = 8, height = 6)
 par(mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
 plot(opt_pcl_num, log_lik_sdv, type = 'b', lwd = 2,
      xlab = "Particle number", ylab = "Log-likelihood standard deviation",
@@ -472,7 +478,7 @@ dev.off()
 #' @param itn_num the number of the iterations carried out in the PMMH
 #' @param bck_smp = TRUE/FALSE (return the result with the blockwise sampling or not)
 
-load("./Output/Output v1.0/Test v1.1/TEST_SimData.rda")
+load("./TEST_SimData.rda")
 
 set.seed(test_seed)
 
@@ -488,24 +494,24 @@ smp_siz
 smp_cnt
 ptn_num <- 5e+00
 pcl_num <- 1e+03
-itn_num <- 5e+04
+itn_num <- 2e+04
 bck_smp <- FALSE # componentwise sampling
 
 system.time(PMMH <- cmprunPMMH(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, bck_smp))
 
-load("./Output/Output v1.0/Test v1.1/TEST_SimData.rda")
+load("./TEST_SimData.rda")
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, bck_smp, PMMH,
-     file = "./Output/Output v1.0/Test v1.1/TEST_PMMH_CS.rda")
+     file = "./TEST_PMMH_CS.rda")
 
-load("./Output/Output v1.0/Test v1.1/TEST_PMMH_CS.rda")
+load("./TEST_PMMH_CS.rda")
 
 sel_cof_chn <- PMMH$sel_cof_chn
 sel_gen_chn <- PMMH$sel_gen_chn
 mig_rat_chn <- PMMH$mig_rat_chn
 mig_gen_chn <- PMMH$mig_gen_chn
 
-pdf(file = "./Output/Output v1.0/Test v1.1/TEST_PMMH_CS_Traceplot.pdf", width = 16, height = 12)
+pdf(file = "./TEST_PMMH_CS_Traceplot.pdf", width = 16, height = 12)
 par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 2, cex.sub = 1.75, cex.axis = 1.75, cex.lab = 1.75)
 plot(1:itn_num, sel_cof_chn[1:itn_num], type = 'l',
      xlab = "Iteration", ylab = "Selection coefficient",
@@ -513,8 +519,8 @@ plot(1:itn_num, sel_cof_chn[1:itn_num], type = 'l',
 abline(h = sel_cof, col = 'red', lty = 2, lwd = 2)
 
 plot(1:itn_num, sel_gen_chn[1:itn_num], type = 'l',
-     xlab = "Iteration", ylab = "Selection time",
-     main = "Trace plot of the selection time")
+     xlab = "Iteration", ylab = "Selection timing",
+     main = "Trace plot of the selection timing")
 abline(h = sel_gen, col = 'red', lty = 2, lwd = 2)
 
 plot(1:itn_num, mig_rat_chn[1:itn_num], type = 'l',
@@ -523,15 +529,10 @@ plot(1:itn_num, mig_rat_chn[1:itn_num], type = 'l',
 abline(h = mig_rat, col = 'red', lty = 2, lwd = 2)
 
 plot(1:itn_num, mig_gen_chn[1:itn_num], type = 'l',
-     xlab = "Iteration", ylab = "Migration time",
-     main = "Trace plot of the migration time")
+     xlab = "Iteration", ylab = "Migration timing",
+     main = "Trace plot of the migration timing")
 abline(h = mig_gen, col = 'red', lty = 2, lwd = 2)
 dev.off()
-
-mig_rat_chn <- mig_rat_chn[which(sel_gen_chn <= max(smp_gen))]
-mig_gen_chn <- mig_gen_chn[which(sel_gen_chn <= max(smp_gen))]
-sel_cof_chn <- sel_cof_chn[which(sel_gen_chn <= max(smp_gen))]
-sel_gen_chn <- sel_gen_chn[which(sel_gen_chn <= max(smp_gen))]
 
 # brn_num <- 1e+04
 brn_num <- floor(length(sel_cof_chn) * 0.8)
@@ -547,7 +548,7 @@ mig_rat_chn <- mig_rat_chn[(1:floor(length(mig_rat_chn) / thn_num)) * thn_num]
 mig_gen_chn <- mig_gen_chn[(1:floor(length(mig_gen_chn) / thn_num)) * thn_num]
 
 smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
-colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
+colnames(smp) <- c("selection coefficient", "selection timing", "migration rate", "migration timing")
 pdf <- kepdf(smp, bwtype = "adaptive")
 plot(pdf, main = "Posterior for strength and timing of natural selection and gene migration", col = colorRampPalette(rev(brewer.pal(11, 'Spectral')))(32),
      props = c(100, 100, 100, 100), method = "perspective", gap = 0.5, phi = 30, theta = 10)
@@ -567,7 +568,7 @@ sel_gen_hpd <- HPDinterval(as.mcmc(sel_gen_chn), prob = 0.95)
 mig_rat_hpd <- HPDinterval(as.mcmc(mig_rat_chn), prob = 0.95)
 mig_gen_hpd <- HPDinterval(as.mcmc(mig_gen_chn), prob = 0.95)
 
-pdf(file = "./Output/Output v1.0/Test v1.1/TEST_PMMH_CS_Posterior.pdf", width = 16, height = 12)
+pdf(file = "./TEST_PMMH_CS_Posterior.pdf", width = 16, height = 12)
 par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
 hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
      xlab = "Selection coefficient",
@@ -580,7 +581,7 @@ abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
 hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
      xlab = "Selection coefficient",
-     main = "Posterior for the selection time")
+     main = "Posterior for the selection timing")
 lines(density(sel_gen_chn), lwd = 2, col = 'black')
 abline(v = sel_gen, col = 'red', lty = 2, lwd = 2)
 abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
@@ -598,7 +599,7 @@ abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
 hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
      xlab = "Selection coefficient",
-     main = "Posterior for the migration time")
+     main = "Posterior for the migration timing")
 lines(density(mig_gen_chn), lwd = 2, col = 'black')
 abline(v = mig_gen, col = 'red', lty = 2, lwd = 2)
 abline(v = mig_gen_est, col = 'black', lty = 2, lwd = 2)
@@ -612,19 +613,19 @@ bck_smp <- TRUE # blockwise sampling
 
 system.time(PMMH <- cmprunPMMH(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, bck_smp))
 
-load("./Output/Output v1.0/Test v1.1/TEST_SimData.rda")
+load("./TEST_SimData.rda")
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, bck_smp, PMMH,
-     file = "./Output/Output v1.0/Test v1.1/TEST_PMMH_BS.rda")
+     file = "./TEST_PMMH_BS.rda")
 
-load("./Output/Output v1.0/Test v1.1/TEST_PMMH_BS.rda")
+load("./TEST_PMMH_BS.rda")
 
 sel_cof_chn <- PMMH$sel_cof_chn
 sel_gen_chn <- PMMH$sel_gen_chn
 mig_rat_chn <- PMMH$mig_rat_chn
 mig_gen_chn <- PMMH$mig_gen_chn
 
-pdf(file = "./Output/Output v1.0/Test v1.1/TEST_PMMH_BS_Traceplot.pdf", width = 16, height = 12)
+pdf(file = "./TEST_PMMH_BS_Traceplot.pdf", width = 16, height = 12)
 par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 2, cex.sub = 1.75, cex.axis = 1.75, cex.lab = 1.75)
 plot(1:itn_num, sel_cof_chn[1:itn_num], type = 'l',
      xlab = "Iteration", ylab = "Selection coefficient",
@@ -632,8 +633,8 @@ plot(1:itn_num, sel_cof_chn[1:itn_num], type = 'l',
 abline(h = sel_cof, col = 'red', lty = 2, lwd = 2)
 
 plot(1:itn_num, sel_gen_chn[1:itn_num], type = 'l',
-     xlab = "Iteration", ylab = "Selection time",
-     main = "Trace plot of the selection time")
+     xlab = "Iteration", ylab = "Selection timing",
+     main = "Trace plot of the selection timing")
 abline(h = sel_gen, col = 'red', lty = 2, lwd = 2)
 
 plot(1:itn_num, mig_rat_chn[1:itn_num], type = 'l',
@@ -642,15 +643,10 @@ plot(1:itn_num, mig_rat_chn[1:itn_num], type = 'l',
 abline(h = mig_rat, col = 'red', lty = 2, lwd = 2)
 
 plot(1:itn_num, mig_gen_chn[1:itn_num], type = 'l',
-     xlab = "Iteration", ylab = "Migration time",
-     main = "Trace plot of the migration time")
+     xlab = "Iteration", ylab = "Migration timing",
+     main = "Trace plot of the migration timing")
 abline(h = mig_gen, col = 'red', lty = 2, lwd = 2)
 dev.off()
-
-mig_rat_chn <- mig_rat_chn[which(sel_gen_chn <= max(smp_gen))]
-mig_gen_chn <- mig_gen_chn[which(sel_gen_chn <= max(smp_gen))]
-sel_cof_chn <- sel_cof_chn[which(sel_gen_chn <= max(smp_gen))]
-sel_gen_chn <- sel_gen_chn[which(sel_gen_chn <= max(smp_gen))]
 
 # brn_num <- 1e+04
 brn_num <- floor(length(sel_cof_chn) * 0.8)
@@ -666,7 +662,7 @@ mig_rat_chn <- mig_rat_chn[(1:floor(length(mig_rat_chn) / thn_num)) * thn_num]
 mig_gen_chn <- mig_gen_chn[(1:floor(length(mig_gen_chn) / thn_num)) * thn_num]
 
 smp <- data.frame(sel_cof_chn, sel_gen_chn, mig_rat_chn, mig_gen_chn)
-colnames(smp) <- c("selection coefficient", "selection time", "migration rate", "migration time")
+colnames(smp) <- c("selection coefficient", "selection timing", "migration rate", "migration timing")
 pdf <- kepdf(smp, bwtype = "adaptive")
 plot(pdf, main = "Posterior for strength and timing of natural selection and gene migration", col = colorRampPalette(rev(brewer.pal(11, 'Spectral')))(32),
      props = c(100, 100, 100, 100), method = "perspective", gap = 0.5, phi = 30, theta = 10)
@@ -686,7 +682,7 @@ sel_gen_hpd <- HPDinterval(as.mcmc(sel_gen_chn), prob = 0.95)
 mig_rat_hpd <- HPDinterval(as.mcmc(mig_rat_chn), prob = 0.95)
 mig_gen_hpd <- HPDinterval(as.mcmc(mig_gen_chn), prob = 0.95)
 
-pdf(file = "./Output/Output v1.0/Test v1.1/TEST_PMMH_BS_Posterior.pdf", width = 16, height = 12)
+pdf(file = "./TEST_PMMH_BS_Posterior.pdf", width = 16, height = 12)
 par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
 hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
      xlab = "Selection coefficient",
@@ -699,7 +695,7 @@ abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
 hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
      xlab = "Selection coefficient",
-     main = "Posterior for the selection time")
+     main = "Posterior for the selection timing")
 lines(density(sel_gen_chn), lwd = 2, col = 'black')
 abline(v = sel_gen, col = 'red', lty = 2, lwd = 2)
 abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
@@ -717,7 +713,7 @@ abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
 hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
      xlab = "Selection coefficient",
-     main = "Posterior for the migration time")
+     main = "Posterior for the migration timing")
 lines(density(mig_gen_chn), lwd = 2, col = 'black')
 abline(v = mig_gen, col = 'red', lty = 2, lwd = 2)
 abline(v = mig_gen_est, col = 'black', lty = 2, lwd = 2)
@@ -746,7 +742,7 @@ dev.off()
 #' @param thn_num the number of the iterations for thinning
 #' @param bck_smp = TRUE/FALSE (return the result with the blockwise sampling or not)
 
-load("./Output/Output v1.0/Test v1.1/TEST_SimData.rda")
+load("./TEST_SimData.rda")
 
 set.seed(test_seed)
 
@@ -769,12 +765,12 @@ bck_smp <- TRUE
 
 system.time(BayesianProcedure <- cmprunBayesianProcedure(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, bck_smp))
 
-load("./Output/Output v1.0/Test v1.1/TEST_SimData.rda")
+load("./TEST_SimData.rda")
 
 save(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_frq, smp_gen, smp_siz, smp_cnt, ptn_num, pcl_num, itn_num, brn_num, thn_num, bck_smp, BayesianProcedure,
-     file = "./Output/Output v1.0/Test v1.1/TEST_BayesianProcedure.rda")
+     file = "./TEST_BayesianProcedure.rda")
 
-load("./Output/Output v1.0/Test v1.1/TEST_BayesianProcedure.rda")
+load("./TEST_BayesianProcedure.rda")
 
 sel_cof_chn <- BayesianProcedure$sel_cof_chn
 sel_gen_chn <- BayesianProcedure$sel_gen_chn
@@ -791,7 +787,7 @@ mig_gen_hpd <- BayesianProcedure$mig_gen_hpd
 sel_cof_hpd <- BayesianProcedure$sel_cof_hpd
 sel_gen_hpd <- BayesianProcedure$sel_gen_hpd
 
-pdf(file = "./Output/Output v1.0/Test v1.1/TEST_BayesianProcedure_Posterior.pdf", width = 16, height = 12)
+pdf(file = "./TEST_BayesianProcedure_Posterior.pdf", width = 16, height = 12)
 par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
 hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
      xlab = "Selection coefficient",
@@ -804,7 +800,7 @@ abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
 hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
      xlab = "Selection coefficient",
-     main = "Posterior for the selection time")
+     main = "Posterior for the selection timing")
 lines(density(sel_gen_chn), lwd = 2, col = 'black')
 abline(v = sel_gen, col = 'red', lty = 2, lwd = 2)
 abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
@@ -822,7 +818,7 @@ abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
 hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
      xlab = "Selection coefficient",
-     main = "Posterior for the migration time")
+     main = "Posterior for the migration timing")
 lines(density(mig_gen_chn), lwd = 2, col = 'black')
 abline(v = mig_gen, col = 'red', lty = 2, lwd = 2)
 abline(v = mig_gen_est, col = 'black', lty = 2, lwd = 2)
