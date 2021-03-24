@@ -1,7 +1,8 @@
 #' @title Inferring natural selection and gene migration in the evolution of chickens from ancient DNA data
 #' @author Zhangyi He, Wenyang Lyu, Xiaoyang Dai, Mark Beaumont, Feng Yu
 
-#' version 1.2
+#' version 1.1
+#' allow the joint estimation of the allele frequency trajectories of the underlying population along with natural selection and gene migration
 
 #' R functions
 
@@ -26,7 +27,7 @@ library("compiler")
 #enableJIT(1)
 
 # call C++ functions
-sourceCpp("./Code/Code v1.0/Code v1.2/CFUN.cpp")
+sourceCpp("./CFUN.cpp")
 
 ################################################################################
 
@@ -381,7 +382,7 @@ runPMMH <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mig_gen, ext_fr
               sel_gen_chn = as.vector(PMMH$sel_gen_chn),
               mig_rat_chn = as.vector(PMMH$mig_rat_chn),
               mig_gen_chn = as.vector(PMMH$mig_gen_chn),
-              frq_pth_chn = as.array(PMMH$frq_pth_chn)))
+              frq_pth_chn = as.array(PMMH$frq_pth_chn)[, (0:(max(smp_gen) - min(smp_gen))) * ptn_num + 1, ]))
 }
 #' Compiled version
 cmprunPMMH <- cmpfun(runPMMH)
@@ -424,8 +425,7 @@ runBayesianProcedure <- function(sel_cof, dom_par, mig_rat, pop_siz, sel_gen, mi
   sel_gen_chn <- as.vector(PMMH$sel_gen_chn)
   mig_rat_chn <- as.vector(PMMH$mig_rat_chn)
   mig_gen_chn <- as.vector(PMMH$mig_gen_chn)
-  frq_pth_chn <- as.array(PMMH$frq_pth_chn)
-  frq_pth_chn <- frq_pth_chn[, (0:(max(smp_gen) - min(smp_gen))) * ptn_num + 1, ]
+  frq_pth_chn <- as.array(PMMH$frq_pth_chn)[, (0:(max(smp_gen) - min(smp_gen))) * ptn_num + 1, ]
 
   # burn-in and thinning
   # brn_num <- floor(0.8 * length(sel_cof_chn))
