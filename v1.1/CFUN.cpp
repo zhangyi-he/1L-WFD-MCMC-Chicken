@@ -1,7 +1,8 @@
 // Inferring natural selection and gene migration in the evolution of chickens from ancient DNA data
 // Zhangyi He, Wenyang Lyu, Xiaoyang Dai, Mark Beaumont, Feng Yu
 
-// version 1.2
+// version 1.1
+// allow the joint estimation of the allele frequency trajectories of the underlying population along with natural selection and gene migration
 
 // C functions
 
@@ -399,7 +400,7 @@ List runBPF_arma(const double& sel_cof, const double& dom_par, const double& mig
 
   // update the allele frequency trajectories of the underlying population
   frq_pth = path.subcube(0, (smp_gen(0) - all_gen(0)) * ptn_num, 0, 3, (smp_gen(smp_gen.n_elem - 1) - all_gen(0)) * ptn_num, pcl_num - 1);
-  
+
   return List::create(Named("lik", lik),
                       Named("frq_pth", frq_pth),
                       Named("wght", wght),
@@ -522,7 +523,7 @@ void calculateLogLikelihood_arma(double& log_lik, arma::dcube& frq_pth, const do
   }
 
   frq_pth = path.subcube(0, (smp_gen(0) - all_gen(0)) * ptn_num, 0, 3, (smp_gen(smp_gen.n_elem - 1) - all_gen(0)) * ptn_num, pcl_num - 1);
-  
+
   return;
 }
 
@@ -645,7 +646,7 @@ List runPMMH_ComponentSmp_arma(const double& sel_cof, const double& dom_par, con
   arma::dcube frq_pth = arma::zeros<arma::dcube>(4, arma::uword(arma::max(smp_gen) - arma::min(smp_gen)) * ptn_num + 1, pcl_num);
   calculateLogLikelihood_arma(log_lik(0), frq_pth, sel_cof_chn(0), dom_par, mig_rat_chn(0), pop_siz, sel_gen_chn(0), mig_gen_chn(0), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
   frq_pth_chn.slice(0) = frq_pth.slice(0);
-  
+
   double apt_cnt = 0;
   double alpha = 0;
   for (arma::uword i = 1; i < itn_num; i++) {
@@ -673,7 +674,7 @@ List runPMMH_ComponentSmp_arma(const double& sel_cof, const double& dom_par, con
 
     // calculate the likelihood
     calculateLogLikelihood_arma(log_lik(1), frq_pth, sel_cof_chn(i), dom_par, mig_rat_chn(i), pop_siz, sel_gen_chn(i), mig_gen_chn(i), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
-    
+
     // calculate the proposal
     log_psl(0) = -log(arma::normcdf(1.0, sel_cof_chn(i), sel_cof_sd)) -
       log(arma::normcdf(double(smp_gen.max()), double(sel_gen_chn(i)), sel_gen_sd)) -
@@ -735,7 +736,7 @@ List runPMMH_BlockSmp_arma(const double& sel_cof, const double& dom_par, const d
   arma::drowvec mig_rat_chn = arma::zeros<arma::drowvec>(itn_num);
   arma::irowvec mig_gen_chn = arma::zeros<arma::irowvec>(itn_num);
   arma::dcube frq_pth_chn = arma::zeros<arma::dcube>(4, arma::uword(max(smp_gen) - min(smp_gen)) * ptn_num + 1, itn_num);
-  
+
   // arma::drowvec log_pri = arma::zeros<arma::drowvec>(2);
   arma::drowvec log_lik = arma::zeros<arma::drowvec>(2);
   arma::drowvec log_psl = arma::zeros<arma::drowvec>(2);
@@ -757,14 +758,13 @@ List runPMMH_BlockSmp_arma(const double& sel_cof, const double& dom_par, const d
   arma::dcube frq_pth = arma::zeros<arma::dcube>(4, arma::uword(arma::max(smp_gen) - arma::min(smp_gen)) * ptn_num + 1, pcl_num);
   calculateLogLikelihood_arma(log_lik(0), frq_pth, sel_cof_chn(0), dom_par, mig_rat_chn(0), pop_siz, sel_gen_chn(0), mig_gen_chn(0), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
   frq_pth_chn.slice(0) = frq_pth.slice(0);
-  
-  // update natural selection-related parameters
+
   double apt_cnt = 0;
   double alpha = 0;
   for (arma::uword i = 1; i < itn_num; i++) {
     cout << "iteration: " << i + 1 << endl;
 
-    // generate the natural selection related parameters from the adaptive truncated normal distribution
+    // generate the selection-related parameters from the adaptive truncated normal distribution
     do {
       sel_cof_chn(i) = sel_cof_chn(i - 1) + sel_cof_sd * arma::randn();
     }
@@ -777,7 +777,7 @@ List runPMMH_BlockSmp_arma(const double& sel_cof, const double& dom_par, const d
 
     // calculate the likelihood
     calculateLogLikelihood_arma(log_lik(1), frq_pth, sel_cof_chn(i), dom_par, mig_rat_chn(i - 1), pop_siz, sel_gen_chn(i), mig_gen_chn(i - 1), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
-    
+
     // calculate the proposal
     log_psl(0) = -log(arma::normcdf(1.0, sel_cof_chn(i), sel_cof_sd)) -
       log(arma::normcdf(double(smp_gen.max()), double(sel_gen_chn(i)), sel_gen_sd));
@@ -806,7 +806,7 @@ List runPMMH_BlockSmp_arma(const double& sel_cof, const double& dom_par, const d
       cout << "acceptance: " << apt_cnt / i << endl;
     }
 
-    // generate the gene migration related parameters from the adaptive truncated normal distribution
+    // generate the migration-related parameters from the adaptive truncated normal distribution
     do {
       mig_rat_chn(i) = mig_rat_chn(i - 1) + mig_rat_sd * arma::randn();
     }
@@ -819,7 +819,7 @@ List runPMMH_BlockSmp_arma(const double& sel_cof, const double& dom_par, const d
 
     // calculate the likelihood
     calculateLogLikelihood_arma(log_lik(0), frq_pth, sel_cof_chn(i), dom_par, mig_rat_chn(i), pop_siz, sel_gen_chn(i), mig_gen_chn(i), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
-    
+
     // calculate the proposal
     log_psl(1) = -log(arma::normcdf(1.0, mig_rat_chn(i), mig_rat_sd) - arma::normcdf(0.0, mig_rat_chn(i), mig_rat_sd)) -
       log(arma::normcdf(double(smp_gen(arma::find(smp_cnt.row(1) > 0).min())), double(mig_gen_chn(i)), mig_gen_sd));
