@@ -1,7 +1,7 @@
 #' @title Inferring natural selection and gene migration in the evolution of chickens from ancient DNA data
 #' @author Zhangyi He, Wenyang Lyu, Xiaoyang Dai, Mark Beaumont, Feng Yu
 
-#' version 1.1
+#' version 1.0
 
 #' R functions
 
@@ -26,7 +26,7 @@ library("compiler")
 #enableJIT(1)
 
 # call C++ functions
-sourceCpp("./Code/Code v1.0/Code v1.1/CFUN.cpp")
+sourceCpp("./CFUN.cpp")
 
 ################################################################################
 
