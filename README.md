@@ -1,4 +1,4 @@
-# Inferring natural selection and gene migration in the evolution of chickens from ancient DNA data
+# Inferring the timing and strength of natural selection and gene migration in the evolution of chickens from ancient DNA data
 Source code is implemented for an MCMC-based method for inferring the timing and strength of natural selection and gene migration from time series data of allele frequencies, and the preprint has been submitted to bioRxiv available at .
 
 v1.0 includes the source code implemented for the joint inference of the timing and strength of natural selection and gene migration.
