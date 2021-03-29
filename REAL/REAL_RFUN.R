@@ -347,7 +347,7 @@ cmpcalculateOptimalParticleNum <- cmpfun(calculateOptimalParticleNum)
 
 ########################################
 
-#' Run the particle marginal Metropolis-Hastings (PMMH) for TSHR or BCDO2
+#' Run the particle marginal Metropolis-Hastings (PMMH) for a single locus (TSHR or BCDO2)
 #' Parameter settings
 #' @param sel_cof the selection coefficient
 #' @param dom_par the dominance parameter
@@ -382,7 +382,7 @@ cmprunPMMH_1L <- cmpfun(runPMMH_1L)
 
 ########################################
 
-#' Run the particle marginal Metropolis-Hastings (PMMH) for TSHR and BCDO2
+#' Run the particle marginal Metropolis-Hastings (PMMH) for two independent loci (TSHR and BCDO2)
 #' Parameter settings
 #' @param sel_cof the selection coefficients
 #' @param dom_par the dominance parameters
