@@ -54,6 +54,8 @@ smp_cnt[2, length(smp_gen)] <- round(0.15 * smp_siz[length(smp_gen)])
 
 ############################################################
 
+# Joint estimation of the selection coefficient, selection timing and migration rate
+
 # The case of population size N = 26000
 sel_cof <- 5e-03
 dom_par <- 1e-00
