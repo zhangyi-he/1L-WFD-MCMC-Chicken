@@ -607,7 +607,7 @@ List calculateOptimalParticleNum_arma(const double& sel_cof, const double& dom_p
                       Named("log_lik_sdv", log_lik_sdv));
 }
 
-// Run the blockwise particle marginal Metropolis-Hastings for TSHR or BCDO2
+// Run the blockwise particle marginal Metropolis-Hastings for a single locus (TSHR or BCDO2)
 // [[Rcpp::export]]
 List runPMMH_1L_arma(const double& sel_cof, const double& dom_par, const double& mig_rat, const int& pop_siz, const int& sel_gen, const int& mig_gen, const double& ext_frq, const arma::irowvec& smp_gen, const arma::irowvec& smp_siz, const arma::imat& smp_cnt, const arma::uword& ptn_num, const arma::uword& pcl_num, const arma::uword& itn_num) {
   // ensure RNG gets set/reset
@@ -778,7 +778,11 @@ void updateSelection_arma(double& log_lik, arma::dmat& frq_pth, double& sel_cof_
   if (arma::randu() > alpha) {
     sel_cof_new = sel_cof;
     sel_gen_new = sel_gen;
+    // frq_pth;
+    // log_lik;
   } else {
+    // sel_cof_new
+    // sel_gen_new
     frq_pth = frq_pth_new.slice(0);
     log_lik = log_lik_new;
   }
@@ -786,7 +790,7 @@ void updateSelection_arma(double& log_lik, arma::dmat& frq_pth, double& sel_cof_
   return;
 }
 
-// Run the blockwise particle marginal Metropolis-Hastings for TSHR and BCDO2
+// Run the blockwise particle marginal Metropolis-Hastings for two independent loci (TSHR and BCDO2)
 // [[Rcpp::export]]
 List runPMMH_2L_arma(const arma::dcolvec& sel_cof, const arma::dcolvec& dom_par, double& mig_rat, const int& pop_siz, const arma::icolvec& sel_gen, const int& mig_gen, const arma::dcolvec& ext_frq, const arma::irowvec& smp_gen_A, const arma::irowvec& smp_siz_A, const arma::imat& smp_cnt_A, const arma::irowvec& smp_gen_B, const arma::irowvec& smp_siz_B, const arma::imat& smp_cnt_B, const arma::uword& ptn_num, const arma::uword& pcl_num, const arma::uword& itn_num) {
   // ensure RNG gets set/reset
@@ -863,7 +867,9 @@ List runPMMH_2L_arma(const arma::dcolvec& sel_cof, const arma::dcolvec& dom_par,
     frq_pth_A_chn.slice(i) = frq_pth_A_chn.slice(i - 1);
     updateSelection_arma(log_lik_A, frq_pth_A_chn.slice(i), sel_cof_A, sel_gen_A, sel_cof_A_chn(i - 1), dom_par(0), mig_rat_chn(i - 1), pop_siz, sel_gen_A_chn(i - 1), mig_gen, ext_frq(0), smp_gen_A, smp_siz_A, ptl_cnt_A, ptn_num, pcl_num, sel_cof_sd(0), sel_gen_sd(0));
     sel_cof_A_chn(i) = sel_cof_A;
+    // cout << sel_cof_A_chn(i) << endl;
     sel_gen_A_chn(i) = sel_gen_A;
+    // cout << sel_gen_A_chn(i) << endl;
 
     // generate the selection-related parameters at locus B from the adaptive truncated normal distribution
     double sel_cof_B = 0;
@@ -871,7 +877,12 @@ List runPMMH_2L_arma(const arma::dcolvec& sel_cof, const arma::dcolvec& dom_par,
     frq_pth_B_chn.slice(i) = frq_pth_B_chn.slice(i - 1);
     updateSelection_arma(log_lik_B, frq_pth_B_chn.slice(i), sel_cof_B, sel_gen_B, sel_cof_B_chn(i - 1), dom_par(1), mig_rat_chn(i - 1), pop_siz, sel_gen_B_chn(i - 1), mig_gen, ext_frq(1), smp_gen_B, smp_siz_B, ptl_cnt_B, ptn_num, pcl_num, sel_cof_sd(1), sel_gen_sd(1));
     sel_cof_B_chn(i) = sel_cof_B;
+    // cout << sel_cof_B_chn(i) << endl;
     sel_gen_B_chn(i) = sel_gen_B;
+    // cout << sel_gen_B_chn(i) << endl;
+
+    // calculate the likelihood
+    log_lik(0) = log_lik_A + log_lik_B;
 
     // generate the gene migration related parameters from the adaptive truncated normal distribution
     do {
@@ -885,9 +896,8 @@ List runPMMH_2L_arma(const arma::dcolvec& sel_cof, const arma::dcolvec& dom_par,
     // // while (mig_gen_chn(i) < smp_gen.min() || mig_gen_chn(i) > smp_gen(arma::find(smp_cnt.row(1) > 0).min()));
 
     // calculate the likelihood
-    log_lik(0) = log_lik_A + log_lik_B;
-    calculateLogLikelihood_arma(log_lik_A, frq_pth_A, sel_cof_A_chn(i), dom_par(0), mig_rat_chn(i - 1), pop_siz, sel_gen_A_chn(i), mig_gen, ext_frq(0), smp_gen_A, smp_siz_A, ptl_cnt_A, ptn_num, pcl_num);
-    calculateLogLikelihood_arma(log_lik_B, frq_pth_B, sel_cof_B_chn(i), dom_par(1), mig_rat_chn(i - 1), pop_siz, sel_gen_B_chn(i), mig_gen, ext_frq(1), smp_gen_B, smp_siz_B, ptl_cnt_B, ptn_num, pcl_num);
+    calculateLogLikelihood_arma(log_lik_A, frq_pth_A, sel_cof_A_chn(i), dom_par(0), mig_rat_chn(i), pop_siz, sel_gen_A_chn(i), mig_gen, ext_frq(0), smp_gen_A, smp_siz_A, ptl_cnt_A, ptn_num, pcl_num);
+    calculateLogLikelihood_arma(log_lik_B, frq_pth_B, sel_cof_B_chn(i), dom_par(1), mig_rat_chn(i), pop_siz, sel_gen_B_chn(i), mig_gen, ext_frq(1), smp_gen_B, smp_siz_B, ptl_cnt_B, ptn_num, pcl_num);
     log_lik(1) = log_lik_A + log_lik_B;
 
     // calculate the proposal
@@ -911,9 +921,12 @@ List runPMMH_2L_arma(const arma::dcolvec& sel_cof, const arma::dcolvec& dom_par,
       frq_pth_A_chn.slice(i) = frq_pth_A_chn.slice(i - 1);
       frq_pth_B_chn.slice(i) = frq_pth_B_chn.slice(i - 1);
     } else {
+      // mig_rat_chn(i)
+      // mig_gen_chn(i)
       frq_pth_A_chn.slice(i) = frq_pth_A.slice(0);
       frq_pth_B_chn.slice(i) = frq_pth_B.slice(0);
     }
+    // cout << mig_rat_chn(i) << endl;
   }
 
   return List::create(Named("sel_cof_A_chn", sel_cof_A_chn),
