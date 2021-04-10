@@ -1,5 +1,5 @@
 // Inferring natural selection and gene migration in the evolution of chickens from ancient DNA data
-// Zhangyi He, Wenyang Lyu, Xiaoyang Dai, Mark Beaumont, Feng Yu
+// Wenyang Lyu, Xiaoyang Dai, Mark Beaumont, Feng Yu, Zhangyi He
 
 // version 1.1
 // allow the joint estimation of the allele frequency trajectories of the underlying population along with natural selection and gene migration
