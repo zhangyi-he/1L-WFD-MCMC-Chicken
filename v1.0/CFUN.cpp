@@ -1,4 +1,4 @@
-// Inferring natural selection and gene migration in the evolution of chickens from ancient DNA data
+// Inferring the timing and strength of natural selection and gene migration in the evolution of chicken from ancient DNA data
 // Wenyang Lyu, Xiaoyang Dai, Mark Beaumont, Feng Yu, Zhangyi He
 
 // version 1.0
