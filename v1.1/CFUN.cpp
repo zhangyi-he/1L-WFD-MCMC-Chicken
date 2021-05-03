@@ -629,8 +629,8 @@ List runPMMH_ComponentSmp_arma(const double& sel_cof, const double& dom_par, con
   arma::drowvec log_lik = arma::zeros<arma::drowvec>(2);
   arma::drowvec log_psl = arma::zeros<arma::drowvec>(2);
 
-  double sel_cof_sd = 5e-03;
-  double sel_gen_sd = 2e+01;
+  double sel_cof_sd = 1e-02;
+  double sel_gen_sd = 5e+01;
   double mig_rat_sd = 1e-03;
   double mig_gen_sd = 1e+01;
 
@@ -741,8 +741,8 @@ List runPMMH_BlockSmp_arma(const double& sel_cof, const double& dom_par, const d
   arma::drowvec log_lik = arma::zeros<arma::drowvec>(2);
   arma::drowvec log_psl = arma::zeros<arma::drowvec>(2);
 
-  double sel_cof_sd = 5e-03;
-  double sel_gen_sd = 2e+01;
+  double sel_cof_sd = 1e-02;
+  double sel_gen_sd = 5e+01;
   double mig_rat_sd = 1e-03;
   double mig_gen_sd = 1e+01;
 
