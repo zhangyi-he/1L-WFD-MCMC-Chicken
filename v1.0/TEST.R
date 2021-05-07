@@ -241,7 +241,7 @@ source("./RFUN.R")
 ################################################################################
 
 #' Generate a simulated dataset under the Wright-Fisher model
-test_seed <- 1
+test_seed <- 51
 set.seed(test_seed)
 
 #' Simulate the dataset under the Wright-Fisher model
