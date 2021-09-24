@@ -702,7 +702,7 @@ List runPMMH_ComponentSmp_arma(const double& sel_cof, const double& dom_par, con
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
       frq_pth_chn.slice(i) = frq_pth_chn.slice(i - 1);
-      log_lik(1) = log_lik(0);
+      // log_lik(1) = log_lik(0);
       // apt_cnt = apt_cnt + 0;
       cout << "acceptance: " << apt_cnt / i << endl;
     } else {
@@ -757,7 +757,6 @@ List runPMMH_BlockSmp_arma(const double& sel_cof, const double& dom_par, const d
 
   arma::dcube frq_pth = arma::zeros<arma::dcube>(4, arma::uword(arma::max(smp_gen) - arma::min(smp_gen)) * ptn_num + 1, pcl_num);
   calculateLogLikelihood_arma(log_lik(0), frq_pth, sel_cof_chn(0), dom_par, mig_rat_chn(0), pop_siz, sel_gen_chn(0), mig_gen_chn(0), ext_frq, smp_gen, smp_siz, ptl_cnt, ptn_num, pcl_num);
-  frq_pth_chn.slice(0) = frq_pth.slice(0);
 
   double apt_cnt = 0;
   double alpha = 0;
@@ -802,6 +801,7 @@ List runPMMH_BlockSmp_arma(const double& sel_cof, const double& dom_par, const d
       cout << "acceptance: " << apt_cnt / i << endl;
     } else {
       frq_pth_chn.slice(i) = frq_pth.slice(0);
+      // log_lik(0) = log_lik(1);
       apt_cnt = apt_cnt + 0.5;
       cout << "acceptance: " << apt_cnt / i << endl;
     }
@@ -838,11 +838,13 @@ List runPMMH_BlockSmp_arma(const double& sel_cof, const double& dom_par, const d
     if (arma::randu() > alpha) {
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
+      // frq_pth_chn.slice(i) = frq_pth_chn.slice(i);
       log_lik(0) = log_lik(1);
       // apt_cnt = apt_cnt + 0;
       cout << "acceptance: " << apt_cnt / i << endl;
     } else {
       frq_pth_chn.slice(i) = frq_pth.slice(0);
+      // log_lik(0) = log_lik(1);
       apt_cnt = apt_cnt + 0.5;
       cout << "acceptance: " << apt_cnt / i << endl;
     }
