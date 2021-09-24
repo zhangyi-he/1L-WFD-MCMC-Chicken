@@ -675,7 +675,7 @@ List runPMMH_ComponentSmp_arma(const double& sel_cof, const double& dom_par, con
       sel_gen_chn(i) = sel_gen_chn(i - 1);
       mig_rat_chn(i) = mig_rat_chn(i - 1);
       mig_gen_chn(i) = mig_gen_chn(i - 1);
-      log_lik(1) = log_lik(0);
+      // log_lik(1) = log_lik(0);
       // apt_cnt = apt_cnt + 0;
       cout << "acceptance: " << apt_cnt / i << endl;
     } else {
@@ -769,6 +769,7 @@ List runPMMH_BlockSmp_arma(const double& sel_cof, const double& dom_par, const d
       // apt_cnt = apt_cnt + 0;
       cout << "acceptance: " << apt_cnt / i << endl;
     } else {
+      // log_lik(0) = log_lik(1);
       apt_cnt = apt_cnt + 0.5;
       cout << "acceptance: " << apt_cnt / i << endl;
     }
@@ -809,6 +810,7 @@ List runPMMH_BlockSmp_arma(const double& sel_cof, const double& dom_par, const d
       // apt_cnt = apt_cnt + 0;
       cout << "acceptance: " << apt_cnt / i << endl;
     } else {
+      // log_lik(1) = log_lik(0);
       apt_cnt = apt_cnt + 0.5;
       cout << "acceptance: " << apt_cnt / i << endl;
     }
