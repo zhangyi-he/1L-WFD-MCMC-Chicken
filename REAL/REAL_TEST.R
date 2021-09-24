@@ -3,6 +3,9 @@
 
 #' TSHR and BCDO2 (the starting time of gene migration is given)
 
+# set the directory
+setwd("~/Dropbox/Jeffery He/iResearch/Publications/2018/HE2021-WFM-1L-DiffusApprox-PMMH-MolEcolResour")
+
 #install.packages("RColorBrewer")
 library("RColorBrewer")
 
@@ -25,7 +28,7 @@ library("readr")
 library("xtable")
 
 #' call R functions
-source("./REAL_RFUN.R")
+source("./Code/Code v1.0/REAL_RFUN.R")
 
 ################################################################################
 
