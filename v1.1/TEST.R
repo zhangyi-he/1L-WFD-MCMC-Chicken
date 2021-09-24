@@ -129,22 +129,22 @@ source("./RFUN.R")
 #   smp_WFD[, i] <- cmpsimulateWFD(sel_cof, dom_par, mig_rat, pop_siz, ext_frq, int_frq, int_gen, lst_gen, ptn_num, dat_aug = FALSE)[, (lst_gen - int_gen) + 1]
 # }
 #
-# hist(smp_WFM[1, ], breaks = seq(min(smp_WFM[1, ], smp_WFD[1, ]), max(smp_WFM[1, ], smp_WFD[1, ]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
+# hist(smp_WFM[1, ], breaks = seq(min(smp_WFM[1, ], smp_WFD[1, ]), max(smp_WFM[1, ], smp_WFD[1, ]), length.out = 40), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
 #      xlim = c(min(smp_WFM[1, ], smp_WFD[1, ]), max(smp_WFM[1, ], smp_WFD[1, ])),
 #      xlab = "Allele frequency", main = paste("Histogram of the island mutant allele at generation", lst_gen))
-# hist(smp_WFD[1, ], breaks = seq(min(smp_WFM[1, ], smp_WFD[1, ]), max(smp_WFM[1, ], smp_WFD[1, ]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
-# hist(smp_WFM[2, ], breaks = seq(min(smp_WFM[2, ], smp_WFD[2, ]), max(smp_WFM[2, ], smp_WFD[2, ]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
+# hist(smp_WFD[1, ], breaks = seq(min(smp_WFM[1, ], smp_WFD[1, ]), max(smp_WFM[1, ], smp_WFD[1, ]), length.out = 40), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
+# hist(smp_WFM[2, ], breaks = seq(min(smp_WFM[2, ], smp_WFD[2, ]), max(smp_WFM[2, ], smp_WFD[2, ]), length.out = 40), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
 #      xlim = c(min(smp_WFM[2, ], smp_WFD[2, ]), max(smp_WFM[2, ], smp_WFD[2, ])),
 #      xlab = "Allele frequency", main = paste("Histogram of the island ancestral allele at generation", lst_gen))
-# hist(smp_WFD[2, ], breaks = seq(min(smp_WFM[2, ], smp_WFD[2, ]), max(smp_WFM[2, ], smp_WFD[2, ]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
-# hist(smp_WFM[3, ], breaks = seq(min(smp_WFM[3, ], smp_WFD[3, ]), max(smp_WFM[3, ], smp_WFD[3, ]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
+# hist(smp_WFD[2, ], breaks = seq(min(smp_WFM[2, ], smp_WFD[2, ]), max(smp_WFM[2, ], smp_WFD[2, ]), length.out = 40), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
+# hist(smp_WFM[3, ], breaks = seq(min(smp_WFM[3, ], smp_WFD[3, ]), max(smp_WFM[3, ], smp_WFD[3, ]), length.out = 40), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
 #      xlim = c(min(smp_WFM[3, ], smp_WFD[3, ]), max(smp_WFM[3, ], smp_WFD[3, ])),
 #      xlab = "Allele frequency", main = paste("Histogram of the continent mutant allele at generation", lst_gen))
-# hist(smp_WFD[3, ], breaks = seq(min(smp_WFM[3, ], smp_WFD[3, ]), max(smp_WFM[3, ], smp_WFD[3, ]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
-# hist(smp_WFM[4, ], breaks = seq(min(smp_WFM[4, ], smp_WFD[4, ]), max(smp_WFM[4, ], smp_WFD[4, ]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
+# hist(smp_WFD[3, ], breaks = seq(min(smp_WFM[3, ], smp_WFD[3, ]), max(smp_WFM[3, ], smp_WFD[3, ]), length.out = 40), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
+# hist(smp_WFM[4, ], breaks = seq(min(smp_WFM[4, ], smp_WFD[4, ]), max(smp_WFM[4, ], smp_WFD[4, ]), length.out = 40), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
 #      xlim = c(min(smp_WFM[4, ], smp_WFD[4, ]), max(smp_WFM[4, ], smp_WFD[4, ])),
 #      xlab = "Allele frequency", main = paste("Histogram of the continent ancestral allele at generation", lst_gen))
-# hist(smp_WFD[4, ], breaks = seq(min(smp_WFM[4, ], smp_WFD[4, ]), max(smp_WFM[4, ], smp_WFD[4, ]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
+# hist(smp_WFD[4, ], breaks = seq(min(smp_WFM[4, ], smp_WFD[4, ]), max(smp_WFM[4, ], smp_WFD[4, ]), length.out = 40), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
 
 ################################################################################
 
@@ -351,53 +351,53 @@ pop_frq_pst_resmp <- BPF$pop_frq_pst_resmp
 pdf(file = "./TEST_BPF_Particle.pdf", width = 32, height = 66)
 par(mfrow = c(11, 4), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
 for (k in 1:length(smp_gen)) {
-  hist_pst_resmp <- hist(pop_frq_pst_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 50), plot = FALSE)
-  hist_pre_resmp <- hist(pop_frq_pre_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 50), plot = FALSE)
+  hist_pst_resmp <- hist(pop_frq_pst_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 40), plot = FALSE)
+  hist_pre_resmp <- hist(pop_frq_pre_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 40), plot = FALSE)
   if (!any(is.nan(c(hist_pst_resmp$density, hist_pre_resmp$density)))) {
-    hist(pop_frq_pst_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
+    hist(pop_frq_pst_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 40), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
          xlim = c(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k], smp_ale_frq[1, k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k], smp_ale_frq[1, k])), ylim = c(0, max(hist_pst_resmp$density, hist_pre_resmp$density)),
          xlab = "Allele frequency",
          main = paste("Island mutant allele at generation", smp_gen[k]))
-    hist(pop_frq_pre_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
+    hist(pop_frq_pre_resmp[1, , k], breaks = seq(min(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), max(pop_frq_pst_resmp[1, , k], pop_frq_pre_resmp[1, , k]), length.out = 40), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
     abline(v = smp_ale_frq[1, k], col = 'red', lty = 2, lwd = 2)
   } else {
     plot(0, type = "n", axes = FALSE, ann = FALSE)
   }
 
-  hist_pst_resmp <- hist(pop_frq_pst_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 50), plot = FALSE)
-  hist_pre_resmp <- hist(pop_frq_pre_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 50), plot = FALSE)
+  hist_pst_resmp <- hist(pop_frq_pst_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 40), plot = FALSE)
+  hist_pre_resmp <- hist(pop_frq_pre_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 40), plot = FALSE)
   if (!any(is.nan(c(hist_pst_resmp$density, hist_pre_resmp$density)))) {
-    hist(pop_frq_pst_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
+    hist(pop_frq_pst_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 40), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
          xlim = c(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k], smp_ale_frq[2, k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k], smp_ale_frq[2, k])), ylim = c(0, max(hist_pst_resmp$density, hist_pre_resmp$density)),
          xlab = "Allele frequency",
          main = paste("Island ancestral allele at generation", smp_gen[k]))
-    hist(pop_frq_pre_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
+    hist(pop_frq_pre_resmp[2, , k], breaks = seq(min(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), max(pop_frq_pst_resmp[2, , k], pop_frq_pre_resmp[2, , k]), length.out = 40), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
     abline(v = smp_ale_frq[2, k], col = 'red', lty = 2, lwd = 2)
   } else {
     plot(0, type = "n", axes = FALSE, ann = FALSE)
   }
 
-  hist_pst_resmp <- hist(pop_frq_pst_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 50), plot = FALSE)
-  hist_pre_resmp <- hist(pop_frq_pre_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 50), plot = FALSE)
+  hist_pst_resmp <- hist(pop_frq_pst_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 40), plot = FALSE)
+  hist_pre_resmp <- hist(pop_frq_pre_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 40), plot = FALSE)
   if (!any(is.nan(c(hist_pst_resmp$density, hist_pre_resmp$density)))) {
-    hist(pop_frq_pst_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
+    hist(pop_frq_pst_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 40), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
          xlim = c(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k], smp_ale_frq[3, k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k], smp_ale_frq[3, k])), ylim = c(0, max(hist_pst_resmp$density, hist_pre_resmp$density)),
          xlab = "Allele frequency",
          main = paste("Continent mutant allele at generation", smp_gen[k]))
-    hist(pop_frq_pre_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
+    hist(pop_frq_pre_resmp[3, , k], breaks = seq(min(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), max(pop_frq_pst_resmp[3, , k], pop_frq_pre_resmp[3, , k]), length.out = 40), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
     abline(v = smp_ale_frq[3, k], col = 'red', lty = 2, lwd = 2)
   } else {
     plot(0, type = "n", axes = FALSE, ann = FALSE)
   }
 
-  hist_pst_resmp <- hist(pop_frq_pst_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 50), plot = FALSE)
-  hist_pre_resmp <- hist(pop_frq_pre_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 50), plot = FALSE)
+  hist_pst_resmp <- hist(pop_frq_pst_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 40), plot = FALSE)
+  hist_pre_resmp <- hist(pop_frq_pre_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 40), plot = FALSE)
   if (!any(is.nan(c(hist_pst_resmp$density, hist_pre_resmp$density)))) {
-    hist(pop_frq_pst_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 50), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
+    hist(pop_frq_pst_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 40), freq = FALSE, col = rgb(0.1, 0.1, 0.1, 0.5),
          xlim = c(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k], smp_ale_frq[4, k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k], smp_ale_frq[4, k])), ylim = c(0, max(hist_pst_resmp$density, hist_pre_resmp$density)),
          xlab = "Allele frequency",
          main = paste("Continent ancestral allele at generation", smp_gen[k]))
-    hist(pop_frq_pre_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 50), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
+    hist(pop_frq_pre_resmp[4, , k], breaks = seq(min(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), max(pop_frq_pst_resmp[4, , k], pop_frq_pre_resmp[4, , k]), length.out = 40), freq = FALSE, col = rgb(0.8, 0.8, 0.8, 0.5), add = TRUE)
     abline(v = smp_ale_frq[4, k], col = 'red', lty = 2, lwd = 2)
   } else {
     plot(0, type = "n", axes = FALSE, ann = FALSE)
@@ -537,14 +537,14 @@ abline(h = mig_gen, col = 'red', lty = 2, lwd = 2)
 dev.off()
 
 # brn_num <- 1e+04
-brn_num <- floor(length(sel_cof_chn) * 0.8)
+brn_num <- floor(length(sel_cof_chn) * 0.5)
 sel_cof_chn <- sel_cof_chn[brn_num:length(sel_cof_chn)]
 sel_gen_chn <- sel_gen_chn[brn_num:length(sel_gen_chn)]
 mig_rat_chn <- mig_rat_chn[brn_num:length(mig_rat_chn)]
 mig_gen_chn <- mig_gen_chn[brn_num:length(mig_gen_chn)]
 frq_pth_chn <- frq_pth_chn[, , brn_num:dim(frq_pth_chn)[3]]
 
-thn_num <- 4e+00
+thn_num <- 5e+00
 sel_cof_chn <- sel_cof_chn[(1:floor(length(sel_cof_chn) / thn_num)) * thn_num]
 sel_gen_chn <- sel_gen_chn[(1:floor(length(sel_gen_chn) / thn_num)) * thn_num]
 mig_rat_chn <- mig_rat_chn[(1:floor(length(mig_rat_chn) / thn_num)) * thn_num]
@@ -586,7 +586,7 @@ for (k in 1:dim(frq_pth_chn)[2]) {
 
 pdf(file = "./TEST_PMMH_CS_Posterior.pdf", width = 16, height = 12)
 par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
-hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
+hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 40), freq = FALSE,
      xlab = "Selection coefficient",
      main = "Posterior for the selection coefficient")
 lines(density(sel_cof_chn), col = 'black', lwd = 2)
@@ -595,7 +595,7 @@ abline(v = sel_cof_est, col = 'black', lty = 2, lwd = 2)
 abline(v = sel_cof_hpd[1], col = 'blue', lty = 2, lwd = 2)
 abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
-hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
+hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 40), freq = FALSE,
      xlab = "Selection coefficient",
      main = "Posterior for the selection timing")
 lines(density(sel_gen_chn), col = 'black', lwd = 2)
@@ -604,7 +604,7 @@ abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
 abline(v = sel_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
 abline(v = sel_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
-hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 50), freq = FALSE,
+hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 40), freq = FALSE,
      xlab = "Selection coefficient",
      main = "Posterior for the migration rate")
 lines(density(mig_rat_chn), col = 'black', lwd = 2)
@@ -613,7 +613,7 @@ abline(v = mig_rat_est, col = 'black', lty = 2, lwd = 2)
 abline(v = mig_rat_hpd[1], col = 'blue', lty = 2, lwd = 2)
 abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
-hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
+hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 40), freq = FALSE,
      xlab = "Selection coefficient",
      main = "Posterior for the migration timing")
 lines(density(mig_gen_chn), col = 'black', lwd = 2)
@@ -713,14 +713,14 @@ abline(h = mig_gen, col = 'red', lty = 2, lwd = 2)
 dev.off()
 
 # brn_num <- 1e+04
-brn_num <- floor(length(sel_cof_chn) * 0.8)
+brn_num <- floor(length(sel_cof_chn) * 0.5)
 sel_cof_chn <- sel_cof_chn[brn_num:length(sel_cof_chn)]
 sel_gen_chn <- sel_gen_chn[brn_num:length(sel_gen_chn)]
 mig_rat_chn <- mig_rat_chn[brn_num:length(mig_rat_chn)]
 mig_gen_chn <- mig_gen_chn[brn_num:length(mig_gen_chn)]
 frq_pth_chn <- frq_pth_chn[, , brn_num:dim(frq_pth_chn)[3]]
 
-thn_num <- 4e+00
+thn_num <- 5e+00
 sel_cof_chn <- sel_cof_chn[(1:floor(length(sel_cof_chn) / thn_num)) * thn_num]
 sel_gen_chn <- sel_gen_chn[(1:floor(length(sel_gen_chn) / thn_num)) * thn_num]
 mig_rat_chn <- mig_rat_chn[(1:floor(length(mig_rat_chn) / thn_num)) * thn_num]
@@ -762,7 +762,7 @@ for (k in 1:dim(frq_pth_chn)[2]) {
 
 pdf(file = "./TEST_PMMH_BS_Posterior.pdf", width = 16, height = 12)
 par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
-hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
+hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 40), freq = FALSE,
      xlab = "Selection coefficient",
      main = "Posterior for the selection coefficient")
 lines(density(sel_cof_chn), col = 'black', lwd = 2)
@@ -771,7 +771,7 @@ abline(v = sel_cof_est, col = 'black', lty = 2, lwd = 2)
 abline(v = sel_cof_hpd[1], col = 'blue', lty = 2, lwd = 2)
 abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
-hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
+hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 40), freq = FALSE,
      xlab = "Selection coefficient",
      main = "Posterior for the selection timing")
 lines(density(sel_gen_chn), col = 'black', lwd = 2)
@@ -780,7 +780,7 @@ abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
 abline(v = sel_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
 abline(v = sel_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
-hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 50), freq = FALSE,
+hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 40), freq = FALSE,
      xlab = "Selection coefficient",
      main = "Posterior for the migration rate")
 lines(density(mig_rat_chn), col = 'black', lwd = 2)
@@ -789,7 +789,7 @@ abline(v = mig_rat_est, col = 'black', lty = 2, lwd = 2)
 abline(v = mig_rat_hpd[1], col = 'blue', lty = 2, lwd = 2)
 abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
-hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
+hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 40), freq = FALSE,
      xlab = "Selection coefficient",
      main = "Posterior for the migration timing")
 lines(density(mig_gen_chn), col = 'black', lwd = 2)
@@ -884,7 +884,7 @@ smp_cnt
 ptn_num <- 5e+00
 pcl_num <- 1e+03
 itn_num <- 2e+04
-brn_num <- 5e+03
+brn_num <- 1e+04
 thn_num <- 5e+00
 bck_smp <- TRUE
 
@@ -917,7 +917,7 @@ frq_pth_hpd <- BayesianProcedure$frq_pth_hpd
 
 pdf(file = "./TEST_BayesianProcedure_Posterior.pdf", width = 16, height = 12)
 par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
-hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 50), freq = FALSE,
+hist(sel_cof_chn, breaks = seq(min(sel_cof_chn), max(sel_cof_chn), length.out = 40), freq = FALSE,
      xlab = "Selection coefficient",
      main = "Posterior for the selection coefficient")
 lines(density(sel_cof_chn), col = 'black', lwd = 2)
@@ -926,7 +926,7 @@ abline(v = sel_cof_est, col = 'black', lty = 2, lwd = 2)
 abline(v = sel_cof_hpd[1], col = 'blue', lty = 2, lwd = 2)
 abline(v = sel_cof_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
-hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 50), freq = FALSE,
+hist(sel_gen_chn, breaks = seq(min(sel_gen_chn), max(sel_gen_chn), length.out = 40), freq = FALSE,
      xlab = "Selection coefficient",
      main = "Posterior for the selection timing")
 lines(density(sel_gen_chn), col = 'black', lwd = 2)
@@ -935,7 +935,7 @@ abline(v = sel_gen_est, col = 'black', lty = 2, lwd = 2)
 abline(v = sel_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
 abline(v = sel_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
-hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 50), freq = FALSE,
+hist(mig_rat_chn, breaks = seq(min(mig_rat_chn), max(mig_rat_chn), length.out = 40), freq = FALSE,
      xlab = "Selection coefficient",
      main = "Posterior for the migration rate")
 lines(density(mig_rat_chn), col = 'black', lwd = 2)
@@ -944,7 +944,7 @@ abline(v = mig_rat_est, col = 'black', lty = 2, lwd = 2)
 abline(v = mig_rat_hpd[1], col = 'blue', lty = 2, lwd = 2)
 abline(v = mig_rat_hpd[2], col = 'blue', lty = 2, lwd = 2)
 
-hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 50), freq = FALSE,
+hist(mig_gen_chn, breaks = seq(min(mig_gen_chn), max(mig_gen_chn), length.out = 40), freq = FALSE,
      xlab = "Selection coefficient",
      main = "Posterior for the migration timing")
 lines(density(mig_gen_chn), col = 'black', lwd = 2)
@@ -954,7 +954,7 @@ abline(v = mig_gen_hpd[1], col = 'blue', lty = 2, lwd = 2)
 abline(v = mig_gen_hpd[2], col = 'blue', lty = 2, lwd = 2)
 dev.off()
 
-pdf(file = "./TEST_BayesianProcedure_Trajectory.pdf", width = 16, height = 12
+pdf(file = "./TEST_BayesianProcedure_Trajectory.pdf", width = 16, height = 12)
 par(mfrow = c(2, 2), mar = c(5.5, 5, 5.5, 2.5), cex.main = 1.75, cex.sub = 1.5, cex.axis = 1.5, cex.lab = 1.5)
 plot(0, type = "n", xlim = c(min(smp_gen), max(smp_gen)), ylim = c(min(frq_pth_chn[1, , ]), max(frq_pth_chn[1, , ])),
      xlab = "Generation", ylab = "Allele frequency",
