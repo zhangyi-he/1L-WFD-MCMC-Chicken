@@ -241,8 +241,6 @@ source("./RFUN.R")
 ################################################################################
 
 #' Generate a simulated dataset under the Wright-Fisher model
-test_seed <- 51
-set.seed(test_seed)
 
 #' Simulate the dataset under the Wright-Fisher model
 model <- "WFM"
@@ -308,8 +306,6 @@ dev.off()
 #' @param pcl_num the number of particles generated in the bootstrap particle filter
 
 load("./TEST_SimData.rda")
-
-set.seed(test_seed)
 
 sel_cof
 dom_par
@@ -424,8 +420,6 @@ dev.off()
 
 load("./TEST_SimData.rda")
 
-set.seed(test_seed)
-
 sel_cof
 dom_par
 mig_rat
@@ -479,8 +473,6 @@ dev.off()
 #' @param bck_smp = TRUE/FALSE (return the result with the blockwise sampling or not)
 
 load("./TEST_SimData.rda")
-
-set.seed(test_seed)
 
 sel_cof <- 0e-00
 dom_par
@@ -743,8 +735,6 @@ dev.off()
 #' @param bck_smp = TRUE/FALSE (return the result with the blockwise sampling or not)
 
 load("./TEST_SimData.rda")
-
-set.seed(test_seed)
 
 sel_cof <- 0e-00
 dom_par
