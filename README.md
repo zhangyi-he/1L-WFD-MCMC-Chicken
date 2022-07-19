@@ -5,4 +5,4 @@ Source code is implemented for an MCMC-based method for inferring the timing and
 
 [Code v1.1](https://github.com/zhangyi-he/WFM-1L-DiffusApprox-PMMH-Chicken/tree/master/Code%20v1.1) includes the source code implemented for the joint inference of the timing and strength of natural selection and gene migration, including the estimation of the allele frequency trajectories of the underlying population.
 
-REAL includes the source code tailed to the analysis of TSHR and BCDO2, including the aDNA dataset for European chicken.
+[REAL](https://github.com/zhangyi-he/WFM-1L-DiffusApprox-PMMH-Chicken/tree/master/REAL) includes the source code tailed to the analysis of TSHR and BCDO2, including the aDNA dataset for European chicken.
